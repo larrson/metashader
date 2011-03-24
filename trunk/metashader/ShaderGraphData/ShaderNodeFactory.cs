@@ -8,14 +8,15 @@ namespace metashader.ShaderGraphData
 {
     /// <summary>
     /// シェーダノードのファクトリ
-    /// </summary>    
+    /// </summary>   
+    [Serializable]
     class ShaderNodeFactory
     {
 #region variables
         /// <summary>
         /// ノードに一意の名前を割り当てるための種類ごとのカウンタ
         /// カウンタの値を生成したノード名のサフィックスとして利用する
-        /// </summary>
+        /// </summary>        
         uint[] m_typeCounter = new uint[(int)ShaderNodeType.Max];
 #endregion                
 

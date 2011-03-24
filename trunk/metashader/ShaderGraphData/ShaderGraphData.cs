@@ -3,27 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace metashader.ShaderGraphData
 {
     /// <summary>
     /// シェーダーグラフのデータ構造
     /// </summary>    
+    [Serializable]
     public partial class ShaderGraphData
     {
 #region variables
         /// <summary>
         /// シェーダノードのリスト
-        /// </summary>       
+        /// </summary>         
         Dictionary<int, ShaderNodeDataBase> m_nodeList = new Dictionary<int, ShaderNodeDataBase>();
 
         /// <summary>
         /// シェーダノード用ファクトリ
-        /// </summary>
+        /// </summary>        
         ShaderNodeFactory m_shaderNodeFactory = new ShaderNodeFactory();       
 #endregion
 
-#region public methods  
+#region public methods                  
+
         /// <summary>
         /// シェーダノードの取得
         /// </summary>
@@ -121,22 +126,47 @@ namespace metashader.ShaderGraphData
                 // 対応するノード無ければなにもしない
                 return false;
             }
+
+            // 削除対象のノードを取得
+            ShaderNodeDataBase node;
+            m_nodeList.TryGetValue(hashCode, out node);
                         
-            //@@@ エッジの削除
+            /// リンクの削除            
+            // 入力リンクの削除
+            for (int i = 0; i < node.InputJointNum; ++i )
+            {
+                JointData inJoint = node.GetInputJoint(i);
+                while( inJoint.JointList.Count != 0 )
+                {
+                    JointData outJoint = inJoint.JointList.First.Value;
+                    DelLink(outJoint.ParentNode.GetHashCode(), outJoint.JointIndex
+                        , inJoint.ParentNode.GetHashCode(), inJoint.JointIndex
+                        , undoredo);
+                }
+            }
+
+            // 出力リンクの削除
+            for (int i = 0; i < node.OutputJointNum; ++i)
+            {
+                JointData outJoint = node.GetOutputJoint(i);
+                while( outJoint.JointList.Count != 0 )
+                {
+                    JointData inJoint = outJoint.JointList.First.Value;                
+                    DelLink(outJoint.ParentNode.GetHashCode(), outJoint.JointIndex
+                        , inJoint.ParentNode.GetHashCode(), inJoint.JointIndex
+                        , undoredo);
+                }
+            }
 
             /// ノードの削除
             {
-                // undoredo用に待避
-                ShaderNodeDataBase node;
-
-                // 削除
-                m_nodeList.TryGetValue(hashCode, out node);
+                // 削除                
                 m_nodeList.Remove(hashCode);
 
                 // Undo/Redoバッファがあれば処理を積む
                 if (undoredo != null)
                 {
-                    undoredo.Add(new UndoRedo_DelNode(this, node ));
+                    undoredo.Add(new UndoRedo_DelNode(this, node));
                 }
             }
 
@@ -297,7 +327,7 @@ namespace metashader.ShaderGraphData
             // 入出力の両ジョイントを取得
             JointData outJoint, inJoint;
             outJoint = outNode.GetOutputJoint(outJointIndex);
-            inJoint  = outNode.GetInputJoint(inJointIndex);
+            inJoint  = inNode.GetInputJoint(inJointIndex);
 
             // 出力ノード内から入力ノードのジョイントを削除
             outJoint.Disconnect(inJoint);

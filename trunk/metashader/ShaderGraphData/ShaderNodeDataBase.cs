@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 namespace metashader.ShaderGraphData
 {
@@ -157,7 +158,7 @@ namespace metashader.ShaderGraphData
         public bool Disconnect(JointData joint)
         {
             // 接続を解除可能か
-            if( CanDisconnect(joint) )
+            if( CanDisconnect(joint) == false )
             {
                 // 解除不可能
                 return false;
@@ -180,32 +181,44 @@ namespace metashader.ShaderGraphData
     /// シェーダグラフを構成するノードのデータ構造の基本クラス  
     /// </summary>
     [Serializable]
-    public class ShaderNodeDataBase
+    public class ShaderNodeDataBase : IDeserializationCallback
     {
 #region variables
         /// <summary>
         /// シェーダノードの種類
-        /// </summary>
+        /// </summary>        
         protected ShaderNodeType m_type;
 
         /// <summary>
         /// ノード名
-        /// </summary>
+        /// </summary>        
         protected string m_name;
 
         /// <summary>
         /// UI上の表示位置
-        /// </summary>
+        /// </summary>        
         protected Point m_pos;
+
+        /// <summary>
+        /// 入力ジョイント数
+        /// </summary>
+        protected int m_inputJointNum;
 
         /// <summary>
         /// 入力ジョイント
         /// </summary>
+        [NonSerialized]
         protected JointData[] m_inputJoints;
+
+        /// <summary>
+        /// 出力ジョイント数
+        /// </summary>
+        protected int m_outputJointNum;
 
         /// <summary>
         /// 出力ジョイント
         /// </summary>
+        [NonSerialized]
         protected JointData[] m_outputJoints;
 #endregion        
 
@@ -219,20 +232,11 @@ namespace metashader.ShaderGraphData
             m_type = type;
             m_name = name;
             m_pos = pos;
+            m_inputJointNum = inJointNum;
+            m_outputJointNum = outJointNum;
 
             // ジョイントの初期化
-            // 入力
-            m_inputJoints = new JointData[inJointNum];
-            for(int i = 0; i < inJointNum; ++i)
-            {
-                m_inputJoints[i] = new JointData(this, i, JointData.Side.In);
-            }
-            // 出力
-            m_outputJoints = new JointData[outJointNum];
-            for(int i = 0; i < outJointNum; ++i)
-            {
-                m_outputJoints[i] = new JointData(this, i, JointData.Side.Out);
-            }
+            InitializeJoints();
         }
 #endregion
 
@@ -266,7 +270,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public int InputJointNum
         {
-            get { return m_inputJoints.Length; }
+            get { return m_inputJointNum; }
         }        
 
         /// <summary>
@@ -274,7 +278,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public int OutputJointNum
         {
-            get { return m_outputJoints.Length; }
+            get { return m_outputJointNum; }
         }
 #endregion
 
@@ -316,6 +320,33 @@ namespace metashader.ShaderGraphData
         {
             return m_outputJoints[index];
         }        
+#endregion
+
+#region override methods
+        void IDeserializationCallback.OnDeserialization(Object sender)
+        {
+            // ジョイントの初期化
+            InitializeJoints();
+        }
+#endregion
+
+#region private methods
+        private void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力           
+            m_inputJoints = new JointData[m_inputJointNum];
+            for (int i = 0; i < m_inputJointNum; ++i)
+            {
+                m_inputJoints[i] = new JointData(this, i, JointData.Side.In);
+            }
+            // 出力            
+            m_outputJoints = new JointData[m_outputJointNum];
+            for (int i = 0; i < m_outputJointNum; ++i)
+            {
+                m_outputJoints[i] = new JointData(this, i, JointData.Side.Out);
+            }
+        }
 #endregion
     }
 }

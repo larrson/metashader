@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace metashader.Console
 {
@@ -11,8 +12,52 @@ namespace metashader.Console
     /// コンソールベースのコマンドのインターフェース
     /// </summary>
     public interface IConsoleCommand
-    {       
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
         void Execute(string[] options);        
+    }
+
+    /// <summary>
+    /// コンソールベースのセーブコマンド
+    /// </summary>
+    public class SaveCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+                return;
+
+            string path = options[1];
+            BinaryFormatter bf = new BinaryFormatter();
+            App.CurrentApp.Save(path, bf);
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのロードコマンド
+    /// </summary>
+    public class LoadCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+                return;
+
+            string path = options[1];
+            BinaryFormatter bf = new BinaryFormatter();
+            App.CurrentApp.Load(path, bf);
+        }
     }
 
     /// <summary>
@@ -208,6 +253,8 @@ namespace metashader.Console
             m_commands.Add("Delete", new DeleteCommand());
             m_commands.Add("Undo", new UndoCommand());
             m_commands.Add("Redo", new RedoCommand());
+            m_commands.Add("Load", new LoadCommand());
+            m_commands.Add("Save", new SaveCommand());
 #if DEBUG
             m_commands.Add("PrintLink", new PrintLinkCommand());
 #endif // DEBUG

@@ -15,7 +15,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// 選択されているシェーダノードのリスト
         /// </summary>
-        List<ShaderNodeDataBase> m_shaderNodes = new List<ShaderNodeDataBase>();
+        List<ShaderNodeDataBase> m_shaderNodes = new List<ShaderNodeDataBase>();        
 #endregion
 
 #region properties
@@ -27,7 +27,7 @@ namespace metashader.ShaderGraphData
 
 #region public methods
         /// <summary>
-        /// シェーダノードの
+        /// シェーダノードが選択中か
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>

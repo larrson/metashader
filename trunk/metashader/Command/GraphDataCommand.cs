@@ -158,24 +158,22 @@ namespace metashader.Command
             ShaderGraphData.ShaderGraphData graphData = App.CurrentApp.GraphData;
 
             // undo/redo用バッファ
-            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();            
 
-            //@@@ リンクの削除
-
-            //@@@ ノードの削除
+            /// ノードの削除 ///
             ReadOnlyCollection<ShaderGraphData.ShaderNodeDataBase> list = App.CurrentApp.SelectManager.SelectedNodeList;
             foreach( ShaderNodeDataBase node in list )
             {
                 graphData.DelNode( node.GetHashCode(), undoredo );
             }           
 
-           // undo/redo用バッファの登録
+           /// undo/redo用バッファの登録 ///
            if( undoredo.IsValid)
            {
                UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
            }           
 
-           // 選択の解除
+           /// 選択の解除 ///
            App.CurrentApp.SelectManager.Clear();
         }
 #endregion       
