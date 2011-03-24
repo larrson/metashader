@@ -11,6 +11,7 @@ namespace metashader.ShaderGraphData
     /// 4Dベクトル
     /// RGBAカラーとしても利用
     /// </summary>   
+    [Serializable]
     class Uniform_Vector4Node : ShaderNodeDataBase
     {
 #region constructors
@@ -37,6 +38,7 @@ namespace metashader.ShaderGraphData
     /// <summary>
     /// 出力色ノード
     /// </summary>
+    [Serializable]
     class Output_ColorNode : ShaderNodeDataBase
     {
 #region constructors

@@ -4,6 +4,8 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace metashader
 {
@@ -64,6 +66,39 @@ namespace metashader
         }
 #endregion
 
+#region public method
+        /// <summary>
+        /// 保存
+        /// </summary>
+        public void Save(string path, BinaryFormatter formatter)
+        {
+            FileStream fs = new FileStream(path,
+            FileMode.Create,
+            FileAccess.Write);
+            // グラフの読み込み
+            m_graphData.Save(fs, formatter);            
+            fs.Close();
+        }
+
+        /// <summary>
+        /// ロード
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="formatter"></param>
+        public void Load(string path, BinaryFormatter formatter)
+        {
+            FileStream fs = new FileStream(path,
+            FileMode.Open,
+            FileAccess.Read);            
+
+            // グラフの読み込み
+            m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);
+
+            fs.Close();
+        }
+#endregion
+
+#region event handlers
         /// <summary>
         /// アプリケーション開始時に呼ばれるイベントハンドラ
         /// </summary>
@@ -78,7 +113,8 @@ namespace metashader
             m_selectManager = new ShaderGraphData.SelectManager();
 
             // コマンドマネージャ初期化
-            m_uiCommandManager = new Command.CommandManager();            
+            m_uiCommandManager = new Command.CommandManager();
         }
+#endregion        
     }
 }
