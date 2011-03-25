@@ -92,9 +92,12 @@ namespace metashader
             FileAccess.Read);            
 
             // グラフの読み込み
-            m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);
+            m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
 
             fs.Close();
+
+            // 選択解除
+            m_selectManager.Clear();
         }
 #endregion
 

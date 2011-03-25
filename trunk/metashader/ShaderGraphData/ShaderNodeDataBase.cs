@@ -35,7 +35,29 @@ namespace metashader.ShaderGraphData
             }
         }
     }
-#endregion      
+#endregion   
+   
+    #region member classes
+    /// <summary>
+    /// 単一のリンクデータを表すデータ構造
+    /// </summary>
+    [Serializable]
+    public struct LinkData
+    {
+        public int _outNodeHash;
+        public int _outJointIndex;
+        public int _inNodeHash;
+        public int _inJointIndex;
+
+        public LinkData(int outHash, int outIndex, int inHash, int inIndex)
+        {
+            _outNodeHash = outHash;
+            _outJointIndex = outIndex;
+            _inNodeHash = inHash;
+            _inJointIndex = inIndex;
+        }
+    };
+    #endregion
   
     /// <summary>
     /// リンクの接続点のデータ構造

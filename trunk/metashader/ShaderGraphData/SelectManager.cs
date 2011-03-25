@@ -15,13 +15,29 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// 選択されているシェーダノードのリスト
         /// </summary>
-        List<ShaderNodeDataBase> m_shaderNodes = new List<ShaderNodeDataBase>();        
+        List<ShaderNodeDataBase> m_shaderNodes = new List<ShaderNodeDataBase>();
+
+        /// <summary>
+        /// 選択されているリンクのリスト
+        /// </summary>
+        List<LinkData> m_shaderLinks = new List<LinkData>();
 #endregion
 
 #region properties
+        /// <summary>
+        /// 選択中のシェーダノードのリスト
+        /// </summary>
         public ReadOnlyCollection<ShaderNodeDataBase> SelectedNodeList
         {
             get { return m_shaderNodes.AsReadOnly();  }
+        }
+
+        /// <summary>
+        /// 選択中のシェーダリンクのリスト
+        /// </summary>
+        public ReadOnlyCollection<LinkData> SelectedLinkList
+        {
+            get { return m_shaderLinks.AsReadOnly();  }
         }
 #endregion
 
@@ -46,19 +62,34 @@ namespace metashader.ShaderGraphData
             }
 
             return ret;
-        }
+        }        
 
         /// <summary>
-        /// 対象オブジェクトを選択
+        /// 対象オブジェクトの単一選択        
         /// </summary>
         /// <param name="node"></param>
         public void Select( ShaderNodeDataBase node )
-        {
+        {            
             // 他の選択を解除
             Inner_Clear();
 
             // 選択追加
             m_shaderNodes.Add(node);            
+
+            //@@ 必要ならイベント処理
+        }
+        
+        /// <summary>
+        /// 対象オブジェクトの単一選択
+        /// </summary>
+        /// <param name="link"></param>
+        public void Select( LinkData link )
+        {
+            // 他の選択を解除
+            Inner_Clear();
+
+            // 選択追加
+            m_shaderLinks.Add(link);
 
             //@@ 必要ならイベント処理
         }
@@ -80,7 +111,11 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public void Inner_Clear()
         {
+            // ノードの選択解除
             m_shaderNodes.Clear();
+
+            // リンクの選択解除
+            m_shaderLinks.Clear();
         }
 #endregion
     }

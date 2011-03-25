@@ -84,6 +84,7 @@
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\GraphDataCommand.cs" />
     <Compile Include="Console\CommandInterpreter.cs" />
+    <Compile Include="Console\ConsoleCommand.cs" />
     <Compile Include="Console\ConsoleWindow.xaml.cs">
       <DependentUpon>ConsoleWindow.xaml</DependentUpon>
     </Compile>
