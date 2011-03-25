@@ -17,6 +17,7 @@ namespace metashader.Command
         Delete,         // 選択中要素の削除
         Undo,           // 元に戻すコマンド
         Redo,           // やり直しコマンド
+        Unselect,       // 選択解除
 
         Max,            // コマンドの数
     };
@@ -125,6 +126,7 @@ namespace metashader.Command
             m_command[(int)CommandType.Delete] = new DeleteCommand();
             m_command[(int)CommandType.Undo] = new UndoCommand();
             m_command[(int)CommandType.Redo] = new RedoCommand();
+            m_command[(int)CommandType.Unselect] = new UnselectCommand();
         }
 #endregion
 

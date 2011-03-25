@@ -132,7 +132,7 @@ namespace metashader.Command
            }
        }         
 #endregion       
-    }
+    }    
 
     /// <summary>
     /// 削除コマンド
@@ -160,9 +160,16 @@ namespace metashader.Command
             // undo/redo用バッファ
             UndoRedoBuffer undoredo = new UndoRedoBuffer();            
 
+            /// リンクの削除 ///
+            ReadOnlyCollection<ShaderGraphData.LinkData> links = App.CurrentApp.SelectManager.SelectedLinkList;
+            foreach( LinkData link in links )
+            {
+                graphData.DelLink(link._outNodeHash, link._outJointIndex, link._inNodeHash, link._inJointIndex, undoredo);
+            }
+
             /// ノードの削除 ///
-            ReadOnlyCollection<ShaderGraphData.ShaderNodeDataBase> list = App.CurrentApp.SelectManager.SelectedNodeList;
-            foreach( ShaderNodeDataBase node in list )
+            ReadOnlyCollection<ShaderGraphData.ShaderNodeDataBase> nodes = App.CurrentApp.SelectManager.SelectedNodeList;
+            foreach( ShaderNodeDataBase node in nodes )
             {
                 graphData.DelNode( node.GetHashCode(), undoredo );
             }           
@@ -233,5 +240,33 @@ namespace metashader.Command
             UndoRedoManager.Instance.Redo();            
         }
 #endregion
+    }
+
+    /// <summary>
+    /// 選択解除コマンド
+    /// （全ての選択を解除する）
+    /// </summary>
+    public class UnselectCommand : CommandBase
+    {
+#region constructor
+        public UnselectCommand()
+            : base ("選択の解除")
+        {            
+        }        
+#endregion
+
+#region override methods
+        public override bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public override void Execute(object parameter)
+        {
+            // 選択の解除
+            App.CurrentApp.SelectManager.Clear();                    
+        }
+#endregion
+
     }
 }
