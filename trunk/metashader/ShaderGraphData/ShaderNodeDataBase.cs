@@ -26,6 +26,11 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public static class ShaderNodeTypeExt
     {
+        /// <summary>
+        /// 文字列化
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public static string ToStringExt( this ShaderNodeType e )
         {
             switch( e )
@@ -36,216 +41,7 @@ namespace metashader.ShaderGraphData
             }
         }
     }
-#endregion 
-    
-    /// <summary>
-    /// パラメータの型
-    /// </summary>
-    public enum ParameterType
-    {
-        INDEFINITE, // 不定(関数の戻り値用)
-
-        FLOAT,  // スカラー
-        FLOAT2, // 2次元ベクトル
-        FLOAT3, // 3次元ベクトル
-        FLOAT4, // 4次元ベクトル
-    }
-
-    #region member classes
-    /// <summary>
-    /// 単一のリンクデータを表すデータ構造
-    /// </summary>
-    [Serializable]
-    public struct LinkData
-    {
-        public int _outNodeHash;
-        public int _outJointIndex;
-        public int _inNodeHash;
-        public int _inJointIndex;
-
-        public LinkData(int outHash, int outIndex, int inHash, int inIndex)
-        {
-            _outNodeHash = outHash;
-            _outJointIndex = outIndex;
-            _inNodeHash = inHash;
-            _inJointIndex = inIndex;
-        }
-    };
-    #endregion
-  
-    /// <summary>
-    /// リンクの接続点のデータ構造
-    /// </summary>    
-    public class JointData
-    {        
-        /// <summary>
-        /// ジョイントの種類
-        /// </summary>
-        public enum Side
-        {
-            In, // 入力
-            Out,// 出力
-        }
-
-        #region variables
-        /// <summary>
-        /// このジョイントを保持しているシェーダノード
-        /// </summary>
-        ShaderNodeDataBase m_parentNode;
-
-        /// <summary>
-        /// 接続先/元のジョイントのリスト
-        /// </summary>
-        LinkedList<JointData> m_jointList = new LinkedList<JointData>();
-
-        /// <summary>
-        /// シェーダノード内のこのジョイントのインデックス
-        /// </summary>
-        int m_jointIndex;
-
-        /// <summary>
-        /// ジョイントの種類（入力か出力）
-        /// </summary>
-        Side m_side;
-        #endregion
-
-        #region constructors
-        public JointData(ShaderNodeDataBase parentNode, int jointIndex, Side side)
-        {
-            m_parentNode = parentNode;
-            m_jointIndex = jointIndex;
-            m_side = side;
-        }
-        #endregion
-
-        #region properties
-        public ShaderNodeDataBase ParentNode
-        {
-            get { return m_parentNode; }
-        }
-
-        /// <summary>
-        /// シェーダノード内のジョイントのインデックス
-        /// </summary>
-        public int JointIndex
-        {
-            get { return m_jointIndex; }
-        }
-
-        /// <summary>
-        /// ジョイントの種類
-        /// </summary>
-        public Side SideType
-        {
-            get { return m_side; }
-        }        
-
-        /// <summary>
-        /// 接続先のジョイントのリストを取得
-        /// </summary>
-        public LinkedList<JointData> JointList
-        {
-            get { return m_jointList; }
-        }
-
-        /// <summary>
-        /// 変数名を取得する
-        /// </summary>
-        public string VariableName
-        {
-            get 
-            {
-                // @@@ 全体型に対して要修正
-
-                // 入力に対しては、接続されている出力ジョイントの変数名を取得する
-                if( SideType == Side.In )
-                {
-                    // 入力は2つ以上の出力ジョイントと接続できないため、接続先のジョイントが一意に求まる
-                    return m_jointList.First.Value.VariableName;
-                }
-                else if( SideType == Side.Out )
-                {
-                    // 出力に関しては、自身のノード名＋サフィックス
-                    string[] suffixTable =
-                    {
-                        ".x",
-                        ".y",
-                        ".z",
-                        ".w",
-                    };
-                    return ParentNode.Name + suffixTable[m_jointIndex];
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }                
-            }
-        }
-        #endregion
-
-#region public method
-        /// <summary>
-        /// 接続可能か
-        /// </summary>
-        public bool CanNewConnect()
-        {
-            // 入力タイプのジョイントは、1つだけリンク可能           
-            return !(SideType == Side.In && m_jointList.Count > 0);
-        }
-
-        /// <summary>
-        /// ジョイントに接続する
-        /// </summary>        
-        /// <param name="joint">接続先ジョイント</param>
-        public void Connect(JointData joint)
-        {
-            // 自身と接続先の種類が出力と入力で異なる事を確認
-            if( this.SideType == joint.SideType )
-            {
-                // 同じだったら例外
-                throw new ArgumentException("ジョイントのSideTypeが同じです", "joint");
-            }
-
-            // 接続先ジョイントを追加
-            m_jointList.AddLast(joint);
-        }
-
-        /// <summary>
-        /// 接続解除が可能か        
-        /// </summary>
-        /// <returns></returns>
-        public bool CanDisconnect(JointData joint)
-        {
-            // 解除対象と同じジョイントが見つからなければ解除できない
-            return (m_jointList.Find(joint) != null);
-        }
-
-        /// <summary>
-        /// 対象のジョイントへの接続を解除する
-        /// </summary>
-        /// <param name="joint"></param>
-        /// <returns></returns>
-        public bool Disconnect(JointData joint)
-        {
-            // 接続を解除可能か
-            if( CanDisconnect(joint) == false )
-            {
-                // 解除不可能
-                return false;
-            }
-
-            /// 接続解除 ///
-            // リストから要素を削除
-            m_jointList.Remove(joint);
-
-            return true;
-        }        
-#endregion
-
-#region private method
-        // 内部用対象ジョイントの検索関数。パラメータは、リンク先のハッシュコードと、ジョイントインデックス→リンク先のジョイントを引っ張ってきて参照を直接比較でも行ける気がする
-#endregion
-    }
+#endregion    
 
     /// <summary>
     /// シェーダグラフを構成するノードのデータ構造の基本クラス  
@@ -297,13 +93,11 @@ namespace metashader.ShaderGraphData
         /// コンストラクタ
         /// </summary>
         /// <param name="name"></param>
-        public ShaderNodeDataBase( ShaderNodeType type, string name, Point pos, int inJointNum,  int outJointNum)
+        public ShaderNodeDataBase( ShaderNodeType type, string name, Point pos)
         {
             m_type = type;
             m_name = name;
-            m_pos = pos;
-            m_inputJointNum = inJointNum;
-            m_outputJointNum = outJointNum;
+            m_pos = pos;           
 
             // ジョイントの初期化
             InitializeJoints();
@@ -395,14 +189,14 @@ namespace metashader.ShaderGraphData
         /// 指定した入力ジョイントのパラメータの型を取得する
         /// </summary>
         /// <returns></returns>
-        public abstract ParameterType GetInputJointParameterType(int index);
+        public abstract VariableType GetInputJointParameterType(int index);
 
         /// <summary>
         /// 指定した出力ジョイントのパラメータの型を取得する
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public abstract ParameterType GetOuputJointParameterType(int index);
+        public abstract VariableType GetOuputJointParameterType(int index);
 
         /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
@@ -431,23 +225,8 @@ namespace metashader.ShaderGraphData
         }
 #endregion
 
-#region private methods
-        private void InitializeJoints()
-        {
-            // ジョイントの初期化
-            // 入力           
-            m_inputJoints = new JointData[m_inputJointNum];
-            for (int i = 0; i < m_inputJointNum; ++i)
-            {
-                m_inputJoints[i] = new JointData(this, i, JointData.Side.In);
-            }
-            // 出力            
-            m_outputJoints = new JointData[m_outputJointNum];
-            for (int i = 0; i < m_outputJointNum; ++i)
-            {
-                m_outputJoints[i] = new JointData(this, i, JointData.Side.Out);
-            }
-        }
+#region protected methods
+        protected abstract void InitializeJoints();        
 #endregion
     }
 }
