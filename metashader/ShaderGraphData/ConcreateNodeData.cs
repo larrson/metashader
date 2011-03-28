@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.IO;
 
 namespace metashader.ShaderGraphData
 {
@@ -14,6 +15,10 @@ namespace metashader.ShaderGraphData
     [Serializable]
     class Uniform_Vector4Node : ShaderNodeDataBase
     {
+#region variables
+        float[] values = new float[4];
+#endregion
+
 #region constructors
         public Uniform_Vector4Node(string name, Point pos)
             : base( ShaderNodeType.Uniform_Vector4, name, pos, 
@@ -21,8 +26,43 @@ namespace metashader.ShaderGraphData
             4    // 出力ジョイント（x,y,z,w）
         )
         {
-
+            values[0] = 1.0f;
+            values[1] = 0.0f;
+            values[2] = 0.0f;
+            values[3] = 1.0f;
         }
+#endregion
+
+#region public methods
+        /// <summary>
+        /// 指定した入力ジョイントのパラメータ型を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ParameterType GetInputJointParameterType(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 指定した出力ジョイントのパラメータ型を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ParameterType GetOuputJointParameterType(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ストリームへシェーダのuniform宣言を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WritingShaderUniformCode(StringWriter stream)         
+        {
+            // この4Dベクトルのuniformを宣言する
+            stream.WriteLine("uniform float4 \t{0};", Name);
+        }        
 #endregion
     }
 
@@ -55,6 +95,41 @@ namespace metashader.ShaderGraphData
         {
 
         }
+#endregion
+
+#region public methods
+        /// <summary>
+        /// 指定した入力ジョイントのパラメータ型を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ParameterType GetInputJointParameterType(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 指定した出力ジョイントのパラメータ型を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ParameterType GetOuputJointParameterType(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ストリームへシェーダの本文を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WritingShaderMainCode(StringWriter stream)
+        {
+            stream.WriteLine("\treturn float4({0},{1},{2},{3});"
+                , GetInputJoint(0).VariableName
+                , GetInputJoint(1).VariableName
+                , GetInputJoint(2).VariableName
+                , GetInputJoint(3).VariableName);
+        } 
 #endregion
     }
 

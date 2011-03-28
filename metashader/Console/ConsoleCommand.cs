@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace metashader.Console
 {          
@@ -241,6 +242,70 @@ namespace metashader.Console
             string path = options[1];
             BinaryFormatter bf = new BinaryFormatter();
             App.CurrentApp.Load(path, bf);
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのシェーダの書き出しコマンド
+    /// </summary>
+    public class ExportShaderCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+                return;
+
+            string path = options[1];
+
+            App.CurrentApp.GraphData.ExportShaderCode(path);
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのコマンドが書かれたファイルを読み込み実行する
+    /// </summary>
+    public class ImportConsoleCommand : IConsoleCommand
+    {      
+#region variables
+        /// <summary>
+        /// コマンド実行用インタプリタ
+        /// </summary>
+        CommandInterpreter m_interpreter;
+#endregion
+
+#region constructors
+        public ImportConsoleCommand(CommandInterpreter interpreter) : base()
+        {
+            m_interpreter = interpreter;
+        }
+#endregion
+
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+                return;
+
+            string path = options[1];
+
+            using ( StreamReader reader = new StreamReader(path) )
+            {
+                while( reader.EndOfStream == false )
+                {
+                    // 1行読み込み
+                    string line = reader.ReadLine();
+
+                    // コマンドを実行
+                    m_interpreter.Interpret(line);
+                }                
+            }
         }
     }
 
