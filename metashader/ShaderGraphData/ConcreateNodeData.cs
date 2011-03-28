@@ -21,10 +21,7 @@ namespace metashader.ShaderGraphData
 
 #region constructors
         public Uniform_Vector4Node(string name, Point pos)
-            : base( ShaderNodeType.Uniform_Vector4, name, pos, 
-            0,   // 入力ジョイント（このノードが入力なので0）
-            4    // 出力ジョイント（x,y,z,w）
-        )
+            : base( ShaderNodeType.Uniform_Vector4, name, pos)
         {
             values[0] = 1.0f;
             values[1] = 0.0f;
@@ -39,7 +36,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public override ParameterType GetInputJointParameterType(int index)
+        public override VariableType GetInputJointParameterType(int index)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +46,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public override ParameterType GetOuputJointParameterType(int index)
+        public override VariableType GetOuputJointParameterType(int index)
         {
             throw new NotImplementedException();
         }
@@ -63,6 +60,27 @@ namespace metashader.ShaderGraphData
             // この4Dベクトルのuniformを宣言する
             stream.WriteLine("uniform float4 \t{0};", Name);
         }        
+#endregion
+
+#region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力         
+            m_inputJointNum = 0;
+            m_inputJoints = new JointData[m_inputJointNum];            
+            // 出力            
+            m_outputJointNum = 5;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT4, JointData.SuffixType.None);
+            m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
+            m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
+            m_outputJoints[3] = new JointData(this, 3, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Z);
+            m_outputJoints[4] = new JointData(this, 4, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.W);            
+        }
 #endregion
     }
 
@@ -88,10 +106,7 @@ namespace metashader.ShaderGraphData
         /// <param name="name"></param>
         /// <param name="pos"></param>
         public Output_ColorNode(string name, Point pos)
-            : base( ShaderNodeType.Output_Color, name, pos, 
-            4, // 入力ジョイント（r,g,b,a）
-            0  // 出力ジョイント (このノードがピクセルシェーダの出力なので0)
-            )
+            : base( ShaderNodeType.Output_Color, name, pos)
         {
 
         }
@@ -103,7 +118,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public override ParameterType GetInputJointParameterType(int index)
+        public override VariableType GetInputJointParameterType(int index)
         {
             throw new NotImplementedException();
         }
@@ -113,7 +128,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public override ParameterType GetOuputJointParameterType(int index)
+        public override VariableType GetOuputJointParameterType(int index)
         {
             throw new NotImplementedException();
         }
@@ -124,12 +139,43 @@ namespace metashader.ShaderGraphData
         /// <param name="stream"></param>
         public override void WritingShaderMainCode(StringWriter stream)
         {
+#if false // 4入力バージョン
             stream.WriteLine("\treturn float4({0},{1},{2},{3});"
                 , GetInputJoint(0).VariableName
                 , GetInputJoint(1).VariableName
                 , GetInputJoint(2).VariableName
                 , GetInputJoint(3).VariableName);
+#else
+            stream.WriteLine("\treturn {0};", GetInputJoint(0).VariableName);
+#endif 
         } 
+#endregion
+
+#region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力   
+#if false // 4入力バージョン
+            m_inputJointNum = 4;
+            m_inputJoints = new JointData[m_inputJointNum];           
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT, JointData.SuffixType.X);
+            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.FLOAT, JointData.SuffixType.Y);
+            m_inputJoints[2] = new JointData(this, 2, JointData.Side.In, VariableType.FLOAT, JointData.SuffixType.Z);
+            m_inputJoints[3] = new JointData(this, 3, JointData.Side.In, VariableType.FLOAT, JointData.SuffixType.W);
+#else
+            m_inputJointNum = 1;
+            m_inputJoints = new JointData[m_inputJointNum];
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT4, JointData.SuffixType.None);            
+#endif 
+
+            // 出力            
+            m_outputJointNum = 0;
+            m_outputJoints = new JointData[m_outputJointNum];            
+        }
 #endregion
     }
 

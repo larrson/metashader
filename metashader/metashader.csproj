@@ -102,6 +102,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ShaderGraphData\ConcreateNodeData.cs" />
+    <Compile Include="ShaderGraphData\JointData.cs" />
     <Compile Include="ShaderGraphData\SelectManager.cs" />
     <Compile Include="ShaderGraphData\ShaderCodeGenerator.cs" />
     <Compile Include="ShaderGraphData\ShaderGraphData.cs" />
