@@ -50,6 +50,12 @@ namespace metashader.Console
             m_commands.Add("Redo", new RedoCommand());
             m_commands.Add("Load", new LoadCommand());
             m_commands.Add("Save", new SaveCommand());
+            m_commands.Add("ExportShader", new ExportShaderCommand());
+
+            // コンソール自体の操作
+            m_commands.Add("ImportConsole", new ImportConsoleCommand( this ));
+
+            // デバッグ用
 #if DEBUG
             m_commands.Add("PrintLink", new PrintLinkCommand());
 #endif // DEBUG

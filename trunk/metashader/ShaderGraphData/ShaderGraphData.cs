@@ -6,6 +6,7 @@ using System.Windows;
 using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.ObjectModel;
 
 namespace metashader.ShaderGraphData
 {
@@ -25,6 +26,20 @@ namespace metashader.ShaderGraphData
         /// シェーダノード用ファクトリ
         /// </summary>        
         ShaderNodeFactory m_shaderNodeFactory = new ShaderNodeFactory();       
+#endregion
+
+#region properties
+        /// <summary>
+        /// 格納されているノードのリストを取得する
+        /// </summary>
+        private ReadOnlyCollection<ShaderNodeDataBase> NodeList
+        {
+            get 
+            {
+                List<ShaderNodeDataBase> list = new List<ShaderNodeDataBase>(m_nodeList.Values);
+                return list.AsReadOnly();
+            }
+        }
 #endregion
 
 #region public methods                  
@@ -340,6 +355,22 @@ namespace metashader.ShaderGraphData
             {
                 undoredo.Add(new UndoRedo_DelLink(this, outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex));
             }
+
+            return true;
+        }
+        
+        /// <summary>
+        /// シェーダコードをファイルへ書きだす
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool ExportShaderCode(string path)
+        {
+            //@@@ 書き出し可能か判定
+
+            // ジェネレータに処理を移譲
+            ShaderCodeGenerator generator = new ShaderCodeGenerator(NodeList);
+            generator.Generate(path);
 
             return true;
         }

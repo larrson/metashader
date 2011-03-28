@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using System.IO;
 
 namespace metashader.ShaderGraphData
 {
@@ -35,8 +36,21 @@ namespace metashader.ShaderGraphData
             }
         }
     }
-#endregion   
-   
+#endregion 
+    
+    /// <summary>
+    /// パラメータの型
+    /// </summary>
+    public enum ParameterType
+    {
+        INDEFINITE, // 不定(関数の戻り値用)
+
+        FLOAT,  // スカラー
+        FLOAT2, // 2次元ベクトル
+        FLOAT3, // 3次元ベクトル
+        FLOAT4, // 4次元ベクトル
+    }
+
     #region member classes
     /// <summary>
     /// 単一のリンクデータを表すデータ構造
@@ -63,7 +77,7 @@ namespace metashader.ShaderGraphData
     /// リンクの接続点のデータ構造
     /// </summary>    
     public class JointData
-    {
+    {        
         /// <summary>
         /// ジョイントの種類
         /// </summary>
@@ -133,6 +147,40 @@ namespace metashader.ShaderGraphData
         {
             get { return m_jointList; }
         }
+
+        /// <summary>
+        /// 変数名を取得する
+        /// </summary>
+        public string VariableName
+        {
+            get 
+            {
+                // @@@ 全体型に対して要修正
+
+                // 入力に対しては、接続されている出力ジョイントの変数名を取得する
+                if( SideType == Side.In )
+                {
+                    // 入力は2つ以上の出力ジョイントと接続できないため、接続先のジョイントが一意に求まる
+                    return m_jointList.First.Value.VariableName;
+                }
+                else if( SideType == Side.Out )
+                {
+                    // 出力に関しては、自身のノード名＋サフィックス
+                    string[] suffixTable =
+                    {
+                        ".x",
+                        ".y",
+                        ".z",
+                        ".w",
+                    };
+                    return ParentNode.Name + suffixTable[m_jointIndex];
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }                
+            }
+        }
         #endregion
 
 #region public method
@@ -191,7 +239,7 @@ namespace metashader.ShaderGraphData
             m_jointList.Remove(joint);
 
             return true;
-        }
+        }        
 #endregion
 
 #region private method
@@ -203,7 +251,7 @@ namespace metashader.ShaderGraphData
     /// シェーダグラフを構成するノードのデータ構造の基本クラス  
     /// </summary>
     [Serializable]
-    public class ShaderNodeDataBase : IDeserializationCallback
+    public abstract class ShaderNodeDataBase : IDeserializationCallback
     {
 #region variables
         /// <summary>
@@ -341,7 +389,38 @@ namespace metashader.ShaderGraphData
         public JointData GetOutputJoint( int index )
         {
             return m_outputJoints[index];
-        }        
+        }    
+    
+        /// <summary>
+        /// 指定した入力ジョイントのパラメータの型を取得する
+        /// </summary>
+        /// <returns></returns>
+        public abstract ParameterType GetInputJointParameterType(int index);
+
+        /// <summary>
+        /// 指定した出力ジョイントのパラメータの型を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public abstract ParameterType GetOuputJointParameterType(int index);
+
+        /// <summary>
+        /// ストリームへシェーダのuniform宣言を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public virtual void WritingShaderUniformCode(StringWriter stream){}
+
+        /// <summary>
+        /// ストリームへシェーダの入力属性を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public virtual void WritingShaderInputCode(StringWriter stream){}
+
+        /// <summary>
+        /// ストリームへシェーダの本文を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public virtual void WritingShaderMainCode(StringWriter stream){}        
 #endregion
 
 #region override methods
