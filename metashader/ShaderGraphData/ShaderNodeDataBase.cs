@@ -243,7 +243,17 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="localCount">ローカル変数のカウンタ</param>
-        public virtual void WritingShaderMainCode(StringWriter stream){}        
+        public virtual void WritingShaderMainCode(StringWriter stream){}
+
+#if DEBUG
+        /// <summary>
+        /// デバッグ用のコンソールへの情報表示
+        /// </summary>
+        public virtual void DebugPrint()
+        {
+            System.Console.WriteLine("<Node {0}({1})>", Name, GetHashCode());
+        }
+#endif // DEBUG
 #endregion
 
 #region override methods

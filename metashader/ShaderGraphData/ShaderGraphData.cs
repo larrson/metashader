@@ -189,6 +189,37 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// 指定したノードの指定したプロパティへ新しい値を設定する
+        /// </summary>
+        /// <typeparam name="ParameterType">設定する値の型</typeparam>
+        /// <param name="node">対象ノード</param>
+        /// <param name="propertyName">対象ノードがもつプロパティ</param>
+        /// <param name="newValue">新しい値</param>
+        /// <param name="undoredo">Undo/Redo用コマンドバッファ</param>
+        /// <returns>新しい値の設定が成功したか</returns>
+        public bool ChangeNodeProperty<ParameterType>(ShaderNodeDataBase node, string propertyName, ParameterType newValue, UndoRedoBuffer undoredo)
+        {
+            // パラメータ設定用のIUndoRedoクラスのインタンス
+            ParameterUndoRedo<ParameterType> parameterUndoRedo = new ParameterUndoRedo<ParameterType>(node, propertyName, newValue);
+
+            // 値の設定を試みる
+            if( parameterUndoRedo.Do() == false )
+            {
+                // 失敗
+                return false;
+            }
+            
+            // 成功
+            // undoredoコマンドバッファへ積む
+            if( undoredo != null )
+            {
+                undoredo.Add(parameterUndoRedo);
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// 対象のリンクを追加可能か
         /// </summary>       
         /// <returns></returns>
