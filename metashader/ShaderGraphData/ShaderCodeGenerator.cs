@@ -240,7 +240,7 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         private StringBuilder GetShaderMainString()
         {
-            StringWriter stream = new StringWriter();
+            StringWriter stream = new StringWriter();            
             foreach (ShaderNodeDataBase node in m_validNodeQue)
             {
                 node.WritingShaderMainCode(stream);

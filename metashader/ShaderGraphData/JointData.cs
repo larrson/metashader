@@ -12,12 +12,35 @@ namespace metashader.ShaderGraphData
     public enum VariableType
     {
         INDEFINITE, // 不定(関数の戻り値用)
-        DEPENDENT,  // 依存型（リンクに依存する）
+        DEPENDENT,  // 依存型（ノードに依存する）
 
         FLOAT,  // スカラー
         FLOAT2, // 2次元ベクトル
         FLOAT3, // 3次元ベクトル
         FLOAT4, // 4次元ベクトル
+    }
+
+    /// <summary>
+    /// VariableTypeを拡張するクラス
+    /// </summary>
+    public static class VariableTypeExt
+    {
+        /// <summary>
+        /// 文字列化
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static string ToStringExt(this VariableType e)
+        {
+            switch (e)
+            {
+                case VariableType.FLOAT: return "float";
+                case VariableType.FLOAT2: return "float2";
+                case VariableType.FLOAT3: return "float3";
+                case VariableType.FLOAT4: return "float4";
+                default: throw new ArgumentOutOfRangeException("e");
+            }
+        }
     }
     #endregion
    
@@ -138,6 +161,14 @@ namespace metashader.ShaderGraphData
         public LinkedList<JointData> JointList
         {
             get { return m_jointList; }
+        }
+
+        /// <summary>
+        /// 初期の変数型
+        /// </summary>
+        public VariableType DefaultVariableType
+        {
+            get { return m_defaultVariableType; }
         }
 
         /// <summary>
