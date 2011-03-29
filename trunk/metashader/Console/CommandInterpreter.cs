@@ -38,6 +38,7 @@ namespace metashader.Console
             // ノード操作
             m_commands.Add("AddNode", new AddNodeCommand() );
             m_commands.Add("SelectNode", new SelectNodeCommand());
+            m_commands.Add("ChangeVector4", new ChangeVector4Command());
 
             // リンク操作
             m_commands.Add("AddLink", new AddLinkCommand());
@@ -57,6 +58,7 @@ namespace metashader.Console
 
             // デバッグ用
 #if DEBUG
+            m_commands.Add("PrintNode", new PrintNodeCommand());
             m_commands.Add("PrintLink", new PrintLinkCommand());
 #endif // DEBUG
         }

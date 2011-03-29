@@ -16,17 +16,32 @@ namespace metashader.ShaderGraphData
     class Uniform_Vector4Node : ShaderNodeDataBase
     {
 #region variables
-        float[] values = new float[4];
+        float[] m_values = new float[4];
 #endregion
 
 #region constructors
         public Uniform_Vector4Node(string name, Point pos)
             : base( ShaderNodeType.Uniform_Vector4, name, pos)
         {
-            values[0] = 1.0f;
-            values[1] = 0.0f;
-            values[2] = 0.0f;
-            values[3] = 1.0f;
+            m_values[0] = 1.0f;
+            m_values[1] = 0.0f;
+            m_values[2] = 0.0f;
+            m_values[3] = 1.0f;
+        }
+#endregion
+
+#region properties
+        public float[] Values
+        {
+            get { return m_values;  }
+            set 
+            { 
+                if( value.Length != 4 )
+                {
+                    throw new ArgumentException("Valueへ設定する配列のサイズは4で無ければなりません");
+                }
+                m_values = value; 
+            }
         }
 #endregion
 
@@ -39,7 +54,21 @@ namespace metashader.ShaderGraphData
         {
             // この4Dベクトルのuniformを宣言する
             stream.WriteLine("uniform float4 \t{0};", Name);
-        }        
+        }
+
+#if DEBUG   
+        /// <summary>
+        /// デバッグ用のコンソールへの情報表示
+        /// </summary>
+        public override void DebugPrint()
+        {
+            // 基底クラスの同メソッドを呼び出す
+            base.DebugPrint();
+
+            System.Console.WriteLine("\tvalues:{0}, {1}, {2}, {3}", m_values[0].ToString(), m_values[1].ToString(), m_values[2].ToString(), m_values[3].ToString());
+        }
+#endif // DEBUG
+
 #endregion
 
 #region protected methods

@@ -74,7 +74,55 @@ namespace metashader.Console
             // 選択処理
             App.CurrentApp.SelectManager.Select(node);
         }
-    }   
+    }  
+ 
+    /// <summary>
+    /// コンソールベースのシェーダノードのプロパティ変更コマンド(4Dベクトル版)
+    /// </summary>
+    public class ChangeVector4Command : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if( options.Length < 7)
+            {
+                return;
+            }
+
+            // ノード名前
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);
+
+            // プロパティ名を取得
+            string propertyName = options[2];
+
+            // ベクトルの4成分を取得
+            float[] values = new float[4];
+            values[0] = float.Parse( options[3] );
+            values[1] = float.Parse( options[4] );
+            values[2] = float.Parse( options[5] );
+            values[3] = float.Parse( options[6] );
+
+            // Undo/Redoバッファ
+            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+            
+            // 新しいプロパティを設定
+            if( node != null )            
+            {
+                App.CurrentApp.GraphData.ChangeNodeProperty<float[]>( node, propertyName, values, undoredo );
+
+                if( undoredo.IsValid )
+                {
+                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }            
+        }
+    }
 
     /// <summary>
     /// コンソールベースのリンク追加コマンド
@@ -310,6 +358,36 @@ namespace metashader.Console
     }
 
 #if DEBUG
+    /// <summary>
+    /// コンソールベースのノード情報出力コマンド
+    /// </summary>
+    public class PrintNodeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if( options.Length < 2 )
+            {
+                return;
+            }
+
+            // 名前
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);
+
+            // 表示
+            if( node != null )
+            {
+                node.DebugPrint();
+            }
+        }
+    }
+
     /// <summary>
     /// コンソールベースのリンク出力コマンド
     /// </summary>
