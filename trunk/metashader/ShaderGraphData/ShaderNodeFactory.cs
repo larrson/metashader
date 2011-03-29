@@ -58,11 +58,14 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Uniform_Vector4:
                     ret = new Uniform_Vector4Node(name, pos);
                     break;
+                case ShaderNodeType.Operator_Add:
+                    ret = new Operator_AddNode(name, pos);
+                    break;
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);
-                    break;
+                    break;                
                 default:
-                    throw new ArgumentException("適合するタイプのコンストラクタが有りません", "type");
+                    throw new ArgumentException("適合するタイプのコンストラクタが有りません", type.ToStringExt());
             }
             return ret;
         }

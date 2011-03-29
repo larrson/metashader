@@ -17,7 +17,9 @@ namespace metashader.ShaderGraphData
     {
         Uniform_Vector4, // 4Dベクトル
 
-        Output_Color, // 出力色
+        Operator_Add,   // 加算
+
+        Output_Color,   // 出力色
         Max, // 最大数
     };
 
@@ -36,7 +38,8 @@ namespace metashader.ShaderGraphData
             switch( e )
             {
                 case ShaderNodeType.Uniform_Vector4: return "Uniform_Vector4";
-                case ShaderNodeType.Output_Color: return "Output_Color";
+                case ShaderNodeType.Operator_Add: return "Operator_Add";
+                case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
@@ -183,20 +186,45 @@ namespace metashader.ShaderGraphData
         public JointData GetOutputJoint( int index )
         {
             return m_outputJoints[index];
-        }    
-    
-        /// <summary>
-        /// 指定した入力ジョイントのパラメータの型を取得する
-        /// </summary>
-        /// <returns></returns>
-        public abstract VariableType GetInputJointParameterType(int index);
+        }        
 
         /// <summary>
-        /// 指定した出力ジョイントのパラメータの型を取得する
+        /// 入力ジョイントに対応する変数型を取得
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public abstract VariableType GetOuputJointParameterType(int index);
+        public virtual VariableType GetInputJointVariableType( int index )
+        {
+            // 初期に設定した変数型をそのまま返す
+         
+            if (m_inputJoints[index].DefaultVariableType == VariableType.DEPENDENT)
+            {
+                // Dependentの場合、サブクラス内で独自に変数型を求めるはずなので、
+                // この親クラスの呼び出しは不正
+                throw new Exception("サブクラスのGetInputJointVariableTypeが未実装です");
+            }
+
+            return m_inputJoints[index].DefaultVariableType;
+        }
+
+        /// <summary>
+        /// 出力ジョイントに対応する変数型を取得
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual VariableType GetOutputJointVariableType( int index )
+        {
+            // 初期に設定した変数型をそのまま返す
+
+            if (m_outputJoints[index].DefaultVariableType == VariableType.DEPENDENT)
+            {
+                // Dependentの場合、サブクラス内で独自に変数型を求めるはずなので、
+                // この親クラスの呼び出しは不正
+                throw new Exception("サブクラスのGetOutputJointVariableTypeが未実装です");
+            }
+
+            return m_outputJoints[index].DefaultVariableType;
+        }
 
         /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
@@ -214,6 +242,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="localCount">ローカル変数のカウンタ</param>
         public virtual void WritingShaderMainCode(StringWriter stream){}        
 #endregion
 

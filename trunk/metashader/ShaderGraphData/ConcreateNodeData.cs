@@ -30,27 +30,7 @@ namespace metashader.ShaderGraphData
         }
 #endregion
 
-#region public methods
-        /// <summary>
-        /// 指定した入力ジョイントのパラメータ型を取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetInputJointParameterType(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 指定した出力ジョイントのパラメータ型を取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetOuputJointParameterType(int index)
-        {
-            throw new NotImplementedException();
-        }
-
+#region public methods        
         /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
@@ -90,6 +70,92 @@ namespace metashader.ShaderGraphData
 #endregion
 
 #region operator nodes
+    /// <summary>
+    /// 加算ノード
+    /// </summary>
+    [Serializable]
+    class Operator_AddNode : ShaderNodeDataBase
+    {
+#region constructors
+        public Operator_AddNode(string name, Point pos)
+            : base(ShaderNodeType.Operator_Add, name, pos)
+        {
+
+        }
+#endregion
+
+#region public methods
+        /// <summary>
+        /// 入力ジョイントに対応する変数型を取得
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override VariableType GetInputJointVariableType(int index)
+        {
+            // 接続元ノードの出力ジョイントに依存する
+            JointData outputJoint = GetInputJoint( index ).JointList.First.Value;
+            ShaderNodeDataBase node = outputJoint.ParentNode;
+
+            return node.GetOutputJointVariableType(outputJoint.JointIndex);
+        }
+
+        /// <summary>
+        /// 出力ジョイントに対応する変数型を取得
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override VariableType GetOutputJointVariableType(int index)
+        {
+            // 自身の入力ジョイントに依存する            
+            // 「加算」なので、入力ジョイントの型＝出力ジョイントの型
+            // インデックスはどれでも良い
+
+            return GetInputJointVariableType(0);
+        }
+
+        /// <summary>
+        /// ストリームへシェーダの本文を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="localCount">ローカル変数のカウンタ</param>
+        public override void WritingShaderMainCode(StringWriter stream)
+        {
+            // 出力型
+            VariableType outputType = GetOutputJointVariableType( 0 );         
+
+            // 入力変数1の名前
+            string inputName1 = GetInputJoint(0).VariableName;
+            // 入力変数2の名前
+            string inputName2 = GetInputJoint(1).VariableName;
+
+            stream.WriteLine("\t{0} {1} = {2} + {3};", 
+                outputType.ToStringExt()
+                , Name
+                , inputName1
+                , inputName2
+                );
+        }        
+#endregion
+
+#region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力         
+            m_inputJointNum = 2;
+            m_inputJoints = new JointData[m_inputJointNum];
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            // 出力            
+            m_outputJointNum = 1;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.DEPENDENT, JointData.SuffixType.None);            
+        }
+#endregion
+    }
 #endregion
 
 #region output nodes
@@ -112,27 +178,7 @@ namespace metashader.ShaderGraphData
         }
 #endregion
 
-#region public methods
-        /// <summary>
-        /// 指定した入力ジョイントのパラメータ型を取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetInputJointParameterType(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 指定した出力ジョイントのパラメータ型を取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetOuputJointParameterType(int index)
-        {
-            throw new NotImplementedException();
-        }
-
+#region public methods       
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
