@@ -32,9 +32,14 @@ namespace metashader
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // サブウィンドウ作成
+            //@@@ サブウィンドウ作成
+            Previewer.PreviewWindow previewerWindow = new Previewer.PreviewWindow();
+            previewerWindow.Owner = this;
+            previewerWindow.Show();
+
             // コンソールウィンドウの作成
             Console.ConsoleWindow consoleWindow = new Console.ConsoleWindow();
+            consoleWindow.Owner = this;
             consoleWindow.Show();
         }
 #endregion        

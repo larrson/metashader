@@ -1,0 +1,13 @@
+﻿<Window x:Class="metashader.Previewer.PreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+    xmlns:i="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
+    Title="PreviewWindow" Height="300" Width="300">
+    <Grid>
+        <Image x:Name="_imagelt">
+            <Image.Source>
+                <i:D3DImage x:Name="_d3dimg" />
+            </Image.Source>
+        </Image>
+    </Grid>
+</Window>
