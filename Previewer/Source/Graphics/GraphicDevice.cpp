@@ -45,8 +45,11 @@ namespace opk
 		, m_pd3dDevice9	(NULL)		
 		, m_pd3dSurface9(NULL)
 		, m_hWnd		(0)
+		, m_bActive(false)
 		, m_nWidth (0)
 		, m_nHeight(0)
+		, m_viewport()
+		, m_cameraInfo()
 	{
 
 	}
@@ -87,10 +90,18 @@ namespace opk
 			return false;
 		}
 
-		// 全てに成功
+		/// 全てに成功 ///
 
 		m_nWidth = i_nWidth;
 		m_nHeight = i_nHeight;
+
+		// ビューポートの設定
+		m_viewport.X = 0;
+		m_viewport.Y = 0;
+		m_viewport.Width = i_nWidth;
+		m_viewport.Height = i_nHeight;		
+		m_viewport.MinZ = 0.0f;
+		m_viewport.MaxZ = 1.0f;
 
 		return true;
 	}
@@ -185,26 +196,35 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CGraphicDevice::Reset(int i_nWidth, int i_nHeight )
 	{
-		// デバイスのリセット
-		return true;;
+		// @@@@ デバイスのリセット
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------
-	bool CGraphicDevice::Activate()
+	HRESULT CGraphicDevice::Activate()
 	{
+		HRESULT hr;
+
 		// レンダリング開始
 		if( m_pd3dDevice9 == NULL )
-			return false;
-		HRESULT hr = m_pd3dDevice9->BeginScene();
-		if( FAILED(hr) )
-		{
-			return false;
-		}
+			return E_FAIL;
+		V_RETURN( m_pd3dDevice9->BeginScene() );		
+
+		// 実行中フラグをセット
+		m_bActive = true;
 
 		// レンダーターゲットの設定
-		hr = m_pd3dDevice9->SetRenderTarget(0, m_pd3dSurface9);
+		V_RETURN( m_pd3dDevice9->SetRenderTarget(0, m_pd3dSurface9) );
+
+		// ビューポートを設定
+		V_RETURN( m_pd3dDevice9->SetViewport(&m_viewport) );
+
+		// レンダーステートの設定
+		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZENABLE, TRUE ) );
+		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZWRITEENABLE, TRUE ) );
+		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL ) );
 		
-		return SUCCEEDED( hr );
+		return hr;
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -218,6 +238,9 @@ namespace opk
 
 		// スワップ
 		// m_pd3dDevice9->Present(NULL, NULL, NULL, NULL);
+
+		// 実行中フラグをセット
+		m_bActive = false;
 	}
 	
 	//------------------------------------------------------------------------------------------
@@ -236,5 +259,63 @@ namespace opk
 		CreateRenderTarget( i_nScreenWidth, i_nScreenHeight );
 	}
 	
+	//------------------------------------------------------------------------------------------
+	HRESULT CGraphicDevice::SetTransform(TransformType i_nTransformType, D3DXMATRIX i_mMatrix)
+	{		
+		HRESULT hr;
+
+		// IDirect3DDevice9::SetTransform用変換テーブル
+		static const D3DTRANSFORMSTATETYPE tbStateType[TransformType_Max] =
+		{
+			D3DTS_WORLD,
+			D3DTS_VIEW,
+			D3DTS_PROJECTION,
+		};
+
+		// 新しい行列を保持
+		m_mTransform[ i_nTransformType ] = i_mMatrix;
+
+		// 実行時ならセット
+		if( m_bActive )
+		{
+#if !USE_SHADER				
+			V_RETURN( m_pd3dDevice9->SetTransform( tbStateType[i_nTransformType], &(m_mTransform[i_nTransformType]) ) );
+#endif // USE_SHADER
+		}
+
+		return S_OK;
+	}
+
+	//------------------------------------------------------------------------------------------
+	HRESULT CGraphicDevice::SetCameraInfo( const SCameraInfo& i_cameraInfo )
+	{
+		HRESULT hr;
+
+		// 新しいカメラ情報を保持
+		m_cameraInfo = i_cameraInfo;
+
+		/// 新しいカメラ情報でビュー，射影行列を計算 /// 
+		D3DXMATRIX mView, mProj;
+
+		// ビュー行列を計算		
+		D3DXMatrixLookAtRH( &mView
+			, &m_cameraInfo.vEyePos
+			, &m_cameraInfo.vInterestPos
+			, &m_cameraInfo.vUpDir );
+
+		// 射影行列を計算
+		D3DXMatrixPerspectiveFovRH( &mProj
+			, m_cameraInfo.fFov
+			, ((float)m_nWidth) / m_nHeight
+			, m_cameraInfo.fNear
+			, m_cameraInfo.fFar
+			);
+
+		// 各行列を設定
+		V_RETURN( SetTransform(TransformType_View, mView) );
+		V_RETURN( SetTransform(TransformType_Projection, mProj) );
+
+		return S_OK;
+	}
 
 } // end of namespace opk

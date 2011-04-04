@@ -97,6 +97,7 @@ namespace metashader.ShaderGraphData
 
             public void Redo()
             {
+                _node = _graph.GetNode(_node.GetHashCode()); // 再作成によってインスタンスが異なっている可能性があるため
                 _graph.DelNode(_node.GetHashCode(), null);
             }
         }

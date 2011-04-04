@@ -43,9 +43,10 @@ int ShutDown()
 }
 
 //-------------------------------------------------------------------------------------------
-void WndProc(int *i_hWnd, int i_nMsg, int i_wParam, int i_lParam)
+bool WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam)
 {
-	// @@@@
+	// アプリケーションに処理を移譲
+	return opk::CApp::GetInstance()->MsgProc( (HWND)i_hWnd, i_nMsg, (WPARAM)i_wParam, (LPARAM)i_lParam );
 }
 
 //-------------------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+#pragma once
 /**
 	@file App.h
 	@brief アプリケーションクラス
@@ -6,6 +7,7 @@
 */
 
 // Includes ----------------------------------------------------------------------------------
+#include "Application/CameraController.h" //@@@削除予定
 
 // Data Type Definitions ---------------------------------------------------------------------
 namespace opk
@@ -20,6 +22,10 @@ namespace opk
 		static CApp*	s_pInstance; ///< シングルトンの唯一のインスタンス				
 
 		CGraphicDevice*	m_pGraphicDevice; ///< グラフィックデバイス
+
+		CModel			m_model; ///< モデル @@@削除
+		CCameraController m_cameraController; ///< カメラ
+		
 
 	public:
 		IDirect3DTexture9* m_pd3dTexture;
@@ -52,6 +58,11 @@ namespace opk
 			@retval リセットに成功したか
 		*/
 		bool ResetDevice(int i_nScreenWidth, int i_nScreenHeight );		
+
+		/**
+			@brief Win32のメッセージハンドラ
+		*/
+		bool MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam );
 
 		/// 更新
 		bool Update();
