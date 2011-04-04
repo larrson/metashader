@@ -32,8 +32,9 @@ extern "C" DLLEXPORT int ShutDown();
 	@param [in]	i_nMsg	メッセージ
 	@param [in] i_wParam メッセージパラメータ
 	@param [in] i_lParam メッセージパラメータ
+	@retval メッセージが処理されたか
 */
-extern "C" DLLEXPORT void WndProc(int *i_hWnd, int i_nMsg, int i_wParam, int i_lParam);
+extern "C" DLLEXPORT bool WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam);
 
 /**
 	@brief 次のレンダリングされたフレームのサーフェイスを取得する

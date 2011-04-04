@@ -185,6 +185,14 @@
 			Name="Application"
 			>
 			<File
+				RelativePath=".\Source\Application\CameraController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Application\CameraController.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Application\GlobalFunctions.cpp"
 				>
 			</File>
@@ -214,12 +222,48 @@
 				RelativePath=".\Source\Graphics\graphics.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\Graphics\Model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\ShaderParameter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\ShaderParameter.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Utility"
 			>
 			<File
+				RelativePath=".\Source\Utility\Debug.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Utility\Debug.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Utility\Utility.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="IO"
+			>
+			<File
+				RelativePath=".\Source\IO\Mouse.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\IO\Mouse.h"
 				>
 			</File>
 		</Filter>

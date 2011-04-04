@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Interop;
 
 namespace metashader.Previewer
 {
@@ -47,6 +48,11 @@ namespace metashader.Previewer
         {
             // Previewerのエントリポイントを呼び出し
             NativeMethods.PreviewerMain((int)this.Width, (int)this.Height);
+
+            // Win32メッセージの処理を移譲
+            WindowInteropHelper winInteropHelper = new WindowInteropHelper(this);
+            HwndSource hwndSource = HwndSource.FromHwnd(winInteropHelper.Handle);
+            hwndSource.AddHook(WinProc);
         }
 
         /// <summary>
@@ -100,6 +106,22 @@ namespace metashader.Previewer
             }
         }
         
+        /// <summary>
+        /// メッセージ処理
+        /// メッセージを処理した場合は、handledにtrueを設定する
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <param name="handled"></param>
+        /// <returns></returns>
+        private static IntPtr WinProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            handled = NativeMethods.WndProc(hwnd, msg, wParam, lParam);
+
+            return IntPtr.Zero;
+        }
 #endregion        
     }
 }

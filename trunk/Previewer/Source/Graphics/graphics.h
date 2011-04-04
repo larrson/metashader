@@ -11,4 +11,8 @@
 #include <dxut.h>
 
 // opk
+// シェーダーの有効無効フラグ(1なら有効)
+#define USE_SHADER 0
+
 #include "Graphics/GraphicDevice.h"
+#include "Graphics/Model.h"

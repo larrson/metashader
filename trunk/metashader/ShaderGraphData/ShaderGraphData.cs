@@ -58,6 +58,16 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// シェーダノードの取得
+        /// </summary>
+        /// <param name="hashCode"></param>
+        /// <returns></returns>
+        public ShaderNodeDataBase GetNode( int hashCode )
+        {
+            return m_nodeList[hashCode];
+        }
+
+        /// <summary>
         /// 新規のシェーダノードの追加
         /// </summary>
         /// <returns></returns>

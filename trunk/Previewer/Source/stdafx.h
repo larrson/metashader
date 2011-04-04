@@ -17,9 +17,15 @@
 
 /// C ランタイム ///
 #include <stdlib.h>
+#include <cmath>
+#include <string>
 
 /// ライブラリ ///
 // ユーティリティ
 #include <Utility/Utility.h>
 // グラフィックス
 #include <Graphics/graphics.h>
+// IO
+#include <IO/Mouse.h>
+// システム
+#include <System/App.h>

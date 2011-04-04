@@ -26,7 +26,7 @@ namespace metashader.Previewer
         [DllImport(dllName)]
         public unsafe static extern int ShutDown();
         [DllImport(dllName)]
-        public unsafe static extern void WndProc(IntPtr i_hWnd, int i_nMsg, int i_wParam, int i_lParam);
+        public unsafe static extern bool WndProc(IntPtr i_hWnd, int i_nMsg, IntPtr i_wParam, IntPtr i_lParam);
         [DllImport(dllName)]
         public unsafe static extern IntPtr GetNextSurface();
         [DllImport(dllName)]
