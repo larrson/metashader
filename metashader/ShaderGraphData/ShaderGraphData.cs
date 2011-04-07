@@ -75,9 +75,9 @@ namespace metashader.ShaderGraphData
         {
             // 新しくノードを作成
             ShaderNodeDataBase node = CreateNewNode(type, pos);
-
+            
             // 追加
-            if ( AddNode( node, null) == false )
+            if ( node == null || AddNode( node, null) == false )
             {                
                 // 追加に失敗
                 newNode = null;
@@ -88,7 +88,7 @@ namespace metashader.ShaderGraphData
             newNode = node;
 
             // 追加に成功したのでファクトリのカウンタをインクリメント                
-            m_shaderNodeFactory.IncrementCounter(type);
+            m_shaderNodeFactory.IncrementID(type);
 
             // Undo/Redoバッファがあれば処理を積む
             if( undoredo != null )
@@ -107,6 +107,11 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public bool AddNode( ShaderNodeDataBase nodeData, UndoRedoBuffer undoredo )
         {
+            if( nodeData == null )
+            {
+                throw new ArgumentNullException("nodeData");
+            }
+
             // すでに追加済みか？
             ShaderNodeDataBase existData;
             if( m_nodeList.TryGetValue( nodeData.GetHashCode(), out existData ) )
@@ -133,6 +138,9 @@ namespace metashader.ShaderGraphData
             {
                 undoredo.Add(new UndoRedo_AddNode(this, nodeData));
             }
+
+            // 種類のインスタンスカウンタを増やす
+            m_shaderNodeFactory.IncrementInstance(nodeData.Type);
             
             return true;
         }
@@ -194,6 +202,9 @@ namespace metashader.ShaderGraphData
                     undoredo.Add(new UndoRedo_DelNode(this, node));
                 }
             }
+
+            // 種類のインスタンスカウンタを減らす
+            m_shaderNodeFactory.DecrementInstance(node.Type);
 
             return true;
         }
@@ -262,9 +273,10 @@ namespace metashader.ShaderGraphData
             {
                 return false;
             }
-
-            //@@@ 追加した結果閉路になってしまわないか
-            // とりあえず同一性のみ判定
+            
+            // 同一性のみ判定
+            // 閉路の判定はシェーダ実行時に判定する
+            // 厳密に判定し、エッジの操作を禁止してしまうと、編集操作がしずらいため
             if (outNodeHashCode == inNodeHashCode)
                 return false;
 
@@ -399,6 +411,22 @@ namespace metashader.ShaderGraphData
 
             return true;
         }
+
+        /// <summary>
+        /// シェーダコードをバイト列へ書きだす
+        /// </summary>        
+        public bool ExportShaderCodeToBuffer(out byte[] buffer)
+        {
+            buffer = null;
+
+            ///@@@ 書き出し可能か判定
+            
+            // ジェネレータに処理を移譲
+            ShaderCodeGenerator generator = new ShaderCodeGenerator(NodeList);
+            buffer = generator.ExportToBuffer();
+
+            return true;
+        }
         
         /// <summary>
         /// シェーダコードをファイルへ書きだす
@@ -411,9 +439,24 @@ namespace metashader.ShaderGraphData
 
             // ジェネレータに処理を移譲
             ShaderCodeGenerator generator = new ShaderCodeGenerator(NodeList);
-            generator.Generate(path);
+            generator.ExportToFile(path);
 
             return true;
+        }
+
+        /// <summary>
+        /// シェーダノードの各パラメータをPreviwerへと適用する
+        /// </summary>
+        public void ApplyAllParameters()
+        {
+            foreach (ShaderNodeDataBase node in NodeList)
+            {
+                IAppliableParameter param = node as IAppliableParameter;
+                if( param != null )
+                {
+                    param.ApplyParameter();
+                }
+            }            
         }
 #endregion
 
@@ -434,7 +477,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         private void IncreamentShaderNodeCounter( ShaderNodeType type )
         {
-            m_shaderNodeFactory.IncrementCounter( type );
+            m_shaderNodeFactory.IncrementID( type );
         }
 
         /// <summary>
@@ -442,7 +485,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         private void DecrementShaderNodeCounter( ShaderNodeType type )
         {
-            m_shaderNodeFactory.DecrementCounter( type );
+            m_shaderNodeFactory.DecrementID( type );
         }
 #endregion
 

@@ -43,7 +43,7 @@ int ShutDown()
 }
 
 //-------------------------------------------------------------------------------------------
-bool WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam)
+LRESULT WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam)
 {
 	// アプリケーションに処理を移譲
 	return opk::CApp::GetInstance()->MsgProc( (HWND)i_hWnd, i_nMsg, (WPARAM)i_wParam, (LPARAM)i_lParam );
@@ -74,10 +74,20 @@ void Resize(int i_nScreenWidth, int i_nScreenHeight )
 	opk::CApp* pInstance = opk::CApp::GetInstance();
 	if( pInstance )
 	{
-		opk::CGraphicDevice *pGraphicDevice = pInstance->GetGraphicDevice();
-		if( pGraphicDevice )
-		{
-			pGraphicDevice->Resize( i_nScreenWidth, i_nScreenHeight);
-		}
+		pInstance->ResetDevice(i_nScreenWidth, i_nScreenHeight);
 	}	
+}
+
+//-------------------------------------------------------------------------------------------
+void CreatePixelShaderFromBuffer( const char* i_pBuffer, uint32 i_nSize )
+{
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();	
+	pShaderMan->CreateShaderFromBuffer( opk::shader::Profile_Pixel, i_pBuffer, i_nSize );
+}
+
+//-------------------------------------------------------------------------------------------
+void SetUniformVector4( const char* i_pszName, float x, float y, float z, float w )
+{
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();	
+	pShaderMan->SetVector4Value(opk::shader::Profile_Pixel, std::string(i_pszName), D3DXVECTOR4( x, y, z, w ));		
 }

@@ -17,8 +17,7 @@ namespace opk
 
 	//------------------------------------------------------------------------------------------
 	CApp::CApp()
-		: m_pd3dTexture(NULL)
-		, m_pGraphicDevice(NULL)
+		: m_pGraphicDevice(NULL)
 		, m_model(L"C:\\projects\\metashader\\data\\model\\teapot.x") ///< モデル @@@削除
 	{
 
@@ -61,17 +60,29 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CApp::ResetDevice(int i_nScreenWidth, int i_nScreenHeight )	
 	{
+		// モデルの破棄
+		m_model.Destroy();
+
 		// デバイスのリセット
-		if( m_pGraphicDevice->Reset( i_nScreenWidth, i_nScreenHeight) == false )
+		if( m_pGraphicDevice && m_pGraphicDevice->Reset( i_nScreenWidth, i_nScreenHeight) == false )
 		{
 			return false;
 		}
+
+		// モデルのリセット
+		if( FAILED( m_model.Restore() ) )
+		{
+			return false;
+		}
+
+		// @@@ テクスチャリソースのリセット
+		// @@@ シェーダのリセット
 
 		return true;
 	}	
 
 	//------------------------------------------------------------------------------------------
-	bool CApp::MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam )
+	LRESULT CApp::MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam )
 	{
 		// ハンドルしない
 		bool result = false;
@@ -92,46 +103,36 @@ namespace opk
 			m_cameraController.OnMsgProc( i_hWnd, i_nMsg, i_wParam, i_lParam );
 			break;
 		}
-
-		return result;
+		
+		// デフォルト処理
+		return ::DefWindowProc( i_hWnd, i_nMsg, i_wParam, i_lParam);
 	}
 
 	//------------------------------------------------------------------------------------------
 	bool CApp::Update()
 	{
-		/// @@@@
+		/// @@@@		
+
 		return true;
 	}
 
 	//------------------------------------------------------------------------------------------
 	bool CApp::Render()
-	{
-		if( FAILED(GetGraphicDevice()->Activate()) )
+	{		
+		// レンダリング開始
+		if( FAILED(m_pGraphicDevice->Activate()) )
 		{	
 			return false;
 		}
 
-		GetGraphicDevice()->GetD3DDevice()->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(255, 255, 0, 255), 1.0f, 0 );
-
+		m_pGraphicDevice->Clear( 0.0f, 0.0f, 0.0f, 0.0f );				
 		
-		IDirect3DDevice9* pd3dDevice = CApp::GetInstance()->GetGraphicDevice()->GetD3DDevice();		
-
-		//@@@ カメラ設定
-		/*
-		CGraphicDevice::SCameraInfo camera;
-		camera.fNear = 1.0f;
-		camera.fFar = 5000.0f;
-		camera.fFov = 3.14f / 6.0f;
-		camera.vEyePos.x = 0.0f; camera.vEyePos.y = 10.0f; camera.vEyePos.z = 20.0f;
-		camera.vInterestPos.x = camera.vInterestPos.y = camera.vInterestPos.z = 0.0f; // 原点
-		camera.vUpDir.x = 0.0f; camera.vUpDir.y = 1.0f, camera.vUpDir.z = 0.0f; // 上方向
-		GetGraphicDevice()->SetCameraInfo( camera );
-		*/
-		GetGraphicDevice()->SetCameraInfo( m_cameraController.GetCameraInfo() );
+		m_pGraphicDevice->SetCameraInfo( m_cameraController.GetCameraInfo() );
 
 		m_model.Render(); ///< モデル @@@削除
 
-		GetGraphicDevice()->Deactivate();
+		// レンダリング終了
+		m_pGraphicDevice->Deactivate();
 
 		return true;
 	}

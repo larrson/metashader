@@ -9,11 +9,19 @@ namespace metashader.ShaderGraphData
 {
 #region uniform nodes
     /// <summary>
+    /// Previewerへのパラメータ適用メソッドを実装するためのインターフェース
+    /// </summary>    
+    public interface IAppliableParameter
+    {
+        void ApplyParameter();
+    }
+
+    /// <summary>
     /// 4Dベクトル
     /// RGBAカラーとしても利用
     /// </summary>   
     [Serializable]
-    class Uniform_Vector4Node : ShaderNodeDataBase
+    class Uniform_Vector4Node : ShaderNodeDataBase, IAppliableParameter
     {
 #region variables
         float[] m_values = new float[4];
@@ -41,6 +49,9 @@ namespace metashader.ShaderGraphData
                     throw new ArgumentException("Valueへ設定する配列のサイズは4で無ければなりません");
                 }
                 m_values = value; 
+
+                //@@ イベントドリブンにすべきかも
+                ApplyParameter();
             }
         }
 #endregion
@@ -56,6 +67,13 @@ namespace metashader.ShaderGraphData
             stream.WriteLine("uniform float4 \t{0};", Name);
         }
 
+        /// <summary>
+        /// パラメータのPreviewerへの適用
+        /// </summary>
+        public void ApplyParameter()
+        {
+            NativeMethods.SetUniformVector4(Name, m_values[0], m_values[1], m_values[2], m_values[3]);
+        }
 #if DEBUG   
         /// <summary>
         /// デバッグ用のコンソールへの情報表示

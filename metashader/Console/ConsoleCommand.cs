@@ -314,6 +314,27 @@ namespace metashader.Console
     }
 
     /// <summary>
+    /// コンソールベースのシェーダ実行コマンド
+    /// </summary>
+    public class ExecuteShaderCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {                        
+
+            // 実行するコマンドを呼び出し
+            // データを操作するコマンドを呼び出し
+            Command.CommandBase command = App.CurrentApp.UICommandManager.GetCommand(Command.CommandType.ExecuteShader);
+            command.Execute(
+                 null
+                );
+        }
+    }
+
+    /// <summary>
     /// コンソールベースのコマンドが書かれたファイルを読み込み実行する
     /// </summary>
     public class ImportConsoleCommand : IConsoleCommand

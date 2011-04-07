@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Source;..\DXUT11\Source"
+				AdditionalIncludeDirectories="Source;3rdParty"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PREVIEWER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -228,6 +228,22 @@
 			</File>
 			<File
 				RelativePath=".\Source\Graphics\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\Shader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\Shader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\ShaderMan.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Graphics\ShaderMan.h"
 				>
 			</File>
 			<File

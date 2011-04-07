@@ -2,9 +2,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
     xmlns:i="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
-    Title="PreviewWindow" Height="300" Width="300">
+    Title="PreviewWindow" Width="640" Height="480">
     <Grid>
-        <Image x:Name="_imagelt">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="DarkGray" Offset="0.0" />
+                <GradientStop Color="Black" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Image x:Name="_imagelt" Width="640" Height="480">
             <Image.Source>
                 <i:D3DImage x:Name="_d3dimg" />
             </Image.Source>

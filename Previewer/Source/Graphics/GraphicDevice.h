@@ -46,9 +46,11 @@ namespace opk
 		IDirect3D9*			m_pd3d9;		///< DirectXオブジェクト	
 		IDirect3DDevice9*	m_pd3dDevice9;  ///< グラフィックデバイス
 		IDirect3DSurface9*	m_pd3dSurface9;	///< サーフェース
+		D3DPRESENT_PARAMETERS m_d3dpp;		///< プレゼンテーションパラメータ
 
 		HWND m_hWnd;		///< ダミーのウィンドウハンドル
 
+		bool m_bValid;		///< 有効か
 		bool m_bActive;		///< 実行中か
 
 		int m_nWidth;  ///< バックバッファの幅
@@ -95,19 +97,30 @@ namespace opk
 		void Deactivate();
 
 		/// バックバッファを取得
-		IDirect3DSurface9* GetBackBuffer();
-
-		/// 画面のリサイズ
-		void Resize(int i_nScreenWidth, int i_nScreenHeight );	
+		IDirect3DSurface9* GetBackBuffer();		
 
 		/// 変換行列の設定
 		HRESULT SetTransform( TransformType i_nTransformType, D3DXMATRIX i_mMatrix );
+
+		/// 変換行列の取得
+		const D3DXMATRIX& GetTransform( TransformType i_nTransformType ) const { return m_mTransform[i_nTransformType]; }
 
 		/// カメラ情報の取得
 		const SCameraInfo& GetCameraInfo() const { return m_cameraInfo; }
 
 		/// カメラ情報の設定
-		HRESULT SetCameraInfo( const SCameraInfo& i_cameraInfo );		
+		HRESULT SetCameraInfo( const SCameraInfo& i_cameraInfo );	
+
+		/** 
+			@brief バッファのクリア
+			@attension 各パラメータの範囲は[0,1]
+			@param [in] i_fR レッド
+			@param [in] i_fG グリーン
+			@param [in] i_fB ブルー
+			@param [in] i_fA アルファ	
+			@return エラーコード
+		*/
+		HRESULT Clear(float i_fR, float i_fG, float i_fB, float i_fA);
 
 	private:
 		/// ダミーのウィンドウを作成する
