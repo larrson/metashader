@@ -8,6 +8,11 @@
 #include <Utility/Debug.h>
 
 // Macro Definitions -------------------------------------------------------------------------
+// ƒpƒX‚ÌÅ‘å•¶Žš—ñ’·
+#ifndef MAX_PATH
+#define MAX_PATH 128
+#endif // MAX_PATH
+
 #define SAFE_DELETE(p)			if( (p) != NULL ) { delete(p); (p) = NULL; }
 #define SAFE_DELETE_ARRAY(p)	if( (p) != NULL ) { delete[] (p); (p) = NULL; }
 #define SAFE_RELEASE(p)			if( (p) != NULL ) { (p)->Release(); (p) = NULL; }

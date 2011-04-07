@@ -65,16 +65,29 @@ namespace opk
 	HRESULT CModel::Render()
 	{
 		/// 描画 ///
-		HRESULT hr;
-		// サブセットの数を取得する
-		DWORD nSubset;
-		hr = m_pMesh->GetAttributeTable( NULL, &nSubset );
+		HRESULT hr = E_FAIL;
 
-		// 全サブセットを同じマテリアルで描画するので、一括描画
-		for(size_t i = 0; i < nSubset; ++i )
+		// シェーダを用いて描画する
+		shader::CShaderMan* pShaderMan = shader::CShaderMan::GetInstance();
+		if( SUCCEEDED( pShaderMan->Activate() ) )
 		{
-			V_RETURN( m_pMesh->DrawSubset(i) );
-		}	
+			// サブセットの数を取得する
+			DWORD nSubset;
+			hr = m_pMesh->GetAttributeTable( NULL, &nSubset );		
+
+			// 全サブセットを同じマテリアルで描画するので、一括描画
+			for(size_t i = 0; i < nSubset; ++i )
+			{
+				hr = m_pMesh->DrawSubset(i);
+				if( FAILED(hr) )
+				{
+					MY_ASSERT(false);
+					break;
+				}
+			}	
+
+			pShaderMan->Deactivate();
+		}		
 		return hr;
 	}
 } // end of namespace opk

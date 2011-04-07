@@ -77,7 +77,12 @@ namespace metashader.Previewer
         /// <param name="e"></param>
         void PreviewWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            /*
+            _d3dimg.Lock();
+            _d3dimg.SetBackBuffer(D3DResourceType.IDirect3DSurface9, IntPtr.Zero);
+            _d3dimg.Unlock();
             NativeMethods.Resize((int)e.NewSize.Width, (int)e.NewSize.Height);
+             */
         }
 
         /// <summary>
@@ -118,9 +123,9 @@ namespace metashader.Previewer
         /// <returns></returns>
         private static IntPtr WinProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            handled = NativeMethods.WndProc(hwnd, msg, wParam, lParam);
+            handled = false;
 
-            return IntPtr.Zero;
+            return NativeMethods.WndProc(hwnd, msg, wParam, lParam);
         }
 #endregion        
     }

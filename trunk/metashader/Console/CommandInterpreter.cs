@@ -52,6 +52,7 @@ namespace metashader.Console
             m_commands.Add("Load", new LoadCommand());
             m_commands.Add("Save", new SaveCommand());
             m_commands.Add("ExportShader", new ExportShaderCommand());
+            m_commands.Add("ExecuteShader", new ExecuteShaderCommand());
 
             // コンソール自体の操作
             m_commands.Add("ImportConsole", new ImportConsoleCommand( this ));

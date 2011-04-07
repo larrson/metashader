@@ -19,12 +19,21 @@
 #include <stdlib.h>
 #include <cmath>
 #include <string>
+#include <map>
 
-/// ライブラリ ///
+/// 外部ライブラリ ///
+#include <boost\config.hpp>
+#include <boost\shared_ptr.hpp>
+#include <boost\utility.hpp>
+using boost::shared_ptr;
+
+/// 自作ライブラリ ///
+#include <types.h>
 // ユーティリティ
 #include <Utility/Utility.h>
 // グラフィックス
 #include <Graphics/graphics.h>
+#include <Graphics/ShaderMan.h>
 // IO
 #include <IO/Mouse.h>
 // システム

@@ -8,11 +8,10 @@
 // DirectX
 #include <d3d9.h>
 #include <d3dx9tex.h>
-#include <dxut.h>
 
 // opk
 // シェーダーの有効無効フラグ(1なら有効)
-#define USE_SHADER 0
+#define USE_SHADER 1
 
 #include "Graphics/GraphicDevice.h"
 #include "Graphics/Model.h"

@@ -19,6 +19,8 @@ namespace metashader.Command
         Redo,           // やり直しコマンド
         Unselect,       // 選択解除
 
+        ExecuteShader,  // シェーダを実行
+
         Max,            // コマンドの数
     };
 
@@ -127,6 +129,7 @@ namespace metashader.Command
             m_command[(int)CommandType.Undo] = new UndoCommand();
             m_command[(int)CommandType.Redo] = new RedoCommand();
             m_command[(int)CommandType.Unselect] = new UnselectCommand();
+            m_command[(int)CommandType.ExecuteShader] = new ExecuteShaderCommand();
         }
 #endregion
 

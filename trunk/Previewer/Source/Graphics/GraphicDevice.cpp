@@ -45,7 +45,8 @@ namespace opk
 		, m_pd3dDevice9	(NULL)		
 		, m_pd3dSurface9(NULL)
 		, m_hWnd		(0)
-		, m_bActive(false)
+		, m_bValid	(false)
+		, m_bActive (false)
 		, m_nWidth (0)
 		, m_nHeight(0)
 		, m_viewport()
@@ -103,6 +104,18 @@ namespace opk
 		m_viewport.MinZ = 0.0f;
 		m_viewport.MaxZ = 1.0f;
 
+		// トランスフォームの初期化(単位行列化)
+		for(int i = 0; i < TransformType_Max; ++i)
+		{
+			D3DXMatrixIdentity( &m_mTransform[i] );
+		}
+
+		// シェーダ管理の初期化
+		shader::CShaderMan::CreateInstance();
+		shader::CShaderMan::GetInstance()->Initialize();
+
+		m_bValid = true;
+
 		return true;
 	}
 
@@ -133,17 +146,16 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CGraphicDevice::CreateDevice( int i_nWidth, int i_nHeight )
 	{
-		// Presentation Parameter の初期化
-		D3DPRESENT_PARAMETERS d3dpp;
-		ZeroMemory( &d3dpp, sizeof(d3dpp) );
-		d3dpp.Windowed = TRUE;
+		// Presentation Parameter の初期化		
+		ZeroMemory( &m_d3dpp, sizeof(m_d3dpp) );
+		m_d3dpp.Windowed = TRUE;
 		// サイズとフォーマット		
-		d3dpp.BackBufferWidth = i_nWidth;
-		d3dpp.BackBufferHeight = i_nHeight;
-		d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-		d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-		d3dpp.EnableAutoDepthStencil = TRUE;
-		d3dpp.AutoDepthStencilFormat = D3DFMT_D24X8;		
+		m_d3dpp.BackBufferWidth = i_nWidth;
+		m_d3dpp.BackBufferHeight = i_nHeight;
+		m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		m_d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+		m_d3dpp.EnableAutoDepthStencil = TRUE;
+		m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24X8;		
 
 		// デバイス作成
 		HRESULT hr = m_pd3d9->CreateDevice(
@@ -151,7 +163,7 @@ namespace opk
 				, D3DDEVTYPE_HAL
 				, m_hWnd
 				, D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED | D3DCREATE_FPU_PRESERVE
-				, &d3dpp				
+				, &m_d3dpp				
 				, &m_pd3dDevice9
 			);		
 		if( FAILED(hr) )
@@ -181,6 +193,9 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	void CGraphicDevice::Dispose()
 	{
+		// シェーダ管理の破棄		
+		shader::CShaderMan::DisposeInstance();
+
 		// 破棄処理		
 		SAFE_RELEASE( m_pd3dSurface9 );
 		SAFE_RELEASE( m_pd3dDevice9 );
@@ -196,8 +211,34 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CGraphicDevice::Reset(int i_nWidth, int i_nHeight )
 	{
-		// @@@@ デバイスのリセット
-		return true;
+		HRESULT hr;
+
+		// サーフェースの破棄
+		SAFE_RELEASE( m_pd3dSurface9 );
+
+		// デバイスのリセット
+		// Presentation Parameter の初期化		
+		m_d3dpp.BackBufferWidth = i_nWidth;
+		m_d3dpp.BackBufferHeight = i_nHeight;	
+		hr = m_pd3dDevice9->Reset( &m_d3dpp );
+		MY_ASSERT( SUCCEEDED(hr) );
+		
+		// サーフェースを新しいサイズで再作成
+		bool ret = CreateRenderTarget( i_nWidth, i_nHeight );
+		MY_ASSERT( ret );
+
+		m_nWidth = i_nWidth;
+		m_nHeight = i_nHeight;
+
+		// ビューポートの設定
+		m_viewport.X = 0;
+		m_viewport.Y = 0;
+		m_viewport.Width = i_nWidth;
+		m_viewport.Height = i_nHeight;		
+		m_viewport.MinZ = 0.0f;
+		m_viewport.MaxZ = 1.0f;
+
+		return ret;
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -205,9 +246,12 @@ namespace opk
 	{
 		HRESULT hr;
 
-		// レンダリング開始
-		if( m_pd3dDevice9 == NULL )
+		// 準備中
+		if( m_bValid == false )
+		{
 			return E_FAIL;
+		}	
+
 		V_RETURN( m_pd3dDevice9->BeginScene() );		
 
 		// 実行中フラグをセット
@@ -248,15 +292,6 @@ namespace opk
 	{
 		// バックバッファの取得		
 		return m_pd3dSurface9;
-	}
-
-	//------------------------------------------------------------------------------------------
-	void CGraphicDevice::Resize(int i_nScreenWidth, int i_nScreenHeight )
-	{
-		// サーフェースの破棄
-		SAFE_RELEASE( m_pd3dSurface9 );
-		// サーフェースを新しいサイズで再作成
-		CreateRenderTarget( i_nScreenWidth, i_nScreenHeight );
 	}
 	
 	//------------------------------------------------------------------------------------------
@@ -316,6 +351,14 @@ namespace opk
 		V_RETURN( SetTransform(TransformType_Projection, mProj) );
 
 		return S_OK;
+	}
+
+	//------------------------------------------------------------------------------------------
+	HRESULT CGraphicDevice::Clear(float i_fR, float i_fG, float i_fB, float i_fA)
+	{
+		HRESULT hr;
+		V_RETURN( m_pd3dDevice9->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB((int)(i_fA * 255), (int)(i_fR * 255), (int)(i_fG * 255), (int)(i_fB * 255)), 1.0f, 0 ) );
+		return hr;
 	}
 
 } // end of namespace opk

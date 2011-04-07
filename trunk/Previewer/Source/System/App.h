@@ -24,12 +24,10 @@ namespace opk
 		CGraphicDevice*	m_pGraphicDevice; ///< グラフィックデバイス
 
 		CModel			m_model; ///< モデル @@@削除
-		CCameraController m_cameraController; ///< カメラ
+		CCameraController m_cameraController; ///< カメラ		
 		
 
-	public:
-		IDirect3DTexture9* m_pd3dTexture;
-
+	public:		
 		/// インスタンスの作成
 		static bool CreateInstance();
 
@@ -62,7 +60,7 @@ namespace opk
 		/**
 			@brief Win32のメッセージハンドラ
 		*/
-		bool MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam );
+		LRESULT MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam );
 
 		/// 更新
 		bool Update();

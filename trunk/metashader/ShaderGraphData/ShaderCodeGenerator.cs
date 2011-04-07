@@ -18,6 +18,11 @@ namespace metashader.ShaderGraphData
         /// ノードが依存性の低い順に並ぶ（入力変数が最も最初となる）
         /// </summary>
         List<ShaderNodeDataBase> m_validNodeQue = new List<ShaderNodeDataBase>();
+
+        /// <summary>
+        /// シェーダコードを保持するメモリーストリーム
+        /// </summary>
+        MemoryStream             m_memoryStream = new MemoryStream();
 #endregion
 
 #region constructors
@@ -37,56 +42,80 @@ namespace metashader.ShaderGraphData
 
 #region public methods
         /// <summary>
-        /// シェーダコードを生成する
+        /// シェーダコードをファイルへ書きだす
         /// </summary>
         /// <param name="path">出力ファイルのパス</param>
-       public void Generate( string path )
+       public void ExportToFile( string path )
        {
-            /// テンプレート内の置き換えマーカに合わせて
-            /// 生成した文字列で置き換える
-            
-            // テンプレートファイル
-           using(StreamReader templateStream = new StreamReader(@"C:\projects\metashader\data\custom_material.msh"
-               , Encoding.GetEncoding("shift_jis")))
-           {
-               using ( StreamWriter outputStream = new StreamWriter(path, false, Encoding.GetEncoding("shift_jis")) )
-               {
-                   // 終端まで読み込む
-                   while (templateStream.EndOfStream == false )
-                   {
-                       string line = templateStream.ReadLine();
-                       string replace = null;
+           // ストリームを作成
+           Generate();
 
-                       switch( line )
-                       {
-                           case "%INCLUDES%": //@@ 要実装
-                               replace = "";
-                               break;
-                           case "%HEADER%": //@@ 要実装
-                               replace = "";
-                               break;                               
-                           case "%UNIFORMS%":
-                               replace = GetShaderUniformString().ToString();
-                               break;
-                           case "%PS_INPUT%":
-                               replace = GetShaderInputString().ToString();
-                               break;
-                           case "%PS_MAIN%":
-                               replace = GetShaderMainString().ToString();
-                               break;
-                           default:
-                               replace = line;
-                               break;
-                       }
+           // ストリームをファイルへ書き出し
+           File.WriteAllBytes(path, m_memoryStream.ToArray());
+       }
 
-                       outputStream.WriteLine(replace);
-                   }               
-               }               
-           }
+       /// <summary>
+       /// シェーダコードをバイト列に書きだす
+       /// </summary>
+       /// <returns></returns>
+       public byte[] ExportToBuffer()
+       {
+           // ストリームを作成
+           Generate();
+
+           return m_memoryStream.GetBuffer();
        }
 #endregion
 
-#region private methods
+#region private methods        
+        /// <summary>
+        /// メモリーストリームへシェーダコードを作成する
+        /// </summary>
+        private void Generate()
+        {
+            /// テンプレート内の置き換えマーカに合わせて
+            /// 生成した文字列で置き換える
+
+            // テンプレートファイル@@@ 相対パス化
+            using (StreamReader templateStream = new StreamReader(@"C:\projects\metashader\data\custom_material.msh"                
+                , Encoding.GetEncoding("shift_jis")))
+            {
+                using (StreamWriter outputStream = new StreamWriter(m_memoryStream, Encoding.ASCII) )
+                {
+                    // 終端まで読み込む
+                    while (templateStream.EndOfStream == false)
+                    {
+                        string line = templateStream.ReadLine();
+                        string replace = null;
+
+                        switch (line)
+                        {
+                            case "%INCLUDES%": //@@ 要実装
+                                replace = "";
+                                break;
+                            case "%HEADER%": //@@ 要実装
+                                replace = "";
+                                break;
+                            case "%UNIFORMS%":
+                                replace = GetShaderUniformString().ToString();
+                                break;
+                            case "%PS_INPUT%":
+                                replace = GetShaderInputString().ToString();
+                                break;
+                            case "%PS_MAIN%":
+                                replace = GetShaderMainString().ToString();
+                                break;
+                            default:
+                                replace = line;
+                                break;
+                        }
+
+                        outputStream.WriteLine(replace);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 有効なノードを抽出する
         /// ここで、「有効である」とは、対象とするノードが最終的に出力ノードへのパスをもつこと

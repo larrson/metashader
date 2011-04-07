@@ -113,12 +113,14 @@
   <ItemGroup>
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\GraphDataCommand.cs" />
+    <Compile Include="Command\SystemCommand.cs" />
     <Compile Include="Console\CommandInterpreter.cs" />
     <Compile Include="Console\ConsoleCommand.cs" />
     <Compile Include="Console\ConsoleWindow.xaml.cs">
       <DependentUpon>ConsoleWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Previewer\NativeMethods.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Previewer\D3DScene.cs" />
     <Compile Include="Previewer\PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>

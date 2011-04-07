@@ -43,6 +43,22 @@ namespace metashader.ShaderGraphData
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
+
+        /// <summary>
+        /// 各タイプごとのノードの最大数
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static uint GetMaxNodeNum( this ShaderNodeType e )
+        {
+            switch( e )
+            {
+                case ShaderNodeType.Uniform_Vector4: return uint.MaxValue;
+                case ShaderNodeType.Operator_Add: return uint.MaxValue;
+                case ShaderNodeType.Output_Color: return 1;
+                default: throw new ArgumentOutOfRangeException("e");
+            }
+        }
     }
 #endregion    
 
