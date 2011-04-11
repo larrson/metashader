@@ -18,7 +18,7 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	CApp::CApp()
 		: m_pGraphicDevice(NULL)
-		, m_model(L"C:\\projects\\metashader\\data\\model\\teapot.x") ///< ƒ‚ƒfƒ‹ @@@íœ
+		, m_model(L"C:\\projects\\metashader\\data\\model\\Sphere.x") ///< ƒ‚ƒfƒ‹ @@@íœ
 	{
 
 	}

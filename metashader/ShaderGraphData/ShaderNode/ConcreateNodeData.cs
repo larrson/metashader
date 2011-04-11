@@ -31,14 +31,17 @@ namespace metashader.ShaderGraphData
         public Uniform_Vector4Node(string name, Point pos)
             : base( ShaderNodeType.Uniform_Vector4, name, pos)
         {
-            m_values[0] = 1.0f;
+            m_values[0] = 0.0f;
             m_values[1] = 0.0f;
             m_values[2] = 0.0f;
-            m_values[3] = 1.0f;
+            m_values[3] = 0.0f;
         }
 #endregion
 
 #region properties
+        /// <summary>
+        /// 4Dベクトル値
+        /// </summary>
         public float[] Values
         {
             get { return m_values;  }
@@ -48,10 +51,7 @@ namespace metashader.ShaderGraphData
                 {
                     throw new ArgumentException("Valueへ設定する配列のサイズは4で無ければなりません");
                 }
-                m_values = value; 
-
-                //@@ イベントドリブンにすべきかも
-                ApplyParameter();
+                m_values = value;                                 
             }
         }
 #endregion
@@ -109,11 +109,80 @@ namespace metashader.ShaderGraphData
             m_outputJoints[4] = new JointData(this, 4, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.W);            
         }
 #endregion
-    }
-
+    }        
 #endregion
 
 #region input nodes
+    /// <summary>
+    /// 入力UV座標のノード
+    /// </summary>
+    [Serializable]
+    class Input_UVNode : ShaderNodeDataBase
+    {
+#region variables
+        /// <summary>
+        /// セマンティックに付随するインデックス
+        /// </summary>
+        uint m_index;
+#endregion
+
+#region constructors
+        public Input_UVNode(string name, Point pos)
+            : base( ShaderNodeType.Uniform_Texture2D, name, pos )            
+        {
+            m_index = 0;
+        }
+#endregion
+
+#region properties
+        /// <summary>
+        /// セマンティックに付随するインデックス
+        /// </summary>
+        public uint Index
+        {
+            get { return m_index;  }
+            set { m_index = value; }
+        }
+
+        /// <summary>
+        /// ノードの変数名
+        /// </summary>
+        public override string VariableName
+        {
+            get { return "In.Texcoord" + m_index; }
+        }
+#endregion
+
+#region public methods        
+        /// <summary>
+        /// ストリームへシェーダの入力属性を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WritingShaderInputCode(StringWriter stream)
+        {
+            stream.WriteLine("\tfloat2 Texcoord{0} : TEXCOORD{0};", m_index);
+        }
+#endregion
+
+#region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // 入力
+            m_inputJointNum = 0;
+            m_inputJoints = new JointData[m_inputJointNum];
+
+            // 出力
+            m_outputJointNum = 3;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT2, JointData.SuffixType.None);
+            m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
+            m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
+        }
+#endregion
+    }    
 #endregion
 
 #region operator nodes

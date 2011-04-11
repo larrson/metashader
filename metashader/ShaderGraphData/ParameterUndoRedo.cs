@@ -14,7 +14,7 @@ namespace metashader.ShaderGraphData
     public class ParameterUndoRedo<ParameterType>: IUndoRedo     
     {
         /// <summary>
-        /// パラメータを設定する対象のノード
+        /// パラメータを設定する対象のノード@@@名前orハッシュにすべき
         /// </summary>
         ShaderNodeDataBase m_node;
 
@@ -33,10 +33,16 @@ namespace metashader.ShaderGraphData
         /// </summary>
         PropertyInfo m_propertyInfo;
 
+        /// <summary>
+        /// プロパティ名
+        /// </summary>
+        string m_propertyName;
+
         public ParameterUndoRedo(ShaderNodeDataBase node, string propertyName,  ParameterType newValue)
         {
             m_node = node;
             m_newValue = newValue;
+            m_propertyName = propertyName;
 
             // プロパティのメタ情報の取得
             Type NodeType = node.GetType();
@@ -54,6 +60,9 @@ namespace metashader.ShaderGraphData
         {
             // プロパティを利用して古い値を設定する
             m_propertyInfo.SetValue(m_node, m_oldValue, null);
+
+            // ノードのプロパティ変更イベントを起動
+            App.CurrentApp.EventManager.RaiseNodePropertyChanged(this, new Event.NodePropertyChangedEventArgs(m_node, m_propertyName, m_oldValue));
         }
 
         /// <summary>
@@ -79,7 +88,10 @@ namespace metashader.ShaderGraphData
             }
 
             // プロパティを利用して新しい値を設定する            
-            m_propertyInfo.SetValue(m_node, m_newValue, null);            
+            m_propertyInfo.SetValue(m_node, m_newValue, null);
+
+            // ノードのプロパティ変更イベントを起動
+            App.CurrentApp.EventManager.RaiseNodePropertyChanged(this, new Event.NodePropertyChangedEventArgs(m_node, m_propertyName, m_newValue));
 
             return true;
         }

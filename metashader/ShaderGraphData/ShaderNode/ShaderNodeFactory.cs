@@ -93,9 +93,15 @@ namespace metashader.ShaderGraphData
 
             // @@@ 具象クラスを作成
             switch(type)
-            {
+            {                    
                 case ShaderNodeType.Uniform_Vector4:
                     ret = new Uniform_Vector4Node(name, pos);
+                    break;
+                case ShaderNodeType.Uniform_Texture2D:
+                    ret = new Uniform_Texture2DNode(name, pos);
+                    break;
+                case ShaderNodeType.Input_UV:
+                    ret = new Input_UVNode(name, pos);
                     break;
                 case ShaderNodeType.Operator_Add:
                     ret = new Operator_AddNode(name, pos);

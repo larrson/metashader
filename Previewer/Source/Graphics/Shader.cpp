@@ -89,7 +89,10 @@ namespace opk
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
-				hr = pD3DDevice->CreateVertexShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pVertex );
+				if( SUCCEEDED(hr) )
+				{
+					hr = pD3DDevice->CreateVertexShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pVertex );
+				}
 			}
 			// ピクセルシェーダ
 			else if( m_nProfile == Profile_Pixel )
@@ -102,7 +105,10 @@ namespace opk
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
-				hr = pD3DDevice->CreatePixelShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pPixel );
+				if( SUCCEEDED(hr) )
+				{
+					hr = pD3DDevice->CreatePixelShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pPixel );
+				}				
 			}
 			// 未定義
 			else
@@ -238,7 +244,7 @@ namespace opk
 
 				switch( desc.Type )
 				{
-				case D3DXPT_FLOAT:
+				case D3DXPT_FLOAT: // float値(スカラー・ベクトル・行列)
 					{
 						switch ( desc.Class )
 						{
@@ -256,6 +262,16 @@ namespace opk
 							break;
 						}
 					}
+					break;				
+				// サンプラー各種
+				case D3DXPT_SAMPLER2D:
+					pParam = new CTextureParameter( strName, handle, TextureType_2D );
+					break;
+				case D3DXPT_TEXTURE3D:
+					pParam = new CTextureParameter( strName, handle, TextureType_3D );
+					break;
+				case D3DXPT_SAMPLERCUBE:
+					pParam = new CTextureParameter( strName, handle, TextureType_Cube );
 					break;
 				default:
 					MY_ASSERT_MESS( false, "Invalid Shader Parameter Type");
@@ -363,7 +379,8 @@ namespace opk
 			TParameterMap::iterator itr = m_parameterMap.begin();
 			for( ; itr != m_parameterMap.end(); ++itr )
 			{
-				V_RETURN( itr->second->Apply( this ) );
+				if( FAILED( itr->second->Apply( this ) ) )
+					return E_FAIL;
 			}
 
 			return S_OK;

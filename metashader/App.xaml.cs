@@ -13,7 +13,7 @@ namespace metashader
     /// App.xaml の相互作用ロジック
     /// </summary>
     public partial class App : Application
-    {
+    {      
 #region variables
         /// <summary>
         /// グラフデータ
@@ -24,6 +24,11 @@ namespace metashader
         /// 選択管理オブジェクト
         /// </summary>
         ShaderGraphData.SelectManager m_selectManager;
+
+        /// <summary>
+        /// イベント管理オブジェクト
+        /// </summary>
+        Event.EventManager m_eventManager;
 
         /// <summary>
         /// UI用コマンドマネージャ
@@ -63,6 +68,14 @@ namespace metashader
         public Command.CommandManager UICommandManager
         {
             get { return m_uiCommandManager; }
+        }
+
+        /// <summary>
+        /// イベントマネージャ
+        /// </summary>
+        public Event.EventManager EventManager
+        {
+            get { return m_eventManager; }
         }
 #endregion
 
@@ -117,6 +130,9 @@ namespace metashader
 
             // コマンドマネージャ初期化
             m_uiCommandManager = new Command.CommandManager();
+
+            // イベントマネージャ初期化
+            m_eventManager = new Event.EventManager();
         }
 #endregion        
     }

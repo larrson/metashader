@@ -40,5 +40,11 @@ namespace metashader
 
         [DllImport(dllName, CharSet = CharSet.Ansi)]
         public unsafe static extern void SetUniformVector4(string i_pszName, float x, float y, float z, float w);
+
+        [DllImport(dllName, CharSet=CharSet.Ansi)]
+        public unsafe static extern void SetTexturePath(string i_pszName, string i_pszPath);
+
+        [DllImport(dllName)]
+        public unsafe static extern void SetSamplerState(string i_pszName, ShaderGraphData.Uniform_Texture2DNode.SamplerState i_samplerState);
     }
 }

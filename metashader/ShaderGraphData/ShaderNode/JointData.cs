@@ -195,7 +195,7 @@ namespace metashader.ShaderGraphData
                         ".z",
                         ".w",
                     };
-                    return ParentNode.Name + suffixTable[(int)m_suffixType];
+                    return ParentNode.VariableName + suffixTable[(int)m_suffixType];
                 }
                 else
                 {
