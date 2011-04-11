@@ -14,12 +14,15 @@ namespace metashader.ShaderGraphData
     /// シェーダーノードの種類
     /// </summary>
     public enum ShaderNodeType : int
-    {
-        Uniform_Vector4, // 4Dベクトル
+    {        
+        Uniform_Vector4,    // 4Dベクトル
+        Uniform_Texture2D,  // 2Dテクスチャ
+
+        Input_UV,           // 入力UVベクトル
 
         Operator_Add,   // 加算
 
-        Output_Color,   // 出力色
+        Output_Color,   // 出力色        
         Max, // 最大数
     };
 
@@ -36,8 +39,12 @@ namespace metashader.ShaderGraphData
         public static string ToStringExt( this ShaderNodeType e )
         {
             switch( e )
-            {
-                case ShaderNodeType.Uniform_Vector4: return "Uniform_Vector4";
+            {                
+                case ShaderNodeType.Uniform_Vector4:    return "Uniform_Vector4";
+                case ShaderNodeType.Uniform_Texture2D: return "Uniform_Texture2D";
+
+                case ShaderNodeType.Input_UV: return "Input_UV";
+                
                 case ShaderNodeType.Operator_Add: return "Operator_Add";
                 case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
@@ -52,10 +59,14 @@ namespace metashader.ShaderGraphData
         public static uint GetMaxNodeNum( this ShaderNodeType e )
         {
             switch( e )
-            {
+            {                
                 case ShaderNodeType.Uniform_Vector4: return uint.MaxValue;
+                case ShaderNodeType.Uniform_Texture2D: return uint.MaxValue;
+
+                case ShaderNodeType.Input_UV: return uint.MaxValue;
+
                 case ShaderNodeType.Operator_Add: return uint.MaxValue;
-                case ShaderNodeType.Output_Color: return 1;
+                case ShaderNodeType.Output_Color: return 1;               
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
@@ -133,9 +144,17 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
-        /// 名前
+        /// ノードの名前
         /// </summary>
         public string Name
+        {
+            get { return m_name; }
+        }
+
+        /// <summary>
+        /// 変数名
+        /// </summary>
+        public virtual string VariableName
         {
             get { return m_name; }
         }

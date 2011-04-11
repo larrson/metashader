@@ -91,3 +91,17 @@ void SetUniformVector4( const char* i_pszName, float x, float y, float z, float 
 	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();	
 	pShaderMan->SetVector4Value(opk::shader::Profile_Pixel, std::string(i_pszName), D3DXVECTOR4( x, y, z, w ));		
 }
+
+//-------------------------------------------------------------------------------------------
+void SetTexturePath( const char* i_pszName, const char* i_pszPath )
+{
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();
+	pShaderMan->SetTexturePath( opk::shader::Profile_Pixel, std::string(i_pszName), i_pszPath );
+}
+
+//-------------------------------------------------------------------------------------------
+void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_samplerState )
+{	
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();
+	pShaderMan->SetSamplerState( opk::shader::Profile_Pixel, std::string(i_pszName), i_samplerState );
+}

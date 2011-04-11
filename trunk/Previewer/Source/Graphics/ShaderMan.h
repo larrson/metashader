@@ -19,6 +19,79 @@ namespace opk
 			Profile_Max,
 		};
 
+		/**
+		@brief テクスチャの種類
+		*/
+		enum TextureType
+		{
+			TextureType_2D,		///< 2Dテクスチャ				
+			TextureType_3D,		///< 3Dテクスチャ
+			TextureType_Cube,	///< キューブマップ
+			TextureType_Max,
+		};		
+
+		/**
+		@brife ラッピングモード
+		@note http://www.t-pot.com/books/DirectX_f.htmを参照
+		*/
+		enum WrapMode
+		{
+			WrapMode_Wrap = 0,	///< ループ
+			WrapMode_Mirror,	///< 反転ループ
+			WrapMode_Clamp,		///< 再外色でクランプ
+			WrapMode_Border,	///< 指定した境界色を使用
+			WrapMode_Mirroronce,///< 1回だけミラーリングし、外周は境界色
+			WrapMode_Max,		///< 最大数
+		};
+
+		/**
+		@brief フィルタリングモード
+		*/
+		enum FilterMode
+		{				
+			FilterMode_Point = 0,	///< 最近点サンプリング
+			FilterMode_Linear,		///< 線形補間
+			FilterMode_Ansotropic,	///< 異方性サンプリング
+			FilterMode_Max,			///< 最大数
+		};
+
+		/**
+		@brief サンプラーステート
+		*/
+		struct SSamplerState
+		{
+			WrapMode	m_nWrapU; ///< u座標のラッピングモード
+			WrapMode	m_nWrapV; ///< v座標のラッピングモード
+			WrapMode	m_nWrapW; ///< w座標のラッピングモード
+			FilterMode	m_nMagFilter; ///< 拡大フィルタ
+			FilterMode	m_nMinFilter; ///< 縮小フィルタ
+			FilterMode	m_nMipFilter; ///< ミップマップフィルター				
+			uint32		m_nMaxAnisotoropy;	///< 異方性の最大値
+			float		m_fBorderColorR;	///< 境界色のR成分
+			float		m_fBorderColorG;	///< 境界色のG成分
+			float		m_fBorderColorB;	///< 境界色のB成分
+			float		m_fBorderColorA;	///< 境界色のA成分
+
+
+			/**
+			@brife コンストラクタ
+			@note デフォルト値用
+			*/
+			SSamplerState()
+				: m_nWrapU( WrapMode_Wrap )
+				, m_nWrapV( WrapMode_Wrap )
+				, m_nWrapW( WrapMode_Wrap )
+				, m_nMagFilter( FilterMode_Linear )
+				, m_nMinFilter( FilterMode_Linear )
+				, m_nMipFilter( FilterMode_Linear )
+				, m_nMaxAnisotoropy( 1 )
+				, m_fBorderColorR ( 0.0f )
+				, m_fBorderColorG ( 0.0f )
+				, m_fBorderColorB ( 0.0f )
+				, m_fBorderColorA ( 0.0f )
+			{}
+		};
+
 		class CShader;
 
 		/**
@@ -72,6 +145,18 @@ namespace opk
 				@note 存在しないパラメータ名が指定された場合は、何も行わない
 			*/			
 			void SetVector4Value(Profile i_nProfile, const std::string& i_strName, const D3DXVECTOR4& i_vValue );
+
+			/**
+				@brief テクスチャ型のパラメータへテクスチャファイルのパスを設定する
+				@note 存在しないパラメータ名が指定された場合は、何も行わない
+			*/
+			void SetTexturePath(Profile i_nProfile, const std::string& i_strName, const char* i_pszPath );
+
+			/**
+				@brief テクスチャ型のパラメータへサンプラーステートを設定する
+				@note 存在しないパラメータ名が指定された場合は、何も行わない
+			*/
+			void SetSamplerState(Profile i_nProfile, const std::string& i_strName, const SSamplerState& i_samplerState );
 
 		private:
 			/**

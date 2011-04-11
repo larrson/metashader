@@ -70,3 +70,17 @@ extern "C" DLLEXPORT void CreatePixelShaderFromBuffer( const char* i_pBuffer, ui
 	@param [in] w 4Dベクトルのw
 */
 extern "C" DLLEXPORT void SetUniformVector4( const char* i_pszName, float x, float y, float z, float w );
+
+/**
+	@brief シェーダのテクスチャパラメータにファイルパスを設定する
+	@param [in] i_pszName パラメータ名
+	@param [in] i_pszPath ファイルパス
+*/
+extern "C" DLLEXPORT void SetTexturePath( const char* i_pszName, const char* i_pszPath );
+
+/**
+	@brief シェーダのテクスチャパラメータにサンプラーステートを設定する
+	@param [in] i_pszName パラメータ名
+	@param [in] i_samplerState サンプラステート
+*/
+extern "C" DLLEXPORT void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_samplerState );

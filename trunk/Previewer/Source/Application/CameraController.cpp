@@ -25,7 +25,7 @@ namespace opk
 		, m_nPrevY(0)
 		, m_fYaw	( 0.0f )
 		, m_fPitch	( 0.0f )
-		, m_fDistance ( 10.0f )
+		, m_fDistance ( 200.0f )
 	{
 		// ƒJƒƒ‰î•ñ‚Ì‰Šú‰»
 		m_cameraInfo.fNear = 1.0f;

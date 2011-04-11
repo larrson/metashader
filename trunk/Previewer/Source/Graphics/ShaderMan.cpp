@@ -124,5 +124,37 @@ namespace opk
 			}
 		}
 
+		//------------------------------------------------------------------------------------------
+		void CShaderMan::SetTexturePath(Profile i_nProfile, const std::string& i_strName, const char* i_pszPath )
+		{
+			CShader& rShader = m_pShaders[i_nProfile];
+			TParameterPtr pParameter = rShader.FindParameter(i_strName);
+
+			// 有効なパラメータが見つかった
+			if( pParameter.get() != NULL )
+			{
+				CTextureParameter* pTexParam = dynamic_cast<CTextureParameter*>(pParameter.get());
+				MY_ASSERT( pTexParam );
+				if( pTexParam )
+					pTexParam->SetPath( i_pszPath );
+			}
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CShaderMan::SetSamplerState(Profile i_nProfile, const std::string& i_strName, const SSamplerState& i_samplerState )
+		{
+			CShader& rShader = m_pShaders[i_nProfile];
+			TParameterPtr pParameter = rShader.FindParameter(i_strName);
+
+			// 有効なパラメータが見つかった
+			if( pParameter.get() != NULL )
+			{
+				CTextureParameter* pTexParam = dynamic_cast<CTextureParameter*>(pParameter.get());
+				MY_ASSERT( pTexParam );
+				if( pTexParam )
+					pTexParam->SetSamplerState( i_samplerState );
+			}
+		}
+
 	} // end of namespace shader
 } // end of namespace opk

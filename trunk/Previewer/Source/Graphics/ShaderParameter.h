@@ -194,5 +194,81 @@ namespace opk
 			/// 射影行列を取得する
 			const D3DXMATRIX* GetValue_mProjection();
 		};
+
+		/**
+			@class CTextureParameter
+			@brief テクスチャのパラメータクラス
+			@note 2D,3D,Cubeを共通に扱い、内部で一部処理を場合分けする
+		*/
+		class CTextureParameter : public CParameterBase
+		{			
+		private:				
+			TextureType		m_nTextureType;		///< テクスチャの種類			
+
+			std::string		m_strPath;			///< テクスチャのファイルパス			
+			
+			IDirect3DBaseTexture9*	m_pd3dBaseTexture; ///< DirectX9のテクスチャ基底クラス
+
+			bool					m_bValid; ///< 有効か
+
+			SSamplerState			m_samplerState;	///< サンプラーステート
+
+		public:
+			/**
+				@brife コンストラクタ				
+				@param [in] i_strName		パラメータ名
+				@param [in] i_nHandle		パラメータのハンドル
+				@param [in] i_nTextureType	テクスチャの種類				
+			*/
+			CTextureParameter( std::string i_strName, D3DXHANDLE i_nHandle, TextureType i_nTextureType );
+
+			/**
+				@デストラクタ
+			*/
+			~CTextureParameter();
+
+			/**
+				@brief パラメータをシェーダへ適用する
+				@retval エラーコード
+			*/
+			HRESULT Apply(CShader* i_pShader);
+
+			/**
+				@brief テクスチャパスを設定する
+				@note 保持しているパスと異なる場合のみ、パスを設定すると同時に、テクスチャの再作成を行う
+			*/
+			HRESULT SetPath( const char* i_pszPath );			
+
+			/**
+				@brief サンプラーステートを設定する
+			*/
+			HRESULT SetSamplerState( const SSamplerState& i_samplerState );
+
+			/**
+				@brief ロード可能なテクスチャか判定する
+				@note 対象ファイルがテクスチャとして読み込み可能な画像ファイルかだけでなく、種類の一致も判定する
+				@param [in] i_pszPath 判定対象のテクスチャのパス
+				@param [in] i_nTexturetype テクスチャの種類
+				@retval 読み込み可能か
+			*/			
+			static bool CanLoadTexture( const char* i_pszPath, TextureType i_nTextureType );
+
+		private:
+			/**
+				@brief 破棄
+			*/
+			HRESULT Destroy();
+
+			/**
+				@brief 破棄メソッドのサブルーチン
+				@note 再作成時の処理と共通化するため
+			*/
+			HRESULT Destroy_Sub();
+
+			/**
+				@brief 現在保持しているパスに基づいてテクスチャを作成する
+			*/
+			HRESULT CreateTexture();
+		};
 	}	// end of namespace shader
 } // end of namespace opk

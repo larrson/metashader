@@ -35,8 +35,9 @@ namespace metashader.Previewer
             this.SizeChanged += new SizeChangedEventHandler(PreviewWindow_SizeChanged);
             // 定期的な描画コールバック
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
-        }        
-        
+            // シェーダノードの値が変更された
+            App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
+        }                
 
 #region event handlers
         /// <summary>
@@ -127,6 +128,23 @@ namespace metashader.Previewer
 
             return NativeMethods.WndProc(hwnd, msg, wParam, lParam);
         }
+
+        /// <summary>
+        /// シェーダノードのプロパティ変更イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_NodePropertyChangedEvent(object sender, metashader.Event.NodePropertyChangedEventArgs args)
+        {
+            // プロパティ変更イベント
+            //@@ ApplyParameterでは処理が重すぎる場合は、プロパティ名ごとに場合分けする
+            ShaderGraphData.IAppliableParameter appliableParam = args.Node as ShaderGraphData.IAppliableParameter;
+            if( appliableParam != null )
+            {
+                // 変更されたプロパティに関わらずパラメータを適用
+                appliableParam.ApplyParameter();
+            }
+        }        
 #endregion        
     }
 }

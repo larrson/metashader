@@ -125,6 +125,50 @@ namespace metashader.Console
     }
 
     /// <summary>
+    /// コンソールベースの文字列変更コマンド
+    /// </summary>
+    public class ChangeStringCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if( options.Length < 4 )
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);
+
+            // プロパティ名を取得
+            string propertyName = options[2];
+
+            // 変更後の文字列を取得
+            string newStr = options[3];
+
+            // Undo/Redoバッファ
+            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+
+            // 新しいプロパティを設定
+            if (node != null)
+            {
+                App.CurrentApp.GraphData.ChangeNodeProperty<string>(node, propertyName, newStr, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }            
+        }
+    }
+
+    /// <summary>
     /// コンソールベースのリンク追加コマンド
     /// </summary>
     public class AddLinkCommand : IConsoleCommand

@@ -39,6 +39,7 @@ namespace metashader.Console
             m_commands.Add("AddNode", new AddNodeCommand() );
             m_commands.Add("SelectNode", new SelectNodeCommand());
             m_commands.Add("ChangeVector4", new ChangeVector4Command());
+            m_commands.Add("ChangeString", new ChangeStringCommand());
 
             // リンク操作
             m_commands.Add("AddLink", new AddLinkCommand());
