@@ -48,7 +48,7 @@ namespace metashader.ShaderGraphData
     /// 単一のリンクデータを表すデータ構造
     /// </summary>
     [Serializable]
-    public struct LinkData
+    public struct LinkData : IComparable<LinkData>
     {
         public int _outNodeHash;
         public int _outJointIndex;
@@ -62,6 +62,37 @@ namespace metashader.ShaderGraphData
             _inNodeHash = inHash;
             _inJointIndex = inIndex;
         }
+
+#region IComparable<T> interfaces
+        public int CompareTo(LinkData other)
+        {
+            // 以下の順に比較
+            // 出力ノードハッシュ
+            // 入力ノードハッシュ
+            // 出力ジョイントインデックス
+            // 入力ジョイントインデックス
+
+            if( _outNodeHash != other._outNodeHash )
+            {
+               return _outNodeHash.CompareTo(other._outNodeHash);
+            }
+            else if( _inNodeHash != other._inNodeHash )
+            {
+                return _inNodeHash.CompareTo(other._inNodeHash);
+            }
+            else if( _outJointIndex != other._outJointIndex )
+            {
+                return _outJointIndex.CompareTo(other._outJointIndex);
+            }
+            else if( _inJointIndex != other._inJointIndex )
+            {
+                return _inJointIndex.CompareTo(other._inJointIndex);
+            }
+
+            // 全て一致しているので等しい
+            return 0;
+        }
+#endregion        
     };    
 
     /// <summary>

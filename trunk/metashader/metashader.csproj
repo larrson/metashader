@@ -93,9 +93,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GraphEditor\GraphEditorPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GraphEditor\ShaderNodeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Previewer\PreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Window1.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -121,6 +133,13 @@
     </Compile>
     <Compile Include="Event\EventManager.cs" />
     <Compile Include="Event\NodeEvents.cs" />
+    <Compile Include="GraphEditor\GraphEditorPanel.xaml.cs">
+      <DependentUpon>GraphEditorPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GraphEditor\LinkPath.cs" />
+    <Compile Include="GraphEditor\ShaderNodeControl.xaml.cs">
+      <DependentUpon>ShaderNodeControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Previewer\D3DScene.cs" />
     <Compile Include="Previewer\PreviewWindow.xaml.cs">
@@ -154,6 +173,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

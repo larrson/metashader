@@ -53,7 +53,7 @@ namespace metashader.Previewer
             // Win32メッセージの処理を移譲
             WindowInteropHelper winInteropHelper = new WindowInteropHelper(this);
             HwndSource hwndSource = HwndSource.FromHwnd(winInteropHelper.Handle);
-            hwndSource.AddHook(WinProc);
+            // @@@@@ 一時的に外してみるhwndSource.AddHook(WinProc);
         }
 
         /// <summary>
