@@ -141,6 +141,9 @@ namespace metashader.ShaderGraphData
 
             // 種類のインスタンスカウンタを増やす
             m_shaderNodeFactory.IncrementInstance(nodeData.Type);
+
+            // イベントを通知
+            App.CurrentApp.EventManager.RaiseNodeAdded(this, new metashader.Event.NodeAddedEventArgs(nodeData));
             
             return true;
         }
@@ -205,6 +208,9 @@ namespace metashader.ShaderGraphData
 
             // 種類のインスタンスカウンタを減らす
             m_shaderNodeFactory.DecrementInstance(node.Type);
+
+            // ノード削除時のイベントを起動する
+            App.CurrentApp.EventManager.RaiseNodeDeleted(this, new Event.NodeDeletedEventArgs(hashCode));
 
             return true;
         }
@@ -326,6 +332,9 @@ namespace metashader.ShaderGraphData
                 undoredo.Add( new UndoRedo_AddLink(this, outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex));
             }
 
+            // リンク追加イベントを起動
+            App.CurrentApp.EventManager.RaiseLinkAdded(this, new Event.LinkAddedEventArgs(new LinkData(outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex)));
+
             return true;
         }
 
@@ -408,6 +417,9 @@ namespace metashader.ShaderGraphData
             {
                 undoredo.Add(new UndoRedo_DelLink(this, outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex));
             }
+
+            // リンク削除時のイベントを起動する
+            App.CurrentApp.EventManager.RaiseLinkDeleted(this, new Event.LinkDeletedEventArgs(new LinkData(outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex)));
 
             return true;
         }

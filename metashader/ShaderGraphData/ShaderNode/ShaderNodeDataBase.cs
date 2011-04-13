@@ -165,6 +165,7 @@ namespace metashader.ShaderGraphData
         public Point Position
         {
             get { return m_pos; }
+            set { m_pos = value;}
         }        
 
         /// <summary>

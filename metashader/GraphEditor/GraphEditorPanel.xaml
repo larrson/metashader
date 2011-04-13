@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="metashader.GraphEditor.GraphEditorPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment ="Stretch">    
+    
+    <Grid Name="_grid" AllowDrop="True" Background="Gray" Width="auto" Height="auto">        
+        <!-- リンク配置用キャンバス -->
+        <Canvas Name="_linkCanvas" />
+        <!-- シェーダノード配置用キャンバス -->
+        <Canvas Name="_nodeCanvas" />                    
+    </Grid>
+</UserControl>

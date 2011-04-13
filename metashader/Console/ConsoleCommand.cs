@@ -23,22 +23,15 @@ namespace metashader.Console
             string typeName = options[1];
             try
             {
-                ShaderGraphData.ShaderNodeType type = (ShaderGraphData.ShaderNodeType)Enum.Parse(Type.GetType("metashader.ShaderGraphData.ShaderNodeType"), typeName);
-                // ジョイント数
-                int inJointNum, outJointNum;
-                if (options.Length > 2)
-                {
-                    inJointNum = int.Parse(options[2]);
-                    outJointNum = int.Parse(options[3]);
-                }
+                ShaderGraphData.ShaderNodeType type = (ShaderGraphData.ShaderNodeType)Enum.Parse(Type.GetType("metashader.ShaderGraphData.ShaderNodeType"), typeName);                
 
                 // 表示位置
                 double x, y;
                 x = y = 0;
-                if (options.Length > 4) // 種類以外もふくんでいる場合
+                if (options.Length >= 4) // 種類以外もふくんでいる場合
                 {
-                    x = double.Parse(options[4]);
-                    y = double.Parse(options[5]);
+                    x = double.Parse(options[2]);
+                    y = double.Parse(options[3]);
                 }
 
                 // データを操作するコマンドを呼び出し
@@ -165,6 +158,49 @@ namespace metashader.Console
                     ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }            
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースの位置変更コマンド
+    /// </summary>
+    public class ChangePositionCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 4)
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);            
+
+            // 変更後の位置を取得
+            double x = double.Parse(options[2]);
+            double y = double.Parse(options[3]);
+            Point pos = new Point(x, y);
+
+            // Undo/Redoバッファ
+            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+
+            // 新しいプロパティを設定
+            if (node != null)
+            {
+                App.CurrentApp.GraphData.ChangeNodeProperty<Point>(node, "Position", pos, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
         }
     }
 
