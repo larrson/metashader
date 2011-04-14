@@ -14,8 +14,14 @@ namespace metashader.GraphEditor
     /// </summary>
     public class DragAdorner : Adorner
     {
+        /// <summary>
+        /// 装飾用エレメント
+        /// </summary>
         protected UIElement _child;
 
+        /// <summary>
+        /// 表示位置
+        /// </summary>
         Point _pos;
 
         /// <summary>
@@ -27,7 +33,7 @@ namespace metashader.GraphEditor
         public DragAdorner(UIElement owner, UIElement adornElement, double opacity)
             : base( owner )
         {            
-            // ゴーストの描画要素
+            // ゴーストの描画要素を初期化
             var brush = new VisualBrush(adornElement) { Opacity = opacity };
             var Bound = VisualTreeHelper.GetDescendantBounds(adornElement);
             var Rect = new Rectangle() { Width = Bound.Width, Height = Bound.Height };
@@ -45,6 +51,8 @@ namespace metashader.GraphEditor
             set
             { 
                 _pos = value;
+
+                // 表示位置を反映
                 var adorner = this.Parent as AdornerLayer;
                 if (adorner != null)
                 {
@@ -55,28 +63,54 @@ namespace metashader.GraphEditor
 #endregion
 
 #region protected methods
+        /// <summary>
+        /// 描画要素を取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         protected override Visual GetVisualChild(int index)
         {
+            // 装飾用UIElementを返す
             return _child;
         }
 
+        /// <summary>
+        /// 描画要素数を返す
+        /// </summary>
         protected override int VisualChildrenCount
         {
             get { return 1; }
         }
 
+        /// <summary>
+        /// 望ましいサイズを返す
+        /// </summary>
+        /// <param name="finalSize"></param>
+        /// <returns></returns>
         protected override Size MeasureOverride(Size finalSize)
         {
+            // 描画要素の望ましいサイズを利用
             _child.Measure(finalSize);
             return _child.DesiredSize;
         }
 
+        /// <summary>
+        /// レイアウト処理
+        /// </summary>
+        /// <param name="finalSize"></param>
+        /// <returns></returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
+            // 描画要素のレイアウト処理をそのまま利用
             _child.Arrange(new Rect(_child.DesiredSize));
             return finalSize;
         }
 
+        /// <summary>
+        /// 移動処理
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <returns></returns>
         public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
         {
             var result = new GeneralTransformGroup();
