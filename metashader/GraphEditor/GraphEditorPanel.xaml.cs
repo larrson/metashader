@@ -83,6 +83,11 @@ namespace metashader.GraphEditor
         /// 接続前のドラッグ中のリンクを表示するための曲線
         /// </summary>
         BezierCurve m_curveForLinkDrag = new BezierCurve();
+
+        /// <summary>
+        /// シェーダノードのドラッグ用アドーナー
+        /// </summary>
+        DragAdorner m_nodeDragAdorner;
 #endregion
 
         /// <summary>
@@ -175,12 +180,30 @@ namespace metashader.GraphEditor
         /// <param name="e"></param>
         void GraphEditorPanel_DragEnter(object sender, DragEventArgs e)
         {
+            // ノードのドラッグ
+            if (e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format))
+            {
+                ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;
+
+                // アドーナー作成
+                AdornerLayer layer = AdornerLayer.GetAdornerLayer(_grid);
+                if( m_nodeDragAdorner != null )
+                {
+                    // 削除
+                    layer.Remove( m_nodeDragAdorner );
+                }
+                m_nodeDragAdorner = new DragAdorner(_grid, nodeDragData.ShaderNodeControl, 0.3);
+                layer.Add( m_nodeDragAdorner );
+
+                // 位置調整
+                m_nodeDragAdorner.Position = nodeDragData.ShaderNodeControl.Position;
+            }
             // ジョイントのドラッグ
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
             {
                 // リンクを表す曲線を表示
                 m_curveForLinkDrag.Visibility = Visibility.Visible;
-            }
+            }            
         }
 
         /// <summary>
@@ -191,19 +214,18 @@ namespace metashader.GraphEditor
         void GraphEditorPanel_DragOver(object sender, DragEventArgs e)
         {
             Point pos = e.GetPosition(_grid);
-            /*
+            
             // ノードのドラッグ
             if( e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format) )
-            {
+            {                
                 ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;
                 Point newPos = new Point(
                             pos.X - nodeDragData.StartedMousePos.X + nodeDragData.StartedPos.X
                         ,   pos.Y - nodeDragData.StartedMousePos.Y + nodeDragData.StartedPos.Y
                     );                
-                // nodeのデータには反映させず、見た目だけ変更する
-                nodeDragData.ShaderNodeControl.Position = newPos;
-            }            
-             */
+                // アドーナーの位置を変更
+                m_nodeDragAdorner.Position = newPos;                 
+            }                         
             // ジョイントのドラッグ
             if( e.Data.GetDataPresent(JointControl.JointDragData.Format) )
             {
@@ -226,20 +248,17 @@ namespace metashader.GraphEditor
             // 自分の子供のオブジェクトからのLeaveであれば無視
             if (_grid.IsAncestorOf(e.Source as DependencyObject) && !ReferenceEquals(_grid, e.Source))
                 return;
-            /*
+            
             // ノードのドラッグ
             if (e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format) && Object.ReferenceEquals(e.Source,_grid))
             {
-                // 範囲外か判定
-                bool isOutOfArea = !(( 0 <= pos.X && pos.X <= _grid.ActualWidth) && ( 0 <= pos.Y && pos.Y <= _grid.ActualHeight));
-                if( isOutOfArea )
+                // アドーナーを非表示に
+                if( m_nodeDragAdorner != null )               
                 {
-                    // 範囲外であれば元の位置に戻す
-                    ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;
-                    nodeDragData.ShaderNodeControl.Position = nodeDragData.StartedPos;
-                }                
+                    m_nodeDragAdorner.Visibility = Visibility.Hidden;
+                }
             }
-             */            
+            
             // ジョイントのドラッグ
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
             {
@@ -260,13 +279,21 @@ namespace metashader.GraphEditor
             // ノードのドロップ
             if( e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format) )
             {
+                // アドーナー削除
+                AdornerLayer layer = AdornerLayer.GetAdornerLayer(_grid);
+                if (m_nodeDragAdorner != null)
+                {
+                    // 削除
+                    layer.Remove(m_nodeDragAdorner);
+                }
+
                 // 位置変更を確定する
                 ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;
                 Point newPos = new Point(
                           pos.X - nodeDragData.StartedMousePos.X + nodeDragData.StartedPos.X
                         , pos.Y - nodeDragData.StartedMousePos.Y + nodeDragData.StartedPos.Y
                     );
-                ChangeNodePosition(nodeDragData.ShaderNodeControl, newPos);
+                ChangeNodePosition(nodeDragData.ShaderNodeControl, newPos);                
             }
             // ジョイントのドラッグ
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
