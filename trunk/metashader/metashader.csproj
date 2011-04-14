@@ -97,6 +97,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GraphEditor\JointControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GraphEditor\ShaderNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,8 +137,12 @@
     </Compile>
     <Compile Include="Event\EventManager.cs" />
     <Compile Include="Event\NodeEvents.cs" />
+    <Compile Include="GraphEditor\BezierCurve.cs" />
     <Compile Include="GraphEditor\GraphEditorPanel.xaml.cs">
       <DependentUpon>GraphEditorPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GraphEditor\JointControl.xaml.cs">
+      <DependentUpon>JointControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GraphEditor\LinkPath.cs" />
     <Compile Include="GraphEditor\ShaderNodeControl.xaml.cs">

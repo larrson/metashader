@@ -17,33 +17,8 @@
         <!-- サムネイル -->
         <Grid Name="_thumnailGrid" Grid.Row="1" Grid.Column="1"  Width="100" Height="100" Background="LightGray"/>         
         <!-- 入力ジョイント -->
+        <UniformGrid Name="_inputJointGrid" Grid.Row="1" Grid.Column="2" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" />                   
         <!-- 出力ジョイント -->       
-        <UniformGrid Name="_outputJointGrid" Grid.Row="1" Grid.Column="0" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch">
-            <Rectangle DockPanel.Dock="Top" Width="10" Height="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Black" />
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle DockPanel.Dock="Top" Width="10"  Height="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Red" />
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle DockPanel.Dock="Top" Width="10" Height="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Green" />
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle DockPanel.Dock="Top" Width="10" Height="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="Blue" />
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle DockPanel.Dock="Top" Width="10" Height="10">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="White" />
-                </Rectangle.Fill>
-            </Rectangle>
-        </UniformGrid>
+        <UniformGrid Name="_outputJointGrid" Grid.Row="1" Grid.Column="0" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" />                   
     </Grid>
 </UserControl>
