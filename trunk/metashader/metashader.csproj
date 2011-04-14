@@ -145,6 +145,7 @@
       <DependentUpon>JointControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GraphEditor\LinkPath.cs" />
+    <Compile Include="GraphEditor\DragAdorner.cs" />
     <Compile Include="GraphEditor\ShaderNodeControl.xaml.cs">
       <DependentUpon>ShaderNodeControl.xaml</DependentUpon>
     </Compile>
