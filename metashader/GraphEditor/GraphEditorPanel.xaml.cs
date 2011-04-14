@@ -77,7 +77,12 @@ namespace metashader.GraphEditor
         /// <summary>
         /// 専用のコンテキストメニュー
         /// </summary>
-        GraphEditorContextMenu m_contextMenu;
+        GraphEditorContextMenu m_contextMenu = new GraphEditorContextMenu();
+
+        /// <summary>
+        /// 接続前のドラッグ中のリンクを表示するための曲線
+        /// </summary>
+        BezierCurve m_curveForLinkDrag = new BezierCurve();
 #endregion
 
         /// <summary>
@@ -90,9 +95,14 @@ namespace metashader.GraphEditor
             // イベントハンドラの初期化
             InitializeEventHandlers();
 
-            // コンテキストメニューの初期化
-            m_contextMenu = new GraphEditorContextMenu();
+            // コンテキストメニューの初期化            
             _grid.ContextMenu = m_contextMenu;
+
+            // ドラッグ中のリンク表示用カーブの初期化
+            // キャンバスへ追加追加
+            _linkCanvas.Children.Add(m_curveForLinkDrag.Path);
+            // 不可視に設定
+            m_curveForLinkDrag.Visibility = Visibility.Hidden;
         }        
 
 #region event handlers
@@ -156,7 +166,22 @@ namespace metashader.GraphEditor
         void EventManager_LinkDeletedEvent(object sender, metashader.Event.LinkDeletedEventArgs args)
         {
             DeleteLink(args.LinkData);
-        }        
+        }
+
+        /// <summary>
+        /// ドラッグエンター
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void GraphEditorPanel_DragEnter(object sender, DragEventArgs e)
+        {
+            // ジョイントのドラッグ
+            if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
+            {
+                // リンクを表す曲線を表示
+                m_curveForLinkDrag.Visibility = Visibility.Visible;
+            }
+        }
 
         /// <summary>
         /// ドラッグオーバー
@@ -179,6 +204,15 @@ namespace metashader.GraphEditor
                 nodeDragData.ShaderNodeControl.Position = newPos;
             }            
              */
+            // ジョイントのドラッグ
+            if( e.Data.GetDataPresent(JointControl.JointDragData.Format) )
+            {
+                JointControl.JointDragData jointDragData = e.Data.GetData(JointControl.JointDragData.Format) as JointControl.JointDragData;
+
+                // 曲線(コントロールの位置からマウス位置まで)を描画                                                
+                m_curveForLinkDrag.StartPos = jointDragData.JointControl.Position; 
+                m_curveForLinkDrag.EndPos = pos;                    
+            }
         }
 
         /// <summary>
@@ -188,8 +222,10 @@ namespace metashader.GraphEditor
         /// <param name="e"></param>
         void GraphEditorPanel_DragLeave(object sender, DragEventArgs e)
         {            
-            Point pos = e.GetPosition(_grid);                       
-            
+            Point pos = e.GetPosition(_grid);
+            // 自分の子供のオブジェクトからのLeaveであれば無視
+            if (_grid.IsAncestorOf(e.Source as DependencyObject) && !ReferenceEquals(_grid, e.Source))
+                return;
             /*
             // ノードのドラッグ
             if (e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format) && Object.ReferenceEquals(e.Source,_grid))
@@ -203,7 +239,13 @@ namespace metashader.GraphEditor
                     nodeDragData.ShaderNodeControl.Position = nodeDragData.StartedPos;
                 }                
             }
-             */
+             */            
+            // ジョイントのドラッグ
+            if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
+            {
+                // リンクを表す曲線を非表示
+                m_curveForLinkDrag.Visibility = Visibility.Hidden;
+            }
         }        
 
         /// <summary>
@@ -225,6 +267,15 @@ namespace metashader.GraphEditor
                         , pos.Y - nodeDragData.StartedMousePos.Y + nodeDragData.StartedPos.Y
                     );
                 ChangeNodePosition(nodeDragData.ShaderNodeControl, newPos);
+            }
+            // ジョイントのドラッグ
+            if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
+            {
+                // リンクを表す曲線を非表示
+                m_curveForLinkDrag.Visibility = Visibility.Hidden;
+
+                // ハンドリングされた
+                e.Handled = true;
             }
         }
 
@@ -257,6 +308,8 @@ namespace metashader.GraphEditor
             // リンクの削除
             App.CurrentApp.EventManager.LinkDeletedEvent += new metashader.Event.LinkDeletedEventHandler(EventManager_LinkDeletedEvent);
 
+            // ドラッグエンター
+            _grid.DragEnter += new DragEventHandler(GraphEditorPanel_DragEnter);
             // ドラッグオーバー
             _grid.DragOver += new DragEventHandler(GraphEditorPanel_DragOver);
             // ドラッグリーブ
@@ -265,7 +318,7 @@ namespace metashader.GraphEditor
             _grid.Drop += new DragEventHandler(GraphEditorPanel_Drop);
             // コンテキストメニューを開いた
             _grid.ContextMenuOpening +=new ContextMenuEventHandler(GraphEditorPanel_ContextMenuOpening);
-        }
+        }        
 
         /// <summary>
         /// シェーダノードに対応するコントロールを探す

@@ -148,7 +148,7 @@ namespace metashader.ShaderGraphData
         VariableType m_defaultVariableType;
 
         /// <summary>
-        /// サフィックスの種類
+        /// 変数につくサフィックスの種類
         /// </summary>
         SuffixType m_suffixType;
         #endregion
@@ -233,6 +233,14 @@ namespace metashader.ShaderGraphData
                     throw new NotImplementedException();
                 }
             }
+        }
+
+        /// <summary>
+        /// サフィックスの種類
+        /// </summary>
+        public SuffixType Suffix
+        {
+            get { return m_suffixType; }
         }
         #endregion
 

@@ -142,6 +142,18 @@ namespace metashader.GraphEditor
             // DataContextの設定
             DataContext = m_node;
 
+            // ジョイント作成
+            // 入力ジョイント
+            for (int i = 0; i < node.InputJointNum; ++i)
+            {
+                _inputJointGrid.Children.Add(new JointControl(m_node.GetInputJoint(i), this));                    
+            }
+            // 出力ジョイント
+            for (int i = 0; i < node.OutputJointNum; ++i)
+            {
+                _outputJointGrid.Children.Add(new JointControl(m_node.GetOutputJoint(i), this));
+            }            
+
             // イベントハンドラ登録
             _nameTextBlock.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
             _nameTextBlock.MouseUp += new MouseButtonEventHandler(Node_MouseUp);

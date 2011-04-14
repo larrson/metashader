@@ -15,19 +15,11 @@ namespace metashader.GraphEditor
     /// </summary>
     public class LinkPath
     {
-#region variable
+#region variable        
         /// <summary>
-        /// パス
+        /// Pathをもつ曲線オブジェクト
         /// </summary>
-        Path m_path;
-        /// <summary>
-        /// パス内の図形
-        /// </summary>
-        PathFigure m_pathFigure;
-        /// <summary>
-        /// 図形内のPathセグメント
-        /// </summary>
-        BezierSegment m_bezierSegment;
+        BezierCurve m_curve;
 
         /// <summary>
         /// 接続先の入力ジョイントをもつコントロール
@@ -45,17 +37,7 @@ namespace metashader.GraphEditor
         /// <summary>
         /// 出力ジョイントのインデックス
         /// </summary>
-        int m_outputJointIndex;
-
-        /// <summary>
-        /// 曲線の開始位置
-        /// </summary>
-        Point m_startPos;
-
-        /// <summary>
-        /// 曲線の終了位置
-        /// </summary>
-        Point m_endPos;
+        int m_outputJointIndex;        
 #endregion
 
 #region properties
@@ -64,36 +46,8 @@ namespace metashader.GraphEditor
         /// </summary>
         public Path Path
         {
-            get { return m_path; }
-        }        
-
-        /// <summary>
-        /// 曲専用制御点1
-        /// </summary>
-        private Point ControlPoint1
-        {
-            get 
-            {
-                double x = (m_endPos.X - m_startPos.X) * 0.25 + m_startPos.X;
-                double y = m_startPos.Y;
-
-                return new Point(x, y);
-            }
-        }
-
-        /// <summary>
-        /// 曲専用制御点2
-        /// </summary>
-        private Point ControlPoint2
-        {
-            get
-            {
-                double x = (m_endPos.X - m_startPos.X) * 0.75 + m_startPos.X;
-                double y = m_endPos.Y;
-
-                return new Point(x, y);
-            }
-        }
+            get { return m_curve.Path; }
+        }                        
 #endregion
 
 #region constructors
@@ -106,31 +60,18 @@ namespace metashader.GraphEditor
         {            
             // 初期化      
 
-            // パスの作成
-            m_path = new Path();
-            m_path.Stroke = Brushes.Black;
-            m_path.StrokeThickness = 1;
-
-            m_pathFigure = new PathFigure();           
-            m_bezierSegment = new BezierSegment();
-            m_pathFigure.Segments = new PathSegmentCollection();
-            m_pathFigure.Segments.Add( m_bezierSegment );
-
-            m_path.Data = new PathGeometry();
-            (m_path.Data as PathGeometry).Figures = new PathFigureCollection();
-            (m_path.Data as PathGeometry).Figures.Add(m_pathFigure);
+            // 曲線作成
+            m_curve = new BezierCurve();
 
             // メンバ変数初期化
             m_inputNode = inputNode;            
             m_inputJointIndex = inputJointIndex;
-            m_startPos = inputNode.GetInputJointPos(m_inputJointIndex);
+            m_curve.StartPos = inputNode.GetInputJointPos(m_inputJointIndex);
 
             m_outputNode = outputNode;
             m_outputJointIndex = outputJointIndex;
-            m_endPos = outputNode.GetOutputJointPos(m_outputJointIndex);
-            
-            // 制御点の設定
-            UpdateControlPoints();
+            m_curve.EndPos = outputNode.GetOutputJointPos(m_outputJointIndex);
+                        
 
             // イベント登録(@@@削除時イベント登録解除)
             m_inputNode.PropertyChanged += new PropertyChangedEventHandler(inputNode_PropertyChanged);
@@ -161,10 +102,7 @@ namespace metashader.GraphEditor
             // 接続先の入力ノードの位置のプロパティが変更された
             if( e.PropertyName == "Position")
             {
-                m_startPos = (sender as ShaderNodeControl).GetInputJointPos(m_inputJointIndex);
-
-                // 制御点の更新
-                UpdateControlPoints();
+                m_curve.StartPos = (sender as ShaderNodeControl).GetInputJointPos(m_inputJointIndex);
             }
         }
 
@@ -178,25 +116,9 @@ namespace metashader.GraphEditor
             // 接続先の出力ノードの位置のプロパティが変更された
             if (e.PropertyName == "Position")
             {
-                m_endPos = (sender as ShaderNodeControl).GetOutputJointPos(m_outputJointIndex);
-
-                // 制御点の更新
-                UpdateControlPoints();
+                m_curve.EndPos = (sender as ShaderNodeControl).GetOutputJointPos(m_outputJointIndex);                
             }
         }   
-#endregion
-
-#region private methods
-        /// <summary>
-        /// パスの制御点を更新する
-        /// </summary>
-        private void UpdateControlPoints()
-        {
-            m_pathFigure.StartPoint = m_startPos;
-            m_bezierSegment.Point1 = ControlPoint1;
-            m_bezierSegment.Point2 = ControlPoint2;
-            m_bezierSegment.Point3 = m_endPos;
-        }
 #endregion
     }
 }
