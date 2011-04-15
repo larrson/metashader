@@ -14,12 +14,13 @@ namespace metashader.ShaderGraphData
     /// シェーダーグラフのデータ構造
     /// </summary>    
     [Serializable]
-    public partial class ShaderGraphData
+    public partial class ShaderGraphData : IDeserializationCallback
     {
 #region variables
         /// <summary>
         /// シェーダノードのリスト
-        /// </summary>         
+        /// </summary>     
+        [NonSerialized]
         Dictionary<int, ShaderNodeDataBase> m_nodeList = new Dictionary<int, ShaderNodeDataBase>();
 
         /// <summary>
@@ -540,6 +541,6 @@ namespace metashader.ShaderGraphData
             }
             System.Console.WriteLine("");
         }
-#endif // DEBUG
+#endif // DEBUG                
     }
 }

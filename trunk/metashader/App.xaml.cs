@@ -16,6 +16,11 @@ namespace metashader
     {      
 #region variables
         /// <summary>
+        /// ファイル関連の設定
+        /// </summary>
+        FileSettings m_fileSettings;
+
+        /// <summary>
         /// グラフデータ
         /// </summary>
         ShaderGraphData.ShaderGraphData m_graphData;
@@ -44,6 +49,14 @@ namespace metashader
         static public App CurrentApp
         {
             get { return (App.Current as App);}
+        }
+
+        /// <summary>
+        /// ファイル設定
+        /// </summary>
+        public FileSettings FileSettings
+        {
+            get { return m_fileSettings; }
         }
 
         /// <summary>
@@ -88,7 +101,15 @@ namespace metashader
             FileStream fs = new FileStream(path,
             FileMode.Create,
             FileAccess.Write);
-            // グラフの読み込み
+
+            // ファイル設定の保存
+            {
+                // 作業フォルダを設定する
+                m_fileSettings.OldWorkFolderPath = Path.GetDirectoryName(path);
+                formatter.Serialize(fs, m_fileSettings);
+            }            
+
+            // グラフの保存
             m_graphData.Save(fs, formatter);            
             fs.Close();
         }
@@ -103,6 +124,10 @@ namespace metashader
             FileStream fs = new FileStream(path,
             FileMode.Open,
             FileAccess.Read);            
+
+            // ファイル設定の読み込み
+            m_fileSettings = formatter.Deserialize(fs) as FileSettings;
+            m_fileSettings.NewWorkFolderPath = Path.GetDirectoryName( path );
 
             // グラフの読み込み
             m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
@@ -121,7 +146,10 @@ namespace metashader
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Application_Startup(object sender, StartupEventArgs e)
-        {
+        {            
+            // フォルダ設定初期化
+            m_fileSettings = new FileSettings();
+
             // データ初期化
             m_graphData = new ShaderGraphData.ShaderGraphData();
 

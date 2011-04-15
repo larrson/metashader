@@ -14,6 +14,11 @@ namespace metashader.ShaderGraphData
     {
 #region variables
         /// <summary>
+        /// シェーダーテンプレートファイルの相対パス
+        /// </summary>
+        static readonly string m_shaderTemplatePath = @"\..\..\data\shader\template\custom_material.msh";
+
+        /// <summary>
         /// 有効なノードのキュー
         /// ノードが依存性の低い順に並ぶ（入力変数が最も最初となる）
         /// </summary>
@@ -76,8 +81,9 @@ namespace metashader.ShaderGraphData
             /// テンプレート内の置き換えマーカに合わせて
             /// 生成した文字列で置き換える
 
-            // テンプレートファイル@@@ 相対パス化
-            using (StreamReader templateStream = new StreamReader(@"C:\projects\metashader\data\custom_material.msh"                
+            // テンプレートファイル
+            string templatePath = FileSettings.ApplicationFolderPath + m_shaderTemplatePath;
+            using (StreamReader templateStream = new StreamReader( templatePath 
                 , Encoding.GetEncoding("shift_jis")))
             {
                 using (StreamWriter outputStream = new StreamWriter(m_memoryStream, Encoding.ASCII) )
@@ -90,12 +96,12 @@ namespace metashader.ShaderGraphData
 
                         switch (line)
                         {
-                            case "%INCLUDES%": //@@ 要実装
-                                replace = "";
-                                break;
                             case "%HEADER%": //@@ 要実装
                                 replace = "";
                                 break;
+                            case "%INCLUDES%": //@@ 要実装
+                                replace = "";
+                                break;                            
                             case "%UNIFORMS%":
                                 replace = GetShaderUniformString().ToString();
                                 break;

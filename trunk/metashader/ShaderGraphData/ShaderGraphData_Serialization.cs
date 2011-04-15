@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace metashader.ShaderGraphData
 {
-    partial class ShaderGraphData
+    partial class ShaderGraphData : IDeserializationCallback
     {
 #region public methods
         /// <summary>
@@ -18,8 +19,19 @@ namespace metashader.ShaderGraphData
         /// </summary>        
         public void Save(FileStream fileStream, BinaryFormatter formatter)
         {
-            // ノードを保存
+            // クラス中に含まれるシリアライズ可能なオブジェクトを
+            // デフォルトのシリアライザーでシリアライズ
             formatter.Serialize(fileStream, this);
+
+            /// ノードのシリアライズ用データを作成 ///
+            LinkedList<ShaderNodeDataBase> nodeList = new LinkedList<ShaderNodeDataBase>();
+
+            // 各ノードを格納
+            foreach( ShaderNodeDataBase node in m_nodeList.Values )
+            {
+                nodeList.AddLast(node);
+            }
+            formatter.Serialize(fileStream, nodeList);
             
             /// リンクのシリアライズ用データを作成 ///            
             LinkedList<LinkData> linkList = new LinkedList<LinkData>();
@@ -53,6 +65,15 @@ namespace metashader.ShaderGraphData
         {
             ShaderGraphData graph = formatter.Deserialize(fileStream) as ShaderGraphData;
 
+            /// ノードのデシリアライズ ///            
+            LinkedList<ShaderNodeDataBase> nodeList = 
+                formatter.Deserialize(fileStream) as LinkedList<ShaderNodeDataBase>;
+            // ノードを再構築
+            foreach( ShaderNodeDataBase itr in nodeList )
+            {
+                graph.AddNode(itr, null);
+            }
+
             /// リンクのデシリアライズ ///            
             LinkedList<LinkData> linkList =
                 formatter.Deserialize(fileStream) as LinkedList<LinkData>;
@@ -66,5 +87,17 @@ namespace metashader.ShaderGraphData
             return graph;
         }
 #endregion        
+
+#region override methods
+        /// <summary>
+        /// デシリアライズ時のコールバック
+        /// </summary>
+        /// <param name="sender"></param>
+        void IDeserializationCallback.OnDeserialization(object sender)
+        {
+            //　空のノードリストを作成
+            this.m_nodeList = new Dictionary<int, ShaderNodeDataBase>();
+        }        
+#endregion
     }
 }

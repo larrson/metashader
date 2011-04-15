@@ -9,20 +9,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Interop;
 
 namespace metashader.Previewer
 {
     /// <summary>
-    /// PreviewWindow.xaml の相互作用ロジック
+    /// PreviewPanel.xaml の相互作用ロジック
     /// </summary>
-    public partial class PreviewWindow : Window
+    public partial class PreviewPanel : UserControl
     {
-#region variables
+        #region variables
         TimeSpan m_lastRenderTime;
 #endregion
-        public PreviewWindow()
+        public PreviewPanel()
         {
             InitializeComponent();            
         

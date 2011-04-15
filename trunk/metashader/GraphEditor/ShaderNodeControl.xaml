@@ -15,7 +15,7 @@
         <!-- ノード名 -->
         <TextBlock Name="_nameTextBlock" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Background="LightGray"  Text="{Binding Path=Name}" />
         <!-- サムネイル -->
-        <Grid Name="_thumnailGrid" Grid.Row="1" Grid.Column="1"  Width="100" Height="100" Background="LightGray"/>         
+        <Grid Name="_thumnailGrid" Grid.Row="1" Grid.Column="1" Background="LightGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>         
         <!-- 入力ジョイント -->
         <UniformGrid Name="_inputJointGrid" Grid.Row="1" Grid.Column="2" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" />                   
         <!-- 出力ジョイント -->       

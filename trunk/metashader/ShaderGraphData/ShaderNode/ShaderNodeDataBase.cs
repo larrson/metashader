@@ -293,11 +293,25 @@ namespace metashader.ShaderGraphData
 #endregion
 
 #region override methods
+        /// <summary>
+        /// デシリアライズ時に呼ばれるコールバック
+        /// </summary>
+        /// <param name="sender"></param>
         void IDeserializationCallback.OnDeserialization(Object sender)
         {
             // ジョイントの初期化
             InitializeJoints();
+
+            // その他のデシリアライズ処理
+            OnDeserializationSub();
         }
+
+        /// <summary>
+        /// デシリアライズ処理のサブルーチン
+        /// 派生クラスでカスタマイズすることを想定
+        /// </summary>
+        protected virtual void OnDeserializationSub()
+        {}
 #endregion
 
 #region protected methods

@@ -38,6 +38,7 @@ namespace metashader.ShaderGraphData
 		};
 
         [StructLayout(LayoutKind.Sequential)]
+        [Serializable]
         public struct SamplerState
         {
             public WrapMode m_nWrapU; ///< u座標のラッピングモード
@@ -185,7 +186,21 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-#region private methods
+        #region override methods
+        /// <summary>
+        /// デシリアライズ時の処理
+        /// </summary>
+        protected override void OnDeserializationSub()
+        {
+            // 基底クラスの処理を呼び出し
+            base.OnDeserializationSub();
+
+            // ファイルパスを現在の作業フォルダに基づいて絶対パス化
+            m_path = App.CurrentApp.FileSettings.ToAbsolutePath(m_path);
+        }
+        #endregion
+
+        #region private methods
         /// <summary>
         /// テクスチャパスの適用
         /// </summary>
@@ -200,7 +215,7 @@ namespace metashader.ShaderGraphData
         private void ApplySamplerState()
         {
             NativeMethods.SetSamplerState(Name, TextureSamplerState);
-        }
-#endregion
+        }        
+        #endregion
     }
 }
