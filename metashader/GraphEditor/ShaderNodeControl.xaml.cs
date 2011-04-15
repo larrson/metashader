@@ -99,7 +99,12 @@ namespace metashader.GraphEditor
         /// <summary>
         /// プロパティ変更イベント
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// サムネイルのコントロール
+        /// </summary>
+        Thumnail.ThumnailControl m_thumnailControl;
 #endregion
 
 #region properties
@@ -154,6 +159,21 @@ namespace metashader.GraphEditor
                 _outputJointGrid.Children.Add(new JointControl(m_node.GetOutputJoint(i), this));
             }            
 
+            // 中央のサムネイルを作成
+            switch( node.Type )
+            {
+                case metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4:
+                    m_thumnailControl = new Thumnail.ColorThumnail(m_node);
+                    break;
+                case metashader.ShaderGraphData.ShaderNodeType.Uniform_Texture2D:
+                    m_thumnailControl = new Thumnail.TextureThumnail(m_node);
+                    break;
+                default:
+                    m_thumnailControl = new Thumnail.DefaultThumnail(m_node);
+                    break;
+            }            
+            _thumnailGrid.Children.Add(m_thumnailControl);
+
             // イベントハンドラ登録
             _nameTextBlock.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
             _nameTextBlock.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
@@ -194,6 +214,27 @@ namespace metashader.GraphEditor
             double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
 
             return new Point(basicPos.X + offsetX, basicPos.Y + offsetY);
+        }
+
+        /// <summary>
+        /// ノードのプロパティ変更時に親コントロールから呼ばれる処理
+        /// データ構造の変更を反映する
+        /// </summary>
+        /// <param name="args"></param>
+        public void OnNodePropertyChanged(object sender, Event.NodePropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case "Position":
+                    Position = (Point)args.NewValue;
+                    break;
+                default:
+                    // throw new NotImplementedException();                  
+                    break;
+            }
+
+            // サムネイル側の処理を呼ぶ(@イベントドリブンにすべきか)
+            m_thumnailControl.OnNodePropertyChanged(sender, args);
         }
 #endregion
 

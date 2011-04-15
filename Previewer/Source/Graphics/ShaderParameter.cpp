@@ -241,7 +241,7 @@ namespace opk
 			HRESULT hr;			
 
 			// 画像ファイルとタイプが一致している事を確認
-			if( CanLoadTexture( m_strPath.c_str(), m_nTextureType ) )
+			if( CanLoadTexture( m_strPath.c_str(), m_nTextureType ) == false )
 			{				
 				return E_FAIL;
 			}

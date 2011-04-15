@@ -143,14 +143,8 @@ namespace metashader.GraphEditor
            // 対応するコントロールを探す
             ShaderNodeControl nodeControl = FindNodeControl(args.NodeHashCode);
 
-            switch( args.PropertyName )
-            {
-                case "Position":
-                    nodeControl.Position = (Point)args.NewValue;
-                    break;
-                default:
-                    throw new NotImplementedException();                  
-            }
+            // 処理を移譲
+            nodeControl.OnNodePropertyChanged(sender, args);
         }
 
         /// <summary>

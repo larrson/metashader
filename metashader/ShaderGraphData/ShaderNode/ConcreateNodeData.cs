@@ -128,7 +128,7 @@ namespace metashader.ShaderGraphData
 
 #region constructors
         public Input_UVNode(string name, Point pos)
-            : base( ShaderNodeType.Uniform_Texture2D, name, pos )            
+            : base( ShaderNodeType.Input_UV, name, pos )            
         {
             m_index = 0;
         }
