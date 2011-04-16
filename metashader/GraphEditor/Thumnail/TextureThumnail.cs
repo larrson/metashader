@@ -46,6 +46,7 @@ namespace metashader.GraphEditor.Thumnail
                 case "Path":
                     {
                         // 背景新しいテクスチャに変更
+                        // @@@@ UndoでNULLになった場合を考慮する必要がある
                         SetPath(args.NewValue as string);
                     }
                     break;
