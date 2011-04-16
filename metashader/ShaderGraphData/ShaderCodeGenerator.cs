@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 
 namespace metashader.ShaderGraphData
 {
@@ -96,8 +97,8 @@ namespace metashader.ShaderGraphData
 
                         switch (line)
                         {
-                            case "%HEADER%": //@@ 要実装
-                                replace = "";
+                            case "%HEADER%":
+                                replace = GetShaderHeaderString().ToString();
                                 break;
                             case "%INCLUDES%": //@@ 要実装
                                 replace = "";
@@ -241,6 +242,22 @@ namespace metashader.ShaderGraphData
                 nodeList.Remove(removedNode);
             }
         }        
+
+        /// <summary>
+        /// シェーダのヘッダ文字列を取得する
+        /// </summary>
+        /// <returns></returns>
+        private StringBuilder GetShaderHeaderString()
+        {
+            StringWriter stream = new StringWriter();
+            stream.WriteLine("// ======================================================================");
+            stream.WriteLine("// Exported from {0}", App.CurrentApp.FileSettings.CurrentFilePath);
+            stream.WriteLine("// Exported Time : {0}", DateTime.Now.ToString());            
+            stream.WriteLine("// Metashader Version : {0}", Assembly.GetExecutingAssembly().GetName().Version);            
+            stream.WriteLine("// ======================================================================");
+
+            return stream.GetStringBuilder();
+        }
 
         /// <summary>
         /// シェーダのuniform宣言の文字列を取得する

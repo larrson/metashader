@@ -72,8 +72,7 @@ namespace metashader.GraphEditor
             m_outputJointIndex = outputJointIndex;
             m_curve.EndPos = outputNode.GetOutputJointPos(m_outputJointIndex);
                         
-
-            // イベント登録(@@@削除時イベント登録解除)
+            // イベント登録
             m_inputNode.PropertyChanged += new PropertyChangedEventHandler(inputNode_PropertyChanged);
             m_outputNode.PropertyChanged += new PropertyChangedEventHandler(outputNode_PropertyChanged);
         }        

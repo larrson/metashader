@@ -121,13 +121,15 @@ namespace metashader
         /// <param name="formatter"></param>
         public void Load(string path, BinaryFormatter formatter)
         {
+            // @@@ファイルの有効性のチェック
+
             FileStream fs = new FileStream(path,
             FileMode.Open,
             FileAccess.Read);            
 
             // ファイル設定の読み込み
             m_fileSettings = formatter.Deserialize(fs) as FileSettings;
-            m_fileSettings.NewWorkFolderPath = Path.GetDirectoryName( path );
+            m_fileSettings.CurrentFilePath = path;
 
             // グラフの読み込み
             m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
