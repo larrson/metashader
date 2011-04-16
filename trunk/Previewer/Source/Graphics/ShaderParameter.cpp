@@ -97,8 +97,7 @@ namespace opk
 			, m_pd3dBaseTexture ( NULL )
 			, m_bValid( false )
 			, m_samplerState()
-		{
-			// @@@サンプラーステートを初期化
+		{			
 		}
 
 		//------------------------------------------------------------------------------------------
@@ -118,7 +117,8 @@ namespace opk
 			// テクスチャの種類を初期化
 			m_nTextureType = TextureType_Max;
 
-			// @@@サンプラーステートを初期化
+			// サンプラーステートを初期化
+			m_samplerState = SSamplerState();
 
 			// テクスチャパスを解放
 			m_strPath.clear();							

@@ -24,6 +24,11 @@ namespace metashader
         /// デシリアライズされた作業フォルダのパス
         /// </summary>
         string m_oldWorkFolderPath = "";
+
+        /// <summary>
+        /// 現在のファイルパス
+        /// </summary>
+        string m_currentFilePath = "";
 #endregion
 
         #region properties
@@ -53,6 +58,21 @@ namespace metashader
                 m_newWorkFolderPath = value; 
                 // アプリケーションの作業フォルダを設定
                 Directory.SetCurrentDirectory(m_newWorkFolderPath);
+            }
+        }
+
+        /// <summary>
+        /// 現在編集中のファイルのパス
+        /// </summary>
+        public string CurrentFilePath
+        {
+            get { return m_currentFilePath;  }
+            set 
+            { 
+                m_currentFilePath = value;
+
+                // 作業フォルダを設定
+                NewWorkFolderPath = Path.GetDirectoryName(m_currentFilePath);
             }
         }
         #endregion

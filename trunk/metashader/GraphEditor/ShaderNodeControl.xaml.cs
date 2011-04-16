@@ -198,7 +198,7 @@ namespace metashader.GraphEditor
                 UpdateLayout();
             }
 
-            // X座標オフセット(@@@ジョイント幅の考慮)
+            // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth + _nameTextBlock.ActualWidth;
             double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
 
@@ -221,7 +221,7 @@ namespace metashader.GraphEditor
                 UpdateLayout();
             }
 
-            // X座標オフセット(@@@ジョイント幅の考慮)
+            // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth / 2;
             double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
 

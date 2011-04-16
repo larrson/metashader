@@ -125,6 +125,14 @@ namespace metashader.Command
            // undo/redo用バッファ
            UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
+           // 入力ジョイントへすでに接続済みの場合、リンクを外して新たに接続する
+           JointData inputJoint = App.CurrentApp.GraphData.GetNode(param.InNodeHashCode).GetInputJoint(param.InJointIndex);
+           while( inputJoint.JointList.Count > 0 )
+           {
+               JointData outputJoint = inputJoint.JointList.Last.Value;
+               App.CurrentApp.GraphData.DelLink(outputJoint.ParentNode.GetHashCode(), outputJoint.JointIndex, param.InNodeHashCode, param.InJointIndex, undoredo);
+           }
+
            // リンクの追加処理           
            App.CurrentApp.GraphData.AddLink(param.OutNodeHashCode, param.OutJointIndex, param.InNodeHashCode, param.InJointIndex, undoredo);
            
