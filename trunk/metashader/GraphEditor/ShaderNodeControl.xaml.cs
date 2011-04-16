@@ -192,6 +192,12 @@ namespace metashader.GraphEditor
             // 左上基準位置
             Point basicPos = Position;
 
+            // ActualXXXが0である場合、強制的にレイアウトを呼び出し、有効な値を設定させる
+            if( _outputJointGrid.ActualWidth == 0 )
+            {
+                UpdateLayout();
+            }
+
             // X座標オフセット(@@@ジョイント幅の考慮)
             double offsetX = _outputJointGrid.ActualWidth + _nameTextBlock.ActualWidth;
             double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
@@ -208,6 +214,12 @@ namespace metashader.GraphEditor
         {
             // 左上基準位置
             Point basicPos = Position;
+
+            // ActualXXXがNaNである場合、強制的にレイアウトを呼び出し、有効な値を設定させる
+            if ( _outputJointGrid.ActualWidth == 0 )
+            {
+                UpdateLayout();
+            }
 
             // X座標オフセット(@@@ジョイント幅の考慮)
             double offsetX = _outputJointGrid.ActualWidth / 2;
