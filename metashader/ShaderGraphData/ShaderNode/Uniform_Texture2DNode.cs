@@ -75,7 +75,11 @@ namespace metashader.ShaderGraphData
         public Uniform_Texture2DNode(string name, Point pos)
             : base(ShaderNodeType.Uniform_Texture2D, name, pos)
         {
-            // 変数名の初期化
+            /// メンバ変数の初期化            
+            // デフォルトのテクスチャパスを設定
+            m_path = FileSettings.ApplicationFolderPath + @"\..\..\data\texture\ichimatsu.png";
+
+            // シェーダ書き出し用変数名の初期化
             StringBuilder builder = new StringBuilder(name);
             builder.Replace("Uniform", "Color");
             m_variableName = builder.ToString();
