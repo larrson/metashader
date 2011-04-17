@@ -124,15 +124,19 @@ namespace metashader.GraphEditor
             {
                 JointControl.JointDragData dragData = e.Data.GetData(JointControl.JointDragData.Format) as JointControl.JointDragData;
 
-                // 接続を試みる
-                // @@@ 接続可否のチェック                                                
+                // 接続を試みる                
 
                 /// 接続 ///
                 // 入出力ジョイントを取得
                 JointData inputJointData = (this.JointData.SideType == JointData.Side.In ) 
                     ? this.JointData : dragData.JointControl.JointData;
                 JointData outputJointData = (this.JointData.SideType == JointData.Side.Out )
-                    ? this.JointData : dragData.JointControl.JointData;                
+                    ? this.JointData : dragData.JointControl.JointData;
+
+                // 接続可否のチェック                             
+                bool isValidJoint = inputJointData.SideType == JointData.Side.In && outputJointData.SideType == JointData.Side.Out;
+                if ( isValidJoint == false )
+                    return;
                 
                 // 接続コマンドを実行
                 Command.AddLinkCommand command = App.CurrentApp.UICommandManager.GetCommand(Command.CommandType.AddLink) as Command.AddLinkCommand;

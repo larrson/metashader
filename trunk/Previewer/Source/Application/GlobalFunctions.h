@@ -84,3 +84,12 @@ extern "C" DLLEXPORT void SetTexturePath( const char* i_pszName, const char* i_p
 	@param [in] i_samplerState サンプラステート
 */
 extern "C" DLLEXPORT void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_samplerState );
+
+/**
+	@brief 指定したバッファへ画像ファイルのサムネイルデータを取得する
+	@param [in] i_pszPath サムネイルを作成する元画像のファイルパス
+	@param [in] i_nWidth サムネイルの幅
+	@param [in] i_nHeight サムネイルの高さ
+	@param [in] o_pBuffer サムネイルデータの格納先バッファ
+*/
+extern "C" DLLEXPORT void GetImagePixelData( const char* i_pszPath, int i_nWidth, int i_nHeight, uint8* o_pBuffer);
