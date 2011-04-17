@@ -105,3 +105,42 @@ void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_
 	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();
 	pShaderMan->SetSamplerState( opk::shader::Profile_Pixel, std::string(i_pszName), i_samplerState );
 }
+
+//-------------------------------------------------------------------------------------------
+void GetImagePixelData( const char* i_pszPath, int i_nWidth, int i_nHeight, uint8* o_pBuffer )
+{
+	HRESULT hr;	
+
+	IDirect3DDevice9 *pD3DDevice = opk::CApp::GetInstance()->GetGraphicDevice()->GetD3DDevice();
+	IDirect3DTexture9 *pD3DTexture;
+	hr = D3DXCreateTexture( pD3DDevice, i_nWidth, i_nHeight, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DTexture ); MY_ASSERT( SUCCEEDED(hr) );
+
+	IDirect3DSurface9* pD3DSurface;
+	hr = pD3DTexture->GetSurfaceLevel(0, &pD3DSurface);
+
+	RECT destRect = { 0, 0, i_nWidth, i_nHeight };
+	hr = D3DXLoadSurfaceFromFileA( pD3DSurface, NULL, &destRect, i_pszPath, NULL, D3DX_DEFAULT, 0, NULL );	 MY_ASSERT( SUCCEEDED(hr) );				
+
+	// サーフェースのロック
+	D3DLOCKED_RECT lockedRect;
+	hr = pD3DSurface->LockRect( &lockedRect, NULL, D3DLOCK_READONLY); MY_ASSERT( SUCCEEDED(hr) );		
+
+	for( int h = 0; h < i_nHeight; ++h)
+	{		
+		for(int w = 0; w < i_nWidth; ++w)
+		{
+			// ARGB⇒BGRAの順
+			int pixel = h * lockedRect.Pitch + w * 4;
+			o_pBuffer[pixel + 0] = (reinterpret_cast<uint8*>(lockedRect.pBits))[pixel + 0];
+			o_pBuffer[pixel + 1] = (reinterpret_cast<uint8*>(lockedRect.pBits))[pixel + 1];
+			o_pBuffer[pixel + 2] = (reinterpret_cast<uint8*>(lockedRect.pBits))[pixel + 2];
+			o_pBuffer[pixel + 3] = (reinterpret_cast<uint8*>(lockedRect.pBits))[pixel + 3];
+		}		
+	}
+
+	// サーフェースのアンロック
+	hr = pD3DSurface->UnlockRect(); MY_ASSERT( SUCCEEDED(hr) );		
+
+	SAFE_RELEASE( pD3DSurface );
+	SAFE_RELEASE( pD3DTexture );
+}

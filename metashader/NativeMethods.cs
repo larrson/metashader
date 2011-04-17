@@ -46,5 +46,9 @@ namespace metashader
 
         [DllImport(dllName)]
         public unsafe static extern void SetSamplerState(string i_pszName, ShaderGraphData.Uniform_Texture2DNode.SamplerState i_samplerState);
+
+        /// テクスチャサムネイル用データの取得
+        [DllImport(dllName, CharSet=CharSet.Ansi)]
+        public unsafe static extern bool GetImagePixelData(string i_pszPath, int i_nWidth, int i_nHeight, IntPtr i_pBuffer );
     }
 }

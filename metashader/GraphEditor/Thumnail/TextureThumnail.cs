@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 namespace metashader.GraphEditor.Thumnail
 {
@@ -30,7 +31,7 @@ namespace metashader.GraphEditor.Thumnail
             if( tex2DNode.Path != null )
             {
                 SetPath(tex2DNode.Path);
-            }
+            }            
         }
 
         #region public methods
@@ -67,7 +68,7 @@ namespace metashader.GraphEditor.Thumnail
 
             // ファイル選択ダイアログを開く
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Texture Files (*.BMP;*.JPG;*.PNG)|*.BMP;*.JPG;*.PNG|All files (*.*)|*.*";
+            dlg.Filter = "Texture Files (*.DDS;*.BMP;*.JPG;*.PNG)|*.DDS;*.BMP;*.JPG;*.PNG|All files (*.*)|*.*";
 
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
@@ -96,8 +97,8 @@ namespace metashader.GraphEditor.Thumnail
         /// <param name="path"></param>
         private void SetPath(string path)
         {
+#if false // BitmapImageクラスを使用したデコード
             BitmapImage bitmapImage = new BitmapImage();
-
             // イメージのデコード
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new System.Uri(path, UriKind.Absolute);
@@ -107,6 +108,27 @@ namespace metashader.GraphEditor.Thumnail
 
             // イメージのセット
             m_image.Source = bitmapImage;
+#else 
+            // プラットフォーム呼び出しによるDirectXAPIを使用したデコード
+
+            int bytePerPixel = 4; // 1ピクセル当たりのバイト数(Brga32フォーマットを作成するため4)            
+            int size = bytePerPixel * (int)this.Width * (int)this.Height;
+                        
+            // P/Invokeでサムネイルデータを取得            
+            // サーフェース格納用にアンマネージメモリを確保する
+            IntPtr bufferPtr = Marshal.AllocHGlobal(size);
+            NativeMethods.GetImagePixelData(path, (int)this.Width, (int)this.Height, bufferPtr);
+
+            // 格納用バッファを作成            
+            byte[] pixelData = new byte[size];
+            Marshal.Copy(bufferPtr, pixelData, 0, size);
+                        
+            // バッファからBitmapSourceを作成
+            m_image.Source = BitmapSource.Create((int)this.Width, (int)this.Height, 96, 96, PixelFormats.Bgra32, null, pixelData, (int)this.Width * bytePerPixel);
+
+            // アンマネージメモリを解放
+            Marshal.FreeHGlobal(bufferPtr);
+#endif 
         }
         #endregion
     }
