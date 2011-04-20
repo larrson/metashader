@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="metashader.PropertyEditor.Parts.FilePath"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:metashader.PropertyEditor.Parts"
+    >
+    <DockPanel HorizontalAlignment="Stretch">
+        <Button DockPanel.Dock="Right" Name="_openButton">ファイルを開く</Button>
+        <local:CommonTextBox x:Name="_pathTextBox" />
+    </DockPanel>
+</UserControl>

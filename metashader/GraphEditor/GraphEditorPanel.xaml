@@ -4,7 +4,7 @@
     HorizontalAlignment="Stretch"
     VerticalAlignment ="Stretch">    
     
-    <Grid Name="_grid" AllowDrop="True" Background="Gray" Width="auto" Height="auto">        
+    <Grid Name="_grid" AllowDrop="True" Background="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">        
         <!-- リンク配置用キャンバス -->
         <Canvas Name="_linkCanvas" />
         <!-- シェーダノード配置用キャンバス -->

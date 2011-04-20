@@ -52,6 +52,64 @@ namespace metashader.ShaderGraphData
             public float m_fBorderColorG;	///< 境界色のG成分
             public float m_fBorderColorB;	///< 境界色のB成分
             public float m_fBorderColorA;	///< 境界色のA成分                    
+
+            #region properties
+            public WrapMode WrapU
+            {
+                get { return m_nWrapU; }
+                set { m_nWrapU = value; }
+            }
+            public WrapMode WrapV
+            {
+                get { return m_nWrapV; }
+                set { m_nWrapV = value; }
+            }
+            public WrapMode WrapW
+            {
+                get { return m_nWrapW; }
+                set { m_nWrapW = value; }
+            }
+            public FilterMode MagFilter
+            {
+                get { return m_nMagFilter; }
+                set { m_nMagFilter = value; }
+            }
+            public FilterMode MinFilter
+            {
+                get { return m_nMinFilter; }
+                set { m_nMinFilter = value; }
+            }
+            public FilterMode MipFilter
+            {
+                get { return m_nMipFilter; }
+                set { m_nMipFilter = value; }
+            }
+            public uint MaxAnisotoropy
+            {
+                get { return m_nMaxAnisotoropy; }
+                set { m_nMaxAnisotoropy = value; }
+            }
+            public float BorderColorR
+            {
+                get { return m_fBorderColorR; }
+                set { m_fBorderColorR = value; }
+            }
+            public float BorderColorG
+            {
+                get { return m_fBorderColorG; }
+                set { m_fBorderColorG = value; }
+            }
+            public float BorderColorB
+            {
+                get { return m_fBorderColorB; }
+                set { m_fBorderColorB = value; }
+            }
+            public float BorderColorA
+            {
+                get { return m_fBorderColorA; }
+                set { m_fBorderColorA = value; }
+            }
+            #endregion
         };
 
 #endregion

@@ -113,6 +113,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PropertyEditor\Parts\FilePath.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyEditor\Parts\SamplerState.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyEditor\Parts\StringTag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyEditor\PropertyBasePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyEditor\PropertyStackPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -176,6 +196,24 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PropertyEditor\Parts\CommonTextBox.cs" />
+    <Compile Include="PropertyEditor\Parts\FilePath.xaml.cs">
+      <DependentUpon>FilePath.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditor\Parts\Parts.cs" />
+    <Compile Include="PropertyEditor\Parts\SamplerState.xaml.cs">
+      <DependentUpon>SamplerState.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditor\Parts\ValueController.cs" />
+    <Compile Include="PropertyEditor\Parts\StringTag.xaml.cs">
+      <DependentUpon>StringTag.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditor\PropertyBasePanel.xaml.cs">
+      <DependentUpon>PropertyBasePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditor\PropertyStackPanel.xaml.cs">
+      <DependentUpon>PropertyStackPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShaderGraphData\ShaderNode\ConcreateNodeData.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\JointData.cs" />
