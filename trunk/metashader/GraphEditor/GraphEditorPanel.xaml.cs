@@ -168,6 +168,40 @@ namespace metashader.GraphEditor
         }
 
         /// <summary>
+        /// ノードやリンクの選択状態変更イベントのハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void SelectManager_SelectionChanged(object sender, SelectManager.SelectionChangedEventArgs args)
+        {
+            foreach (ShaderNodeDataBase node in args.SelectedNodes)
+            {
+                if( m_nodeList.ContainsKey( node.GetHashCode() ) )
+                    m_nodeList[node.GetHashCode()].IsSelected = true;
+            }
+
+            foreach (ShaderNodeDataBase node in args.UnselectedNodes)
+            {
+                if( m_nodeList.ContainsKey(node.GetHashCode()) )
+                    m_nodeList[node.GetHashCode()].IsSelected = false;
+            }
+        }
+
+        /// <summary>
+        /// 左マウスボタンが押された際のイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void GraphEditor_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // 選択解除
+            App.CurrentApp.SelectManager.Clear();
+
+            // イベントの伝播を止める
+            e.Handled = true;
+        }
+
+        /// <summary>
         /// ドラッグエンター
         /// </summary>
         /// <param name="sender"></param>
@@ -329,6 +363,12 @@ namespace metashader.GraphEditor
             // リンクの削除
             App.CurrentApp.EventManager.LinkDeletedEvent += new metashader.Event.LinkDeletedEventHandler(EventManager_LinkDeletedEvent);
 
+            // 選択イベント
+            App.CurrentApp.SelectManager.SelectionChanged += new SelectManager.SelectionChangedEventHandler(SelectManager_SelectionChanged);
+
+            // 左マウスダウン
+            _grid.MouseLeftButtonDown += new MouseButtonEventHandler(GraphEditor_MouseLeftButtonDown);
+
             // ドラッグエンター
             _grid.DragEnter += new DragEventHandler(GraphEditorPanel_DragEnter);
             // ドラッグオーバー
@@ -339,7 +379,7 @@ namespace metashader.GraphEditor
             _grid.Drop += new DragEventHandler(GraphEditorPanel_Drop);
             // コンテキストメニューを開いた
             _grid.ContextMenuOpening +=new ContextMenuEventHandler(GraphEditorPanel_ContextMenuOpening);
-        }        
+        }
 
         /// <summary>
         /// シェーダノードに対応するコントロールを探す

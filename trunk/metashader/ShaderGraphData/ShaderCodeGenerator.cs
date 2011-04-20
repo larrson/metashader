@@ -234,7 +234,11 @@ namespace metashader.ShaderGraphData
                     foreach( JointData joint in removedNode.GetOutputJoint(i).JointList )
                     {
                         ShaderNodeDataBase node = joint.ParentNode;
-                        dependencyCounter[node.GetHashCode()]--;
+
+                        // 含まれるか判定をしているのは、接続先が有効なノードではなく、nodeListに入っていない可能性があるため
+                        // 「有効なノードではない」とは、最終出力ノードへたどれないノード
+                        if( dependencyCounter.ContainsKey(node.GetHashCode()))
+                            dependencyCounter[node.GetHashCode()]--;
                     }                    
                 }
 

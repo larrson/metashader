@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="metashader.PropertyEditor.PropertyStackPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+    <Grid HorizontalAlignment="Stretch" Background="LightGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Name="_leftStack" HorizontalAlignment="Stretch" Orientation="Vertical"/>
+        <GridSplitter Grid.Column="1" Width="1" Background="Black" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" ShowsPreview="True" />
+        <StackPanel Grid.Column="2" Name="_rightStack" HorizontalAlignment="Stretch" Orientation="Vertical"/>
+    </Grid>
+</UserControl>

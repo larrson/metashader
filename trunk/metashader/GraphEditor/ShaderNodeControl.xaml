@@ -13,9 +13,13 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <!-- ノード名 -->
-        <TextBlock Name="_nameTextBlock" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Background="LightGray"  Text="{Binding Path=Name}" />
+        <Border Grid.Row="0" Grid.Column="1" Name="_nameBorder" BorderThickness="2" BorderBrush="White">
+            <TextBlock Name="_nameTextBlock" HorizontalAlignment="Stretch" Background="LightGray"  Text="{Binding Path=Name}" />
+        </Border>        
         <!-- サムネイル -->
-        <Grid Name="_thumnailGrid" Grid.Row="1" Grid.Column="1" Background="LightGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>         
+        <Border Grid.Row="1" Grid.Column="1" Name="_thumnailBorder" BorderThickness="2" BorderBrush="White">
+            <Grid Name="_thumnailGrid" Background="LightGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Border>
         <!-- 入力ジョイント -->
         <UniformGrid Name="_inputJointGrid" Grid.Row="1" Grid.Column="2" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" />                   
         <!-- 出力ジョイント -->       

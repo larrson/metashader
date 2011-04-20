@@ -105,6 +105,11 @@ namespace metashader.GraphEditor
         /// サムネイルのコントロール
         /// </summary>
         Thumnail.ThumnailControl m_thumnailControl;
+
+        /// <summary>
+        /// 選択中か
+        /// </summary>
+        bool m_selected = false;
 #endregion
 
 #region properties
@@ -129,6 +134,34 @@ namespace metashader.GraphEditor
                 NotifyPropertyChanged("Position");                
             }
         }        
+
+        /// <summary>
+        /// 選択中か
+        /// </summary>
+        public bool IsSelected
+        {
+            get 
+            {
+                return m_selected;
+            }
+            set
+            {
+                m_selected = value;
+
+                // 選択
+                if( m_selected )
+                {
+                    _nameBorder.BorderBrush = Brushes.Orange;
+                    _thumnailBorder.BorderBrush = Brushes.Orange;
+                }
+                // 非選択
+                else
+                {
+                    _nameBorder.BorderBrush = Brushes.White;
+                    _thumnailBorder.BorderBrush = Brushes.White;
+                }
+            }
+        }
 #endregion
 
 #region constructors
@@ -264,7 +297,10 @@ namespace metashader.GraphEditor
             // キャプチャする                        
             m_lastCapturedPos = GetPositionInCanvas(e.GetPosition(this));
 
-            m_isMouseLeftButtonDown = true; 
+            m_isMouseLeftButtonDown = true;
+
+            // イベントの伝播を止める
+            e.Handled = true;
         }
 
         void Node_MouseUp(object sender, MouseButtonEventArgs e)

@@ -143,6 +143,24 @@ namespace opk
 		{
 			HRESULT hr;
 
+			// ラッピングモードの変換テーブル
+			static int wrapTable[] =
+			{
+				D3DTADDRESS_WRAP,
+				D3DTADDRESS_MIRROR,
+				D3DTADDRESS_CLAMP,
+				D3DTADDRESS_BORDER,
+				D3DTADDRESS_MIRROR,
+			};
+
+			// フィルタリングモードの変換テーブル
+			static int filterTable[] =
+			{
+				D3DTEXF_POINT,
+				D3DTEXF_LINEAR,
+				D3DTEXF_ANISOTROPIC,
+			};
+
 			if( m_bValid == false )
 				return E_FAIL;
 
@@ -157,12 +175,12 @@ namespace opk
 			uint32 nSamplerIndex = pD3DConstantTable->GetSamplerIndex( m_nHandle );
 
 			// サンプラーステートの設定			
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSU, m_samplerState.m_nWrapU ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSV, m_samplerState.m_nWrapV ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSW, m_samplerState.m_nWrapW ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MAGFILTER, m_samplerState.m_nMagFilter ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MINFILTER, m_samplerState.m_nMinFilter ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MIPFILTER, m_samplerState.m_nMipFilter ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSU, wrapTable[m_samplerState.m_nWrapU] ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSV, wrapTable[m_samplerState.m_nWrapV] ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_ADDRESSW,	wrapTable[m_samplerState.m_nWrapW] ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MAGFILTER, filterTable[m_samplerState.m_nMagFilter] ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MINFILTER, filterTable[m_samplerState.m_nMinFilter] ));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MIPFILTER, filterTable[m_samplerState.m_nMipFilter] ));
 			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MAXANISOTROPY, m_samplerState.m_nMaxAnisotoropy ));
 			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_BORDERCOLOR, D3DCOLOR_ARGB((uint32)m_samplerState.m_fBorderColorA, (uint32)m_samplerState.m_fBorderColorR, (uint32)m_samplerState.m_fBorderColorG, (uint32)m_samplerState.m_fBorderColorB)));
 
