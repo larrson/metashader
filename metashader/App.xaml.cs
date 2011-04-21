@@ -98,6 +98,7 @@ namespace metashader
         /// </summary>
         public void Save(string path, BinaryFormatter formatter)
         {
+            path = Path.GetFullPath(path);
             FileStream fs = new FileStream(path,
             FileMode.Create,
             FileAccess.Write);
@@ -129,7 +130,7 @@ namespace metashader
 
             // ファイル設定の読み込み
             m_fileSettings = formatter.Deserialize(fs) as FileSettings;
-            m_fileSettings.CurrentFilePath = path;
+            m_fileSettings.CurrentFilePath = System.IO.Path.GetFullPath(path);
 
             // グラフの読み込み
             m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            

@@ -16,6 +16,8 @@ namespace metashader.PropertyEditor
 {
     /// <summary>
     /// PropertyBasePanel.xaml の相互作用ロジック
+    /// プロパティエディタを構成する背景パネル
+    /// この上に、各種のノードに適したパネルを表示する
     /// </summary>
     public partial class PropertyBasePanel : UserControl
     {
@@ -95,23 +97,23 @@ namespace metashader.PropertyEditor
         {
             PropertyStackPanel panel = new PropertyStackPanel();
 
-            switch( type )
+            // ノードの種類ごとにスタックへUIを積む
+
+            // Vector4用
+            if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
             {
-                    // テクスチャ用
-                case ShaderGraphData.ShaderNodeType.Uniform_Texture2D:
-                    panel.AddParts("テクスチャファイル", new Parts.Parts<string>("Path", new Parts.FilePath()));
-                    panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.Uniform_Texture2DNode.SamplerState>("TextureSamplerState", new Parts.SamplerState()));
-                    break;
-                    // Vector4用
-                case ShaderGraphData.ShaderNodeType.Uniform_Vector4:
-                    panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
-                    panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
-                    panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));
-                    panel.AddParts("W", new Parts.Parts<float>("W", new Parts.FloatTextBox()));
-                    break;
-                default:
-                    break;
+                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
+                panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));
+                panel.AddParts("W", new Parts.Parts<float>("W", new Parts.FloatTextBox()));
             }
+            // テクスチャ用
+            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
+                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
+            {
+                panel.AddParts("テクスチャファイル", new Parts.Parts<string>("Path", new Parts.FilePath()));
+                panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>("TextureSamplerState", new Parts.SamplerState()));
+            }                                                    
 
             return panel;
         }

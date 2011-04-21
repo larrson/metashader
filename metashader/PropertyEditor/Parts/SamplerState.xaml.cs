@@ -18,7 +18,7 @@ namespace metashader.PropertyEditor.Parts
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ShaderGraphData.Uniform_Texture2DNode.WrapMode source = (ShaderGraphData.Uniform_Texture2DNode.WrapMode)value;
+            ShaderGraphData.WrapMode source = (ShaderGraphData.WrapMode)value;
             return (int)source;            
         }
 
@@ -32,7 +32,7 @@ namespace metashader.PropertyEditor.Parts
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            ShaderGraphData.Uniform_Texture2DNode.FilterMode source = (ShaderGraphData.Uniform_Texture2DNode.FilterMode)value;
+            ShaderGraphData.FilterMode source = (ShaderGraphData.FilterMode)value;
             return (int)source;
         }
 
@@ -215,25 +215,25 @@ namespace metashader.PropertyEditor.Parts
         /// <param name="e"></param>
         void _wrapComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState>;
-            ShaderGraphData.Uniform_Texture2DNode.SamplerState value = valueController.Value;
+            ValueController<ShaderGraphData.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.SamplerState>;
+            ShaderGraphData.SamplerState value = valueController.Value;
 
             ComboBox comboBox = sender as ComboBox;
             
             // WrapU
             if( ReferenceEquals(comboBox, _wrapUComboBox ) )
             {
-                value.WrapU = (ShaderGraphData.Uniform_Texture2DNode.WrapMode)comboBox.SelectedIndex;
+                value.WrapU = (ShaderGraphData.WrapMode)comboBox.SelectedIndex;
             }
             // WrapV
             else if( ReferenceEquals(comboBox, _wrapVComboBox ) )
             {
-                value.WrapV = (ShaderGraphData.Uniform_Texture2DNode.WrapMode)comboBox.SelectedIndex;
+                value.WrapV = (ShaderGraphData.WrapMode)comboBox.SelectedIndex;
             }
             // WrapW
             else if( ReferenceEquals(comboBox, _wrapWComboBox ) )
             {
-                value.WrapW = (ShaderGraphData.Uniform_Texture2DNode.WrapMode)comboBox.SelectedIndex;
+                value.WrapW = (ShaderGraphData.WrapMode)comboBox.SelectedIndex;
             }
 
             // 変更後の値をセット
@@ -247,25 +247,25 @@ namespace metashader.PropertyEditor.Parts
         /// <param name="e"></param>
         void _filterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState>;
-            ShaderGraphData.Uniform_Texture2DNode.SamplerState value = valueController.Value;
+            ValueController<ShaderGraphData.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.SamplerState>;
+            ShaderGraphData.SamplerState value = valueController.Value;
 
             ComboBox comboBox = sender as ComboBox;
 
             // MagFilter
             if (ReferenceEquals(comboBox, _magFilterComboBox))
             {
-                value.MagFilter = (ShaderGraphData.Uniform_Texture2DNode.FilterMode)comboBox.SelectedIndex;
+                value.MagFilter = (ShaderGraphData.FilterMode)comboBox.SelectedIndex;
             }
             // MinFilter
             else if (ReferenceEquals(comboBox, _minFilterComboBox))
             {
-                value.MinFilter = (ShaderGraphData.Uniform_Texture2DNode.FilterMode)comboBox.SelectedIndex;
+                value.MinFilter = (ShaderGraphData.FilterMode)comboBox.SelectedIndex;
             }
             // MipFilter
             else if (ReferenceEquals(comboBox, _mipFilterComboBox))
             {
-                value.MipFilter = (ShaderGraphData.Uniform_Texture2DNode.FilterMode)comboBox.SelectedIndex;
+                value.MipFilter = (ShaderGraphData.FilterMode)comboBox.SelectedIndex;
             }
 
             // 変更後の値をセット
@@ -280,8 +280,8 @@ namespace metashader.PropertyEditor.Parts
         void _maxAnisotoropyTextBox_TextDecided(object sender, EventArgs args)
         {
             TextBox textBox = sender as TextBox;
-            ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState>;
-            ShaderGraphData.Uniform_Texture2DNode.SamplerState value = valueController.Value;
+            ValueController<ShaderGraphData.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.SamplerState>;
+            ShaderGraphData.SamplerState value = valueController.Value;
 
             try
             {
@@ -303,8 +303,8 @@ namespace metashader.PropertyEditor.Parts
         void _borderColorTextBox_TextDecided(object sender, EventArgs args)
         {
             TextBox textBox = sender as TextBox;
-            ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.Uniform_Texture2DNode.SamplerState>;
-            ShaderGraphData.Uniform_Texture2DNode.SamplerState value = valueController.Value;
+            ValueController<ShaderGraphData.SamplerState> valueController = this.DataContext as ValueController<ShaderGraphData.SamplerState>;
+            ShaderGraphData.SamplerState value = valueController.Value;
 
             try
             {

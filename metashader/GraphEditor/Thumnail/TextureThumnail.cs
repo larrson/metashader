@@ -27,10 +27,10 @@ namespace metashader.GraphEditor.Thumnail
             base._grid.Children.Add(m_image);
 
             // データにパスが設定されていれば、サムネイル画像を作成する
-            ShaderGraphData.Uniform_Texture2DNode tex2DNode = node as ShaderGraphData.Uniform_Texture2DNode;
-            if( tex2DNode.Path != null )
+            ShaderGraphData.Uniform_TextureNodeBase texNode = node as ShaderGraphData.Uniform_TextureNodeBase;
+            if( texNode.Path != null )
             {
-                SetPath(tex2DNode.Path);
+                SetPath(texNode.Path);
             }            
         }
 
