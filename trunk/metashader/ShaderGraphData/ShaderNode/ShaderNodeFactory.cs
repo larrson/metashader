@@ -100,8 +100,14 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Uniform_Texture2D:
                     ret = new Uniform_Texture2DNode(name, pos);
                     break;
+                case ShaderNodeType.Uniform_TextureCube:
+                    ret = new Uniform_TextureCubeNode(name, pos);
+                    break;
                 case ShaderNodeType.Input_UV:
                     ret = new Input_UVNode(name, pos);
+                    break;
+                case ShaderNodeType.Input_Normal:
+                    ret = new Input_NormalNode(name, pos);
                     break;
                 case ShaderNodeType.Operator_Add:
                     ret = new Operator_AddNode(name, pos);

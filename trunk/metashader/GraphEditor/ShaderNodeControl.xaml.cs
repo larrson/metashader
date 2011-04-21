@@ -193,17 +193,22 @@ namespace metashader.GraphEditor
             }            
 
             // 中央のサムネイルを作成
-            switch( node.Type )
+            ShaderGraphData.ShaderNodeType type = node.Type;
+            // Vector4用
+            if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
             {
-                case metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4:
-                    m_thumnailControl = new Thumnail.ColorThumnail(m_node);
-                    break;
-                case metashader.ShaderGraphData.ShaderNodeType.Uniform_Texture2D:
-                    m_thumnailControl = new Thumnail.TextureThumnail(m_node);
-                    break;
-                default:
-                    m_thumnailControl = new Thumnail.DefaultThumnail(m_node);
-                    break;
+                m_thumnailControl = new Thumnail.ColorThumnail(m_node);
+            }
+            // テクスチャ用
+            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
+                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
+            {
+                m_thumnailControl = new Thumnail.TextureThumnail(m_node);
+            }  
+            // デフォルト
+            else
+            {
+                m_thumnailControl = new Thumnail.DefaultThumnail(m_node);
             }            
             _thumnailGrid.Children.Add(m_thumnailControl);
 
