@@ -68,6 +68,50 @@ namespace metashader.Console
             App.CurrentApp.SelectManager.Select(node);
         }
     }  
+
+    /// <summary>
+    /// コンソールベースのfloat型プロパティ変更コマンド
+    /// </summary>
+    public class ChangeFloatCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 4)
+            {
+                return;
+            }
+
+            // ノード名前
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);
+
+            // プロパティ名を取得
+            string propertyName = options[2];
+
+            // float値を取得
+            float value = float.Parse(options[3]);
+
+            // Undo/Redoバッファ
+            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+
+            // 新しいプロパティを設定
+            if (node != null)
+            {
+                App.CurrentApp.GraphData.ChangeNodeProperty<float>(node, propertyName, value, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
+        }
+    }
  
     /// <summary>
     /// コンソールベースのシェーダノードのプロパティ変更コマンド(4Dベクトル版)
