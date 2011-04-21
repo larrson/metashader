@@ -75,17 +75,18 @@ namespace metashader.GraphEditor.Thumnail
         /// <param name="args">イベント引数</param>
         public override void OnNodePropertyChanged(object sender, Event.NodePropertyChangedEventArgs args)
         {
-            switch (args.PropertyName)
+            // 背景を変更するか
+            bool bChangeBackground = args.PropertyName == "Values"
+                || args.PropertyName == "X"
+                || args.PropertyName == "Y"
+                || args.PropertyName == "Z"
+                || args.PropertyName == "W";
+            
+            if( bChangeBackground )
             {
-                case "Values":
-                    {
-                        // 背景色を変更
-                        float[] values = args.NewValue as float[];
-                        SetBackgroundColor(values);
-                    }
-                    break;
-                default:
-                    break;
+                 // 背景色を変更 
+                ShaderGraphData.Uniform_Vector4Node vector4Node = args.Node as ShaderGraphData.Uniform_Vector4Node;
+                SetBackgroundColor(vector4Node.Values);                    
             }
         }
         #endregion

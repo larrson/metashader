@@ -54,6 +54,54 @@ namespace metashader.ShaderGraphData
                 m_values = value;                                 
             }
         }
+
+        /// <summary>
+        /// X成分
+        /// </summary>
+        public float X
+        {
+            get { return m_values[0]; }
+            set
+            {
+                m_values[0] = value;
+            }
+        }
+
+        /// <summary>
+        /// Y成分
+        /// </summary>
+        public float Y
+        {
+            get { return m_values[1]; }
+            set
+            {
+                m_values[1] = value;
+            }
+        }
+
+        /// <summary>
+        /// Z成分
+        /// </summary>
+        public float Z
+        {
+            get { return m_values[2]; }
+            set
+            {
+                m_values[2] = value;
+            }
+        }
+
+        /// <summary>
+        /// W成分
+        /// </summary>
+        public float W
+        {
+            get { return m_values[3]; }
+            set
+            {
+                m_values[3] = value;
+            }
+        }
 #endregion
 
 #region public methods        

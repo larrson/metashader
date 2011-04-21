@@ -117,6 +117,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PropertyEditor\Parts\FloatTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertyEditor\Parts\SamplerState.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,6 +204,9 @@
     <Compile Include="PropertyEditor\Parts\CommonTextBox.cs" />
     <Compile Include="PropertyEditor\Parts\FilePath.xaml.cs">
       <DependentUpon>FilePath.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditor\Parts\FloatTextBox.xaml.cs">
+      <DependentUpon>FloatTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="PropertyEditor\Parts\Parts.cs" />
     <Compile Include="PropertyEditor\Parts\SamplerState.xaml.cs">

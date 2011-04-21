@@ -97,9 +97,17 @@ namespace metashader.PropertyEditor
 
             switch( type )
             {
+                    // テクスチャ用
                 case ShaderGraphData.ShaderNodeType.Uniform_Texture2D:
                     panel.AddParts("テクスチャファイル", new Parts.Parts<string>("Path", new Parts.FilePath()));
                     panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.Uniform_Texture2DNode.SamplerState>("TextureSamplerState", new Parts.SamplerState()));
+                    break;
+                    // Vector4用
+                case ShaderGraphData.ShaderNodeType.Uniform_Vector4:
+                    panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
+                    panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
+                    panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));
+                    panel.AddParts("W", new Parts.Parts<float>("W", new Parts.FloatTextBox()));
                     break;
                 default:
                     break;

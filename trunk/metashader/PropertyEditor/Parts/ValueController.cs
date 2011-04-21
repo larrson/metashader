@@ -90,6 +90,14 @@ namespace metashader.PropertyEditor.Parts
                 return m_nodeData;
             }
         }
+
+        /// <summary>
+        /// プロパティ名
+        /// </summary>
+        public string PropertyName
+        {
+            get { return m_propertyName; }
+        }
 #endregion
     }
 }
