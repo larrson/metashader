@@ -5,14 +5,34 @@
     xmlns:pe="clr-namespace:metashader.PropertyEditor"
     Title="Window1" Height="800" Width="800"
         Loaded="Window_Loaded">
-    <Grid>        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="5" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="0.6*" />
-        </Grid.RowDefinitions>        
-        <ge:GraphEditorPanel Grid.Row="0" />
-        <GridSplitter Grid.Row="1" Height="3" Background="Black" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext" ResizeDirection="Rows" ShowsPreview="True" />
-        <pe:PropertyBasePanel Grid.Row="2" />
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Name="_mainMenu" >
+            <MenuItem Header="ファイル(_F)">
+                <MenuItem Header="新規作成" Command="{Binding Path=CreateNewCommand }"/>
+                <MenuItem Header="開く" Command="{Binding Path=LoadCommand }" />
+                <MenuItem Header="上書き保存" />
+                <MenuItem Header="名前を付けて保存" Command="{Binding Path=SaveAsCommand }" />
+            </MenuItem>
+            <MenuItem Header="編集(_E)">
+                <MenuItem Header="元に戻す" Command="{Binding Path=UndoCommand }"/>
+                <MenuItem Header="やり直し" Command="{Binding Path=RedoCommand }"/>
+                <Separator />
+                <MenuItem Header="削除" Command="{Binding Path=DeleteCommand }"/>
+            </MenuItem>
+            <MenuItem Header="制御(_C)">
+                <MenuItem Header="実行" Command="{Binding Path=ExecuteShaderCommand }"/>
+            </MenuItem>
+        </Menu>
+        <!-- 残りの部分全てをウィンドウの機能が占有 -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="5" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="0.6*" />
+            </Grid.RowDefinitions>
+            <ge:GraphEditorPanel Grid.Row="0" />
+            <GridSplitter Grid.Row="1" Height="3" Background="Black" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext" ResizeDirection="Rows" ShowsPreview="True" />
+            <pe:PropertyBasePanel Grid.Row="2" />
+        </Grid>
+    </DockPanel>    
 </Window>

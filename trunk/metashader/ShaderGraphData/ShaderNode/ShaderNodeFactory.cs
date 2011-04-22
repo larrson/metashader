@@ -120,6 +120,16 @@ namespace metashader.ShaderGraphData
             }
             return ret;
         }
+
+        /// <summary>
+        /// 外部からの初期化用
+        /// </summary>
+        public void Reset()
+        {
+            // メンバ変数の初期化
+            m_IDCounter = new uint[(int)ShaderNodeType.Max];            
+            m_instanceCounter = new uint[(int)ShaderNodeType.Max];
+        }
 #endregion
     }
 }

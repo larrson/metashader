@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="ConsoleWindow" Height="300" Width="300">
     <Grid>
-        <RichTextBox Name="_ritchTextBox">
+        <RichTextBox Name="_ritchTextBox" Background="LightGray" >
             
         </RichTextBox>
     </Grid>

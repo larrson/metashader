@@ -94,6 +94,23 @@ namespace metashader
 
 #region public method
         /// <summary>
+        /// 新規作成
+        /// </summary>
+        public void CreateNew()
+        {                       
+            // 選択の解除
+            m_selectManager.Clear();
+
+            // グラフデータの初期化
+            m_graphData.Reset();
+
+            // @@@ シェーダのリセット
+
+            // ファイル設定の初期化
+            m_fileSettings.Reset();
+        }
+
+        /// <summary>
         /// 保存
         /// </summary>
         public void Save(string path, BinaryFormatter formatter)

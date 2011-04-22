@@ -378,6 +378,21 @@ namespace metashader.Console
     }
 
     /// <summary>
+    /// コンソールベースの新規作成コマンド
+    /// </summary>
+    public class CreateNewCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            App.CurrentApp.CreateNew();
+        }
+    }
+
+    /// <summary>
     /// コンソールベースのセーブコマンド
     /// </summary>
     public class SaveCommand : IConsoleCommand
