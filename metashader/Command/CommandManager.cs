@@ -19,6 +19,9 @@ namespace metashader.Command
         Redo,           // やり直しコマンド
         Unselect,       // 選択解除
 
+        CreateNew,      // 新規作成
+        Load,           // ロード
+        SaveAs,         // 名前を付けて保存
         ExecuteShader,  // シェーダを実行
 
         Max,            // コマンドの数
@@ -92,7 +95,7 @@ namespace metashader.Command
     public class CommandManager
     {      
 #region variables
-        CommandBase[] m_command;
+        CommandBase[] m_command;        
 #endregion    
 
 #region constructors
@@ -100,6 +103,64 @@ namespace metashader.Command
         {
             // 初期化
             Initialize();
+        }
+#endregion
+
+#region properties        
+        /// <summary>
+        /// 削除コマンド
+        /// </summary>
+        public ICommand DeleteCommand
+        {
+            get { return m_command[(int)CommandType.Delete]; }
+        }
+
+        /// <summary>
+        /// 元に戻すコマンド
+        /// </summary>
+        public ICommand UndoCommand
+        {
+            get { return m_command[(int)CommandType.Undo]; }
+        }
+
+        /// <summary>
+        /// やり直しコマンド
+        /// </summary>
+        public ICommand RedoCommand
+        {
+            get { return m_command[(int)CommandType.Redo]; }
+        }        
+
+        /// <summary>
+        /// 新規作成コマンド
+        /// </summary>
+        public ICommand CreateNewCommand
+        {
+            get { return m_command[(int)CommandType.CreateNew]; }
+        }
+        
+        /// <summary>
+        /// ロードコマンド
+        /// </summary>
+        public ICommand LoadCommand
+        {
+            get { return m_command[(int)CommandType.Load]; }
+        }
+
+        /// <summary>
+        /// 名前を付けて保存コマンド
+        /// </summary>
+        public ICommand SaveAsCommand
+        {
+            get { return m_command[(int)CommandType.SaveAs]; }
+        }
+
+        /// <summary>
+        /// シェーダの実行コマンド
+        /// </summary>
+        public ICommand ExecuteShaderCommand
+        {
+            get { return m_command[(int)CommandType.ExecuteShader]; }
         }
 #endregion
 
@@ -129,6 +190,9 @@ namespace metashader.Command
             m_command[(int)CommandType.Undo] = new UndoCommand();
             m_command[(int)CommandType.Redo] = new RedoCommand();
             m_command[(int)CommandType.Unselect] = new UnselectCommand();
+            m_command[(int)CommandType.CreateNew] = new CreateNewCommand();
+            m_command[(int)CommandType.Load] = new LoadCommand();
+            m_command[(int)CommandType.SaveAs] = new SaveAsCommand();
             m_command[(int)CommandType.ExecuteShader] = new ExecuteShaderCommand();
         }
 #endregion

@@ -5,9 +5,121 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Win32;
+using System.Windows;
 
 namespace metashader.Command
-{
+{  
+    /// <summary>
+    /// 新規作成コマンド
+    /// </summary>
+    public class CreateNewCommand : CommandBase
+    {
+#region constructor
+       public CreateNewCommand()
+           : base( "新規作成" )
+       {       
+       }
+#endregion
+
+#region override methods
+       public override bool CanExecute(object parameter)
+       {
+           return true;
+       }
+
+       public override void Execute(object parameter)
+       {
+           // 確認ダイアログ
+           MessageBoxResult result = MessageBox.Show(
+                    "保存されていない変更は失われますが、よろしいですか？"
+                , "確認"
+                , MessageBoxButton.OKCancel
+               );
+
+            // OKなら新規作成
+            if( result == MessageBoxResult.OK )
+            {
+                App.CurrentApp.CreateNew();
+            }
+       }         
+#endregion         
+    }
+
+    /// <summary>
+    /// ファイルロードコマンド
+    /// 内部でダイアログを開き、選択したファイルを開く
+    /// </summary>
+    public class LoadCommand : CommandBase
+    {
+#region constructor
+       public LoadCommand()
+           : base( "ロード" )
+       {       
+       }
+#endregion
+
+#region override methods
+       public override bool CanExecute(object parameter)
+       {
+           return true;
+       }
+
+       public override void Execute(object parameter)
+       {
+           // ファイル選択ダイアログ
+           OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "Metashader Files (*.MSH)|*.MSH";
+
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
+            {
+                App.CurrentApp.Load(dlg.FileName, new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter());
+            }
+       }         
+#endregion 
+    }
+
+    /// <summary>
+    /// 名前を付けてファイル保存コマンド
+    /// </summary>
+    public class SaveAsCommand : CommandBase
+    {
+#region constructor
+       public SaveAsCommand()
+           : base( "名前を付けて保存" )
+       {       
+       }
+#endregion
+
+#region override methods
+       public override bool CanExecute(object parameter)
+       {
+           return true;
+       }
+
+       public override void Execute(object parameter)
+       {
+           // ファイル保存ダイアログ
+           SaveFileDialog dlg = new SaveFileDialog();
+           // デフォルトファイル名
+           dlg.FileName = "新規メタシェーダ";
+           // フィルター
+            dlg.Filter = "Metashader Files (*.MSH)|*.MSH";
+           // 拡張子が省略された際に不可
+            dlg.AddExtension = true;
+           // 規定の拡張子
+            dlg.DefaultExt = ".msh";           
+
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
+            {
+                App.CurrentApp.Save(dlg.FileName, new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter());
+            }
+       }         
+#endregion 
+    }
+
     /// <summary>
     /// 現在のシェーダグラフを実行する
     /// </summary>

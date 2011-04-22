@@ -52,6 +52,7 @@ namespace metashader.Console
             m_commands.Add("Delete", new DeleteCommand());
             m_commands.Add("Undo", new UndoCommand());
             m_commands.Add("Redo", new RedoCommand());
+            m_commands.Add("CreateNew", new CreateNewCommand());
             m_commands.Add("Load", new LoadCommand());
             m_commands.Add("Save", new SaveCommand());
             m_commands.Add("ExportShader", new ExportShaderCommand());

@@ -27,7 +27,7 @@ namespace metashader.Console
 
         public ConsoleWindow()
         {
-            InitializeComponent();
+            InitializeComponent();           
 
             // イベント登録
             _ritchTextBox.PreviewKeyDown += new KeyEventHandler(ritchTextBox_KeyDown);            
@@ -65,7 +65,7 @@ namespace metashader.Console
             if( e.Key == Key.Return )
             {
                 FlowDocument document = _ritchTextBox.Document;
-                TextRange range = new TextRange(document.Blocks.LastBlock.ContentStart, document.Blocks.LastBlock.ContentEnd);
+                TextRange range = new TextRange(document.Blocks.LastBlock.ContentStart, document.Blocks.LastBlock.ContentEnd);                
 #if DEBUG
                 System.Console.WriteLine(range.Text);
 #endif // DEBUG

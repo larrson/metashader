@@ -22,6 +22,9 @@ namespace metashader
         public Window1()
         {
             InitializeComponent();
+
+            // メニューの初期化
+            _mainMenu.DataContext = App.CurrentApp.UICommandManager;
         }
 
 #region event handlers

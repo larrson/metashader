@@ -45,8 +45,7 @@ namespace metashader.PropertyEditor.Parts
         {
             m_valueController = new ValueController<ParameterType>(propertyName);
             
-            m_userControl = control;
-            m_userControl.DataContext = m_valueController;
+            m_userControl = control;            
         }
 #endregion
 
@@ -61,6 +60,8 @@ namespace metashader.PropertyEditor.Parts
             set
             {
                 m_valueController.NodeData = value;
+                if( m_userControl.DataContext == null )
+                    m_userControl.DataContext = m_valueController;
             }
             get 
             {

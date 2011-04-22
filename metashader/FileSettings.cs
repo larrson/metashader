@@ -97,6 +97,16 @@ namespace metashader
 
             return newFullPath;
         }
+
+        /// <summary>
+        /// 初期化
+        /// 外部からの初期化処理用
+        /// </summary>
+        public void Reset()
+        {
+            // 作業フォルダはそのままに、編集中のファイルパスのみ初期化
+            m_currentFilePath = "";
+        }
         #endregion
     }
 }

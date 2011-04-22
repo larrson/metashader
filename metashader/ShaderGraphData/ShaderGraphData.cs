@@ -471,6 +471,25 @@ namespace metashader.ShaderGraphData
                 }
             }            
         }
+
+        /// <summary>
+        /// 外部からの初期化用
+        /// データ構造を初期状態に戻す
+        /// </summary>
+        public void Reset()
+        {
+            // 全てのノードを消す
+            // 通常の操作と同じメソッドを使用して、
+            // イベントに依存している処理(主にUI)側も
+            int[] hashCodes = m_nodeList.Keys.ToArray();
+            foreach( int hashCode in hashCodes )
+            {
+                DelNode(hashCode, null);
+            }
+
+            // ファクトリの初期化
+            m_shaderNodeFactory.Reset();
+        }
 #endregion
 
 #region private methods

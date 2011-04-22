@@ -323,16 +323,7 @@ namespace metashader.ShaderGraphData
                 if (SelectionChanged != null)
                     SelectionChanged(this, args);
             }
-        }
-
-        /// <summary>
-        /// リセット処理
-        /// 新規ドキュメント読み込み時当の初期化処理
-        /// </summary>
-        public void Reset()
-        {
-            Inner_Clear();
-        }
+        }        
 #endregion
 
 #region private methods
