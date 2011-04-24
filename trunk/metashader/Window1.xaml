@@ -12,6 +12,8 @@
                 <MenuItem Header="開く" Command="{Binding Path=LoadCommand }" />
                 <MenuItem Header="上書き保存" />
                 <MenuItem Header="名前を付けて保存" Command="{Binding Path=SaveAsCommand }" />
+                <Separator />
+                <MenuItem Header="エクスポート" Command="{Binding Path=ExportCommand }"/>
             </MenuItem>
             <MenuItem Header="編集(_E)">
                 <MenuItem Header="元に戻す" Command="{Binding Path=UndoCommand }"/>

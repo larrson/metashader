@@ -20,6 +20,8 @@ namespace metashader.ShaderGraphData
         /// </summary>
         static readonly string m_shaderTemplatePath = @"\..\..\data\shader\template\custom_material.msh";
 
+        ShaderGraphData m_graphData;
+
         /// <summary>
         /// 有効なノードのキュー
         /// ノードが依存性の低い順に並ぶ（入力変数が最も最初となる）
@@ -42,14 +44,9 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// コンストラクタ
         /// </summary>        
-        public ShaderCodeGenerator( ReadOnlyCollection<ShaderNodeDataBase> nodeList )
+        public ShaderCodeGenerator( ShaderGraphData graphData )
         {
-            // 有効なノードのみを取り出す
-            List<ShaderNodeDataBase> validNodes =
-                extractValidNodes(nodeList);
-
-            // 有効なノードを依存関係に合わせて並び替える
-            Sort( validNodes );
+            m_graphData = graphData;
         }
 #endregion        
 
@@ -86,6 +83,9 @@ namespace metashader.ShaderGraphData
         /// </summary>
         private void Generate()
         {
+            // 有効なノードを依存関係に合わせて並び替える
+            Sort(m_graphData.ValidNodes);
+
             /// テンプレート内の置き換えマーカに合わせて
             /// 生成した文字列で置き換える
 
@@ -128,62 +128,7 @@ namespace metashader.ShaderGraphData
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// 有効なノードを抽出する
-        /// ここで、「有効である」とは、対象とするノードが最終的に出力ノードへのパスをもつこと
-        /// </summary>
-        /// <param name="nodeList"></param>
-        /// <returns></returns>
-        private List<ShaderNodeDataBase> extractValidNodes(  ReadOnlyCollection<ShaderNodeDataBase> nodeList )
-        {
-            // 最終出力ノードを探す
-            ShaderNodeDataBase outputNode = null;
-            foreach( ShaderNodeDataBase node in nodeList)
-            {
-                if( node.Type.IsOutputNode() )
-                {
-                    outputNode = node;
-                    break;
-                }
-            }
-            if( outputNode == null )
-            {
-                throw new ArgumentException("渡されているシェーダノードが不正です");
-            }
-
-            // 有効なノードを入れる連想コンテナ
-            Dictionary<int, ShaderNodeDataBase> validNodes = new Dictionary<int, ShaderNodeDataBase>();
-
-            // 深さ優先探索で有効なノードを抽出
-            Stack<ShaderNodeDataBase> stack = new Stack<ShaderNodeDataBase>(); // 深さ優先探索用コンテナ
-            stack.Push(outputNode);
-            while( stack.Count > 0 )
-            {
-                ShaderNodeDataBase node = stack.Pop();
-                
-                // すでに連想コンテナに入っていれば、探索せずに、スタックの次の要素へ
-                if( validNodes.ContainsKey(node.GetHashCode()) )
-                {
-                    continue;
-                }
-                
-                // 新しく探索するノードなので、連想コンテナへ積む
-                validNodes.Add(node.GetHashCode(), node);
-
-                // このノードの入力ジョイントへ接続されているノードをスタックへ積む
-                for(int i = 0; i < node.InputJointNum; ++i)
-                {
-                    stack.Push(node.GetInputJoint(i).JointList.First.Value.ParentNode);
-                }
-            }
-
-            // 抽出された有効なノードのリストを返す
-            List<ShaderNodeDataBase> ret = new List<ShaderNodeDataBase>( validNodes.Values );
-
-            return ret;
-        }        
+        }             
 
         /// <summary>
         /// ノード間の依存関係に合わせてソートする

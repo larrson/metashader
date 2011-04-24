@@ -159,6 +159,7 @@
     <Compile Include="Command\GraphDataCommand.cs" />
     <Compile Include="Command\SystemCommand.cs" />
     <Compile Include="Common\MultiMap.cs" />
+    <Compile Include="Common\TextAdorner.cs" />
     <Compile Include="Console\CommandInterpreter.cs" />
     <Compile Include="Console\ConsoleCommand.cs" />
     <Compile Include="Console\ConsoleWindow.xaml.cs">
@@ -223,6 +224,7 @@
     <Compile Include="PropertyEditor\PropertyStackPanel.xaml.cs">
       <DependentUpon>PropertyStackPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ShaderGraphData\ShaderGraphData_ErrorHandling.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\ConcreateNodeData.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\JointData.cs" />
     <Compile Include="ShaderGraphData\ParameterUndoRedo.cs" />

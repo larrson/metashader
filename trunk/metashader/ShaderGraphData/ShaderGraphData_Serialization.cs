@@ -95,6 +95,9 @@ namespace metashader.ShaderGraphData
         /// <param name="sender"></param>
         void IDeserializationCallback.OnDeserialization(object sender)
         {
+            //  空の出力ノードリストを作成
+            this.m_outputNodeList = new List<ShaderNodeDataBase>();
+
             //　空のノードリストを作成
             this.m_nodeList = new Dictionary<int, ShaderNodeDataBase>();
         }        

@@ -329,10 +329,20 @@ namespace metashader.ShaderGraphData
         public override VariableType GetInputJointVariableType(int index)
         {
             // 接続元ノードの出力ジョイントに依存する
-            JointData outputJoint = GetInputJoint( index ).JointList.First.Value;
-            ShaderNodeDataBase node = outputJoint.ParentNode;
 
-            return node.GetOutputJointVariableType(outputJoint.JointIndex);
+            // 接続されていない場合は不定
+            if( GetInputJoint( index ).JointList.Count == 0 )
+            {
+                return VariableType.INDEFINITE;
+            }
+            // 接続されていれば接続元に依存
+            else
+            {
+                JointData outputJoint = GetInputJoint(index).JointList.First.Value;
+                ShaderNodeDataBase node = outputJoint.ParentNode;
+
+                return node.GetOutputJointVariableType(outputJoint.JointIndex);
+            }            
         }
 
         /// <summary>
@@ -348,6 +358,28 @@ namespace metashader.ShaderGraphData
 
             return GetInputJointVariableType(0);
         }
+
+        /// <summary>
+        /// ノードの有効性を判定
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsValid()
+        {
+            // 入力リンクの有効性を確認する
+            // 全ての入力が埋まっているか？
+            foreach (JointData inputJoint in m_inputJoints)
+            {
+                if (inputJoint.JointList.Count != 1)
+                    return false;
+            }
+
+            // 入力型が適当か(演算子に即しているか)
+            // 2つの入力型が等しい
+            if (GetInputJointVariableType(0) != GetInputJointVariableType(1))
+                return false;
+
+            return true;
+        }        
 
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ

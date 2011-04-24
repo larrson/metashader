@@ -35,6 +35,12 @@ namespace metashader.Event
         /// リンクが削除された際に起動するイベント
         /// </summary>
         public event LinkDeletedEventHandler LinkDeletedEvent;
+
+        /// <summary>
+        /// グラフ構造からのエラー報告に使用するイベント
+        /// エラーがない場合もその旨を報告する
+        /// </summary>
+        public event GraphErrorEventHandler GraphErrorEvent;
 #endregion
 
 #region constructors
@@ -107,6 +113,17 @@ namespace metashader.Event
             if (LinkDeletedEvent != null)
             {
                 LinkDeletedEvent(sender, args);
+            }
+        }
+
+        /// <summary>
+        /// グラフエラー報告イベントの起動
+        /// </summary>
+        public void RaiseGraphError(object sender, GraphErrorEventArgs args)
+        {
+            if( GraphErrorEvent != null)
+            {
+                GraphErrorEvent(sender, args);
             }
         }
 #endregion
