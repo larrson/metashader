@@ -158,6 +158,7 @@
     <Compile Include="Command\CommandManager.cs" />
     <Compile Include="Command\GraphDataCommand.cs" />
     <Compile Include="Command\SystemCommand.cs" />
+    <Compile Include="Common\MultiMap.cs" />
     <Compile Include="Console\CommandInterpreter.cs" />
     <Compile Include="Console\ConsoleCommand.cs" />
     <Compile Include="Console\ConsoleWindow.xaml.cs">
