@@ -303,8 +303,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region private method
-        // 内部用対象ジョイントの検索関数。パラメータは、リンク先のハッシュコードと、ジョイントインデックス→リンク先のジョイントを引っ張ってきて参照を直接比較でも行ける気がする
+        #region private method        
         #endregion
     }
 }

@@ -22,6 +22,8 @@ namespace metashader.Command
         CreateNew,      // 新規作成
         Load,           // ロード
         SaveAs,         // 名前を付けて保存
+        Export,         // シェーダーコードのエクスポート
+
         ExecuteShader,  // シェーダを実行
 
         Max,            // コマンドの数
@@ -156,6 +158,14 @@ namespace metashader.Command
         }
 
         /// <summary>
+        /// エクスポートコマンド
+        /// </summary>
+        public ICommand ExportCommand
+        {
+            get { return m_command[(int)CommandType.Export];  }
+        }
+
+        /// <summary>
         /// シェーダの実行コマンド
         /// </summary>
         public ICommand ExecuteShaderCommand
@@ -193,6 +203,7 @@ namespace metashader.Command
             m_command[(int)CommandType.CreateNew] = new CreateNewCommand();
             m_command[(int)CommandType.Load] = new LoadCommand();
             m_command[(int)CommandType.SaveAs] = new SaveAsCommand();
+            m_command[(int)CommandType.Export] = new ExportCommand();
             m_command[(int)CommandType.ExecuteShader] = new ExecuteShaderCommand();
         }
 #endregion

@@ -289,6 +289,39 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// 有効なノードか判定する
+        /// @@ エラーメッセージの付加       
+        /// </summary>
+        public virtual bool IsValid()
+        {            
+            // 入力リンクの有効性を確認する
+            // 全ての入力が埋まっているか？
+            foreach(JointData inputJoint in m_inputJoints)
+            {
+                if( inputJoint.JointList.Count != 1 )
+                    return false;
+            }
+            // 入力リンクの型が繋がっている出力の型と一致しているか
+            foreach(JointData inputJoint in m_inputJoints)
+            {
+                // 入力の型を求める
+                VariableType inputType = GetInputJointVariableType(inputJoint.JointIndex);
+
+                // 出力の型を求める
+                JointData outputJoint = inputJoint.JointList.First.Value;               
+                ShaderNodeDataBase outputNode = outputJoint.ParentNode;                
+                VariableType outputType = outputNode.GetOutputJointVariableType(outputJoint.JointIndex);
+
+                if( inputType != outputType )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>

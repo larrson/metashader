@@ -88,6 +88,11 @@ namespace metashader.GraphEditor
         /// シェーダノードのドラッグ用アドーナー
         /// </summary>
         DragAdorner m_nodeDragAdorner;
+
+        /// <summary>
+        /// エラー表示用のテキストアドーナー
+        /// </summary>
+        Common.TextAdorner m_errorTextAdorner;
 #endregion
 
         /// <summary>
@@ -165,6 +170,31 @@ namespace metashader.GraphEditor
         void EventManager_LinkDeletedEvent(object sender, metashader.Event.LinkDeletedEventArgs args)
         {
             DeleteLink(args.LinkData);
+        }
+
+        /// <summary>
+        /// グラフデータ構造のエラー報告時に呼ばれるイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_GraphErrorEvent(object sender, metashader.Event.GraphErrorEventArgs args)
+        {
+            // エラー表示を変更
+            m_errorTextAdorner.Text = args.Message;
+        }
+
+        /// <summary>
+        /// ウィンドウ表示の準備が整った際に呼ばれるイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void GraphEditorPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            // アドーナーレイヤーへあどーなーを追加
+            m_errorTextAdorner = new Common.TextAdorner(this);
+
+            AdornerLayer layer = AdornerLayer.GetAdornerLayer(this);
+            layer.Add(m_errorTextAdorner);
         }
 
         /// <summary>
@@ -351,7 +381,7 @@ namespace metashader.GraphEditor
         /// イベントハンドラの初期化
         /// </summary>
         private void InitializeEventHandlers()
-        {
+        {            
             // ノードの追加
             App.CurrentApp.EventManager.NodeAddedEvent += new metashader.Event.NodeAddedEventHandler(EventManager_NodeAddedEvent);
             // ノードの削除
@@ -362,9 +392,14 @@ namespace metashader.GraphEditor
             App.CurrentApp.EventManager.LinkAddedEvent += new metashader.Event.LinkAddedEventHandler(EventManager_LinkAddedEvent);
             // リンクの削除
             App.CurrentApp.EventManager.LinkDeletedEvent += new metashader.Event.LinkDeletedEventHandler(EventManager_LinkDeletedEvent);
+            // エラー報告イベント
+            App.CurrentApp.EventManager.GraphErrorEvent += new metashader.Event.GraphErrorEventHandler(EventManager_GraphErrorEvent);
 
             // 選択イベント
             App.CurrentApp.SelectManager.SelectionChanged += new SelectManager.SelectionChangedEventHandler(SelectManager_SelectionChanged);
+
+            // Loaded
+            this.Loaded += new RoutedEventHandler(GraphEditorPanel_Loaded);
 
             // 左マウスダウン
             _grid.MouseLeftButtonDown += new MouseButtonEventHandler(GraphEditor_MouseLeftButtonDown);
@@ -379,7 +414,7 @@ namespace metashader.GraphEditor
             _grid.Drop += new DragEventHandler(GraphEditorPanel_Drop);
             // コンテキストメニューを開いた
             _grid.ContextMenuOpening +=new ContextMenuEventHandler(GraphEditorPanel_ContextMenuOpening);
-        }
+        }        
 
         /// <summary>
         /// シェーダノードに対応するコントロールを探す

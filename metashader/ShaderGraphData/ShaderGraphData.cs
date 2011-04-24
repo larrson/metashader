@@ -16,7 +16,14 @@ namespace metashader.ShaderGraphData
     [Serializable]
     public partial class ShaderGraphData : IDeserializationCallback
     {
-#region variables
+#region variables        
+        /// <summary>
+        /// 出力ノードのリスト
+        /// グラフの処理の高速化やエラー処理用
+        /// </summary>
+        [NonSerialized]
+        List<ShaderNodeDataBase> m_outputNodeList = new List<ShaderNodeDataBase>();
+
         /// <summary>
         /// シェーダノードのリスト
         /// </summary>     
@@ -39,6 +46,58 @@ namespace metashader.ShaderGraphData
             {
                 List<ShaderNodeDataBase> list = new List<ShaderNodeDataBase>(m_nodeList.Values);
                 return list.AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// 有効なノードのリストを返す
+        /// ここでの有効なノードとは、出力ノードへのパスに含まれるノードのこと
+        /// </summary>
+        /// <returns></returns>
+        public List<ShaderNodeDataBase> ValidNodes
+        {
+            get 
+            {
+                // 出力ノードが確定しない
+                if( m_outputNodeList.Count != 1 )
+                {
+                    throw new InvalidOperationException("出力ノードが確定していません");
+                }
+
+                // 出力ノード
+                ShaderNodeDataBase outputNode = m_outputNodeList[0];
+
+                // 有効なノードを入れる連想コンテナ
+                Dictionary<int, ShaderNodeDataBase> validNodes = new Dictionary<int, ShaderNodeDataBase>();
+
+                // 深さ優先探索で有効なノードを抽出
+                Stack<ShaderNodeDataBase> stack = new Stack<ShaderNodeDataBase>(); // 深さ優先探索用コンテナ
+                stack.Push(outputNode);
+                while( stack.Count > 0 )
+                {
+                    ShaderNodeDataBase node = stack.Pop();
+                    
+                    // すでに連想コンテナに入っていれば、探索せずに、スタックの次の要素へ
+                    if( validNodes.ContainsKey(node.GetHashCode()) )
+                    {
+                        continue;
+                    }
+                    
+                    // 新しく探索するノードなので、連想コンテナへ積む
+                    validNodes.Add(node.GetHashCode(), node);
+
+                    // このノードの入力ジョイントへ接続されているノードをスタックへ積む
+                    for(int i = 0; i < node.InputJointNum; ++i)
+                    {
+                        foreach( JointData outputJoint in node.GetInputJoint(i).JointList )
+                        {
+                            stack.Push(outputJoint.ParentNode);
+                        }                        
+                    }
+                }
+
+                // 抽出された有効なノードのリストを返す
+                return new List<ShaderNodeDataBase>( validNodes.Values );
             }
         }
 #endregion
@@ -95,7 +154,7 @@ namespace metashader.ShaderGraphData
             if( undoredo != null )
             {
                 undoredo.Add( new UndoRedo_AddNewNode(this, type, pos, node.GetHashCode()) );
-            }
+            }            
 
             return true;
         }
@@ -134,6 +193,10 @@ namespace metashader.ShaderGraphData
             // 追加処理
             m_nodeList.Add(nodeData.GetHashCode(), nodeData);
 
+            // 出力ノードならリストに追加
+            if (nodeData.Type.IsOutputNode())
+                m_outputNodeList.Add(nodeData);
+
             // Undo/Redoバッファがあれば処理を積む
             if( undoredo != null )
             {
@@ -145,6 +208,9 @@ namespace metashader.ShaderGraphData
 
             // イベントを通知
             App.CurrentApp.EventManager.RaiseNodeAdded(this, new metashader.Event.NodeAddedEventArgs(nodeData));
+
+            // エラー検出
+            DetectError();
             
             return true;
         }
@@ -205,6 +271,10 @@ namespace metashader.ShaderGraphData
                 {
                     undoredo.Add(new UndoRedo_DelNode(this, node));
                 }
+
+                // 出力ノードならリストから削除
+                if( node.Type.IsOutputNode())
+                    m_outputNodeList.Remove(node);
             }
 
             // 種類のインスタンスカウンタを減らす
@@ -212,6 +282,9 @@ namespace metashader.ShaderGraphData
 
             // ノード削除時のイベントを起動する
             App.CurrentApp.EventManager.RaiseNodeDeleted(this, new Event.NodeDeletedEventArgs(hashCode));
+
+            // エラー検出
+            DetectError();
 
             return true;
         }
@@ -336,6 +409,9 @@ namespace metashader.ShaderGraphData
             // リンク追加イベントを起動
             App.CurrentApp.EventManager.RaiseLinkAdded(this, new Event.LinkAddedEventArgs(new LinkData(outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex)));
 
+            // エラー検出
+            DetectError();
+
             return true;
         }
 
@@ -422,6 +498,9 @@ namespace metashader.ShaderGraphData
             // リンク削除時のイベントを起動する
             App.CurrentApp.EventManager.RaiseLinkDeleted(this, new Event.LinkDeletedEventArgs(new LinkData(outNodeHashCode, outJointIndex, inNodeHashCode, inJointIndex)));
 
+            // エラー検出
+            DetectError();
+
             return true;
         }
 
@@ -435,7 +514,7 @@ namespace metashader.ShaderGraphData
             ///@@@ 書き出し可能か判定
             
             // ジェネレータに処理を移譲
-            ShaderCodeGenerator generator = new ShaderCodeGenerator(NodeList);
+            ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
             buffer = generator.ExportToBuffer();
 
             return true;
@@ -451,7 +530,7 @@ namespace metashader.ShaderGraphData
             //@@@ 書き出し可能か判定
 
             // ジェネレータに処理を移譲
-            ShaderCodeGenerator generator = new ShaderCodeGenerator(NodeList);
+            ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
             generator.ExportToFile(path);
 
             return true;

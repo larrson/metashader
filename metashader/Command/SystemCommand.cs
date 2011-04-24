@@ -105,7 +105,7 @@ namespace metashader.Command
            // デフォルトファイル名
            dlg.FileName = "新規メタシェーダ";
            // フィルター
-            dlg.Filter = "Metashader Files (*.MSH)|*.MSH";
+            dlg.Filter = "Metashader Files (*.msh)|*.msh";
            // 拡張子が省略された際に不可
             dlg.AddExtension = true;
            // 規定の拡張子
@@ -118,6 +118,46 @@ namespace metashader.Command
             }
        }         
 #endregion 
+    }
+
+    /// <summary>
+    /// エクスポートコマンド
+    /// </summary>
+    public class ExportCommand : CommandBase
+    {
+        #region constructor
+        public ExportCommand()
+            : base("書き出し")
+        {
+        }
+        #endregion
+
+        #region override methods
+        public override bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public override void Execute(object parameter)
+        {
+            // ファイル保存ダイアログ
+            SaveFileDialog dlg = new SaveFileDialog();
+            // デフォルトファイル名
+            dlg.FileName = System.IO.Path.GetFileNameWithoutExtension(App.CurrentApp.FileSettings.CurrentFilePath);
+            // フィルター
+            dlg.Filter = "HLSL Files (*.hlsl)|*.hlsl";
+            // 拡張子が省略された際に不可
+            dlg.AddExtension = true;
+            // 規定の拡張子
+            dlg.DefaultExt = ".hlsl";
+
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
+            {
+                App.CurrentApp.GraphData.ExportShaderCode(dlg.FileName);
+            }
+        }
+        #endregion
     }
 
     /// <summary>

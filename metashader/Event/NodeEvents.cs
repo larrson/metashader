@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace metashader.Event
 {
@@ -240,5 +241,104 @@ namespace metashader.Event
     /// <param name="sender">送信元</param>
     /// <param name="args">イベント引数</param>
     public delegate void LinkDeletedEventHandler(object sender, LinkDeletedEventArgs args);
+
+    /// <summary>
+    /// エラーの種類
+    /// </summary>
+    public enum GraphErrorType
+    {
+        NoError,        /// エラー無し
+        InvalidNode,    /// 不正なノード
+        InfiniteLoop,   /// 無限ループを含む
+        NoOutput,       /// 出力ノードが存在しない
+        Max,            /// 最大数
+    }
+
+    /// <summary>
+    /// グラフ構造に起因するエラーイベント引数
+    /// </summary>
+    public class GraphErrorEventArgs : EventArgs
+    {
+        #region properties
+        /// <summary>
+        /// エラーの種類
+        /// </summary>
+        GraphErrorType _type;
+        /// <summary>
+        /// エラーの詳細を表す文字列
+        /// </summary>
+        string _message;
+        #endregion
+
+        #region constructors
+        private GraphErrorEventArgs(GraphErrorType type, string message)
+        {
+            _type = type;
+            _message = message;
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// エラーの種類
+        /// </summary>
+        public GraphErrorType Type { get { return _type; } }
+        /// <summary>
+        /// エラーの詳細を表す文字列
+        /// </summary>
+        public string Message { get { return _message; } }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// 「エラー無し」用引数の作成
+        /// </summary>
+        static public GraphErrorEventArgs NoError()
+        {
+            return new GraphErrorEventArgs(GraphErrorType.NoError, "");
+        }
+
+        /// <summary>
+        /// 「不正なノード」のエラー
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        static public GraphErrorEventArgs InvalidNode( ShaderGraphData.ShaderNodeDataBase node)
+        {
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Error:Invalid Node");
+            writer.WriteLine("{0} が不正です.", node.Name);
+
+            // @@ どう不正なのか
+
+            return new GraphErrorEventArgs(GraphErrorType.InvalidNode, writer.ToString());
+        }
+
+        /// <summary>
+        /// 「無限ループ」のエラー
+        /// </summary>
+        /// <param name="node">無限ループ中に含まれるノード</param>
+        /// <returns></returns>
+        static public GraphErrorEventArgs InfiniteLoop(ShaderGraphData.ShaderNodeDataBase node)
+        {
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Error:Infinite Loop");
+            writer.WriteLine("{0} でループが見つかりました.", node.Name);
+
+            return new GraphErrorEventArgs(GraphErrorType.InfiniteLoop, writer.ToString());
+        }
+
+        /// <summary>
+        /// 出力ノードが存在しない
+        /// </summary>
+        /// <returns></returns>
+        static public GraphErrorEventArgs NoOutput()
+        {
+            return new GraphErrorEventArgs(GraphErrorType.NoOutput, "Error:No Output Node");
+        }
+        #endregion
+    }
+
+    public delegate void GraphErrorEventHandler(object sender, GraphErrorEventArgs args);
 
 }

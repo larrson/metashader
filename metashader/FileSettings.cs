@@ -74,7 +74,7 @@ namespace metashader
                 // 作業フォルダを設定
                 NewWorkFolderPath = Path.GetDirectoryName(m_currentFilePath);
             }
-        }
+        }        
         #endregion
 
         #region public methods 
