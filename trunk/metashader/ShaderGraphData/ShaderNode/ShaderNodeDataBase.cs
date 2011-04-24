@@ -76,6 +76,26 @@ namespace metashader.ShaderGraphData
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
+
+        /// <summary>
+        /// 入力ノードか判定する
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool IsInputNode( this ShaderNodeType e )
+        {            
+            return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Normal;
+        }
+
+        /// <summary>
+        /// 出力ノードか判定する
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool IsOutputNode(this ShaderNodeType e)
+        {            
+            return ShaderNodeType.Output_Color == e;
+        }
     }
 #endregion    
 

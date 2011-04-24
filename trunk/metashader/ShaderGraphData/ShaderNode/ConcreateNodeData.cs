@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.IO;
+using System.Diagnostics;
 
 namespace metashader.ShaderGraphData
 {
@@ -161,43 +162,59 @@ namespace metashader.ShaderGraphData
 #endregion
 
 #region input nodes
-    /// <summary>
-    /// 入力UV座標のノード
-    /// </summary>
     [Serializable]
-    class Input_UVNode : ShaderNodeDataBase
+    abstract class Input_NodeBase : ShaderNodeDataBase
     {
-#region variables
+        #region variables
         /// <summary>
         /// セマンティックスに付随するインデックス
         /// </summary>
         uint m_index;
-#endregion
+        #endregion
 
-#region constructors
-        public Input_UVNode(string name, Point pos)
-            : base( ShaderNodeType.Input_UV, name, pos )            
+        #region constructors
+         public Input_NodeBase(ShaderNodeType type, string name, Point pos)
+            : base( type, name, pos )
         {
+             // 入力ノードであることを確認
+            Debug.Assert( type.IsInputNode() );
+
             m_index = 0;
         }
-#endregion
+        #endregion
 
-#region properties
+        #region properties
         /// <summary>
         /// セマンティックに付随するインデックス
         /// </summary>
         public uint Index
         {
-            get { return m_index;  }
+            get { return m_index; }
             set { m_index = value; }
         }
+        #endregion
+    }
 
+    /// <summary>
+    /// 入力UV座標のノード
+    /// </summary>
+    [Serializable]
+    class Input_UVNode : Input_NodeBase
+    {
+#region constructors
+        public Input_UVNode(string name, Point pos)
+            : base( ShaderNodeType.Input_UV, name, pos )            
+        {            
+        }
+#endregion
+
+#region properties        
         /// <summary>
         /// ノードの変数名
         /// </summary>
         public override string VariableName
         {
-            get { return "In.Texcoord" + m_index; }
+            get { return "In.Texcoord" + Index; }
         }
 #endregion
 
@@ -208,7 +225,7 @@ namespace metashader.ShaderGraphData
         /// <param name="stream"></param>
         public override void WritingShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat2 Texcoord{0} : TEXCOORD{0};", m_index);
+            stream.WriteLine("\tfloat2 Texcoord{0} : TEXCOORD{0};", Index);
         }
 #endregion
 
@@ -236,39 +253,22 @@ namespace metashader.ShaderGraphData
     /// 入力法線ベクトルのノード
     /// </summary>
     [Serializable]
-    class Input_NormalNode : ShaderNodeDataBase
+    class Input_NormalNode : Input_NodeBase
     {
-#region variables
-        /// <summary>
-        /// セマンティクスに付随するインデックス
-        /// </summary>
-        uint m_index;
-#endregion
-
 #region constructors
         public Input_NormalNode(string name, Point pos)
             : base( ShaderNodeType.Input_Normal, name, pos )            
-        {
-            m_index = 0;
+        {            
         }
 #endregion
 
-#region properties
-        /// <summary>
-        /// セマンティックに付随するインデックス
-        /// </summary>
-        public uint Index
-        {
-            get { return m_index;  }
-            set { m_index = value; }
-        }
-
+#region properties        
         /// <summary>
         /// ノードの変数名
         /// </summary>
         public override string VariableName
         {
-            get { return "In.Normal" + m_index; }
+            get { return "In.Normal" + Index; }
         }
 #endregion
 
@@ -279,7 +279,7 @@ namespace metashader.ShaderGraphData
         /// <param name="stream"></param>
         public override void WritingShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat3 Normal{0} : NORMAL{0};", m_index);
+            stream.WriteLine("\tfloat3 Normal{0} : NORMAL{0};", Index);
         }
 #endregion
 
