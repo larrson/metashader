@@ -94,6 +94,9 @@ namespace metashader.ShaderGraphData
             // @@@ 具象クラスを作成
             switch(type)
             {                    
+                case ShaderNodeType.Uniform_Float:
+                    ret = new Uniform_FloatNode(name, pos);
+                    break;
                 case ShaderNodeType.Uniform_Vector4:
                     ret = new Uniform_Vector4Node(name, pos);
                     break;
@@ -111,6 +114,15 @@ namespace metashader.ShaderGraphData
                     break;
                 case ShaderNodeType.Operator_Add:
                     ret = new Operator_AddNode(name, pos);
+                    break;
+                case ShaderNodeType.Operator_Sub:
+                    ret = new Operator_SubNode(name, pos);
+                    break;
+                case ShaderNodeType.Operator_Mul:
+                    ret = new Operator_MulNode(name, pos);
+                    break;
+                case ShaderNodeType.Operator_Div:
+                    ret = new Operator_DivNode(name, pos);
                     break;
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);

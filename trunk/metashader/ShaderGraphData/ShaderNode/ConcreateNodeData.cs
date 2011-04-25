@@ -17,6 +17,69 @@ namespace metashader.ShaderGraphData
         void ApplyParameter();
     }
 
+    [Serializable]
+    class Uniform_FloatNode : ShaderNodeDataBase, IAppliableParameter
+    {
+#region variables
+        float m_value = 0.0f;
+#endregion
+
+#region constructors
+        public Uniform_FloatNode(string name, Point pos)
+            : base( ShaderNodeType.Uniform_Float, name, pos )
+        {        
+        }
+#endregion
+
+#region properties
+        /// <summary>
+        /// 浮動小数点値
+        /// </summary>
+        public float Value
+        {
+            get { return m_value; }
+            set { m_value = value;}
+        }
+#endregion
+
+        #region public methods
+        /// <summary>
+        /// ストリームへシェーダのuniform宣言を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WritingShaderUniformCode(StringWriter stream)
+        {
+            // このスカラー値のuniformを宣言する
+            stream.WriteLine("uniform float \t{0};", Name);
+        }
+
+        /// <summary>
+        /// パラメータのPreviewerへの適用
+        /// </summary>
+        public void ApplyParameter()
+        {            
+            NativeMethods.SetUniformFloat(Name, m_value);
+        }
+        #endregion
+
+        #region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力         
+            m_inputJointNum = 0;
+            m_inputJoints = new JointData[m_inputJointNum];
+            // 出力            
+            m_outputJointNum = 1;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.None);                 
+        }
+        #endregion
+    }
+
     /// <summary>
     /// 4Dベクトル
     /// RGBAカラーとしても利用
@@ -159,271 +222,6 @@ namespace metashader.ShaderGraphData
         }
 #endregion
     }        
-#endregion
-
-#region input nodes
-    [Serializable]
-    abstract class Input_NodeBase : ShaderNodeDataBase
-    {
-        #region variables
-        /// <summary>
-        /// セマンティックスに付随するインデックス
-        /// </summary>
-        uint m_index;
-        #endregion
-
-        #region constructors
-         public Input_NodeBase(ShaderNodeType type, string name, Point pos)
-            : base( type, name, pos )
-        {
-             // 入力ノードであることを確認
-            Debug.Assert( type.IsInputNode() );
-
-            m_index = 0;
-        }
-        #endregion
-
-        #region properties
-        /// <summary>
-        /// セマンティックに付随するインデックス
-        /// </summary>
-        public uint Index
-        {
-            get { return m_index; }
-            set { m_index = value; }
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// 入力UV座標のノード
-    /// </summary>
-    [Serializable]
-    class Input_UVNode : Input_NodeBase
-    {
-#region constructors
-        public Input_UVNode(string name, Point pos)
-            : base( ShaderNodeType.Input_UV, name, pos )            
-        {            
-        }
-#endregion
-
-#region properties        
-        /// <summary>
-        /// ノードの変数名
-        /// </summary>
-        public override string VariableName
-        {
-            get { return "In.Texcoord" + Index; }
-        }
-#endregion
-
-#region public methods        
-        /// <summary>
-        /// ストリームへシェーダの入力属性を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void WritingShaderInputCode(StringWriter stream)
-        {
-            stream.WriteLine("\tfloat2 Texcoord{0} : TEXCOORD{0};", Index);
-        }
-#endregion
-
-#region protected methods
-        /// <summary>
-        /// ジョイントの初期化
-        /// </summary>
-        protected override void InitializeJoints()
-        {
-            // 入力
-            m_inputJointNum = 0;
-            m_inputJoints = new JointData[m_inputJointNum];
-
-            // 出力
-            m_outputJointNum = 3;
-            m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT2, JointData.SuffixType.None);
-            m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
-            m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
-        }
-#endregion
-    }    
-
-    /// <summary>
-    /// 入力法線ベクトルのノード
-    /// </summary>
-    [Serializable]
-    class Input_NormalNode : Input_NodeBase
-    {
-#region constructors
-        public Input_NormalNode(string name, Point pos)
-            : base( ShaderNodeType.Input_Normal, name, pos )            
-        {            
-        }
-#endregion
-
-#region properties        
-        /// <summary>
-        /// ノードの変数名
-        /// </summary>
-        public override string VariableName
-        {
-            get { return "In.Normal" + Index; }
-        }
-#endregion
-
-#region public methods        
-        /// <summary>
-        /// ストリームへシェーダの入力属性を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void WritingShaderInputCode(StringWriter stream)
-        {
-            stream.WriteLine("\tfloat3 Normal{0} : NORMAL{0};", Index);
-        }
-#endregion
-
-#region protected methods
-        /// <summary>
-        /// ジョイントの初期化
-        /// </summary>
-        protected override void InitializeJoints()
-        {
-            // 入力
-            m_inputJointNum = 0;
-            m_inputJoints = new JointData[m_inputJointNum];
-
-            // 出力
-            m_outputJointNum = 4;
-            m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);
-            m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
-            m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
-            m_outputJoints[3] = new JointData(this, 3, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Z);            
-        }
-#endregion
-    }
-#endregion
-
-#region operator nodes
-    /// <summary>
-    /// 加算ノード
-    /// </summary>
-    [Serializable]
-    class Operator_AddNode : ShaderNodeDataBase
-    {
-#region constructors
-        public Operator_AddNode(string name, Point pos)
-            : base(ShaderNodeType.Operator_Add, name, pos)
-        {
-
-        }
-#endregion
-
-#region public methods
-        /// <summary>
-        /// 入力ジョイントに対応する変数型を取得
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetInputJointVariableType(int index)
-        {
-            // 接続元ノードの出力ジョイントに依存する
-
-            // 接続されていない場合は不定
-            if( GetInputJoint( index ).JointList.Count == 0 )
-            {
-                return VariableType.INDEFINITE;
-            }
-            // 接続されていれば接続元に依存
-            else
-            {
-                JointData outputJoint = GetInputJoint(index).JointList.First.Value;
-                ShaderNodeDataBase node = outputJoint.ParentNode;
-
-                return node.GetOutputJointVariableType(outputJoint.JointIndex);
-            }            
-        }
-
-        /// <summary>
-        /// 出力ジョイントに対応する変数型を取得
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override VariableType GetOutputJointVariableType(int index)
-        {
-            // 自身の入力ジョイントに依存する            
-            // 「加算」なので、入力ジョイントの型＝出力ジョイントの型
-            // インデックスはどれでも良い
-
-            return GetInputJointVariableType(0);
-        }
-
-        /// <summary>
-        /// ノードの有効性を判定
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsValid()
-        {
-            // 入力リンクの有効性を確認する
-            // 全ての入力が埋まっているか？
-            foreach (JointData inputJoint in m_inputJoints)
-            {
-                if (inputJoint.JointList.Count != 1)
-                    return false;
-            }
-
-            // 入力型が適当か(演算子に即しているか)
-            // 2つの入力型が等しい
-            if (GetInputJointVariableType(0) != GetInputJointVariableType(1))
-                return false;
-
-            return true;
-        }        
-
-        /// <summary>
-        /// ストリームへシェーダの本文を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="localCount">ローカル変数のカウンタ</param>
-        public override void WritingShaderMainCode(StringWriter stream)
-        {
-            // 出力型
-            VariableType outputType = GetOutputJointVariableType( 0 );         
-
-            // 入力変数1の名前
-            string inputName1 = GetInputJoint(0).VariableName;
-            // 入力変数2の名前
-            string inputName2 = GetInputJoint(1).VariableName;
-
-            stream.WriteLine("\t{0} {1} = {2} + {3};", 
-                outputType.ToStringExt()
-                , Name
-                , inputName1
-                , inputName2
-                );
-        }        
-#endregion
-
-#region protected methods
-        /// <summary>
-        /// ジョイントの初期化
-        /// </summary>
-        protected override void InitializeJoints()
-        {
-            // ジョイントの初期化
-            // 入力         
-            m_inputJointNum = 2;
-            m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
-            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
-            // 出力            
-            m_outputJointNum = 1;
-            m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.DEPENDENT, JointData.SuffixType.None);            
-        }
-#endregion
-    }
 #endregion
 
 #region output nodes

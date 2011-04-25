@@ -86,6 +86,13 @@ void CreatePixelShaderFromBuffer( const char* i_pBuffer, uint32 i_nSize )
 }
 
 //-------------------------------------------------------------------------------------------
+void SetUniformFloat( const char* i_pszName, float i_fValue )
+{
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();	
+	pShaderMan->SetFloatValue(opk::shader::Profile_Pixel, std::string(i_pszName), i_fValue);		
+}
+
+//-------------------------------------------------------------------------------------------
 void SetUniformVector4( const char* i_pszName, float x, float y, float z, float w )
 {
 	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();	

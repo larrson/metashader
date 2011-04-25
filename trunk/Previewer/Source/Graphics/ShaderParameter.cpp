@@ -182,7 +182,7 @@ namespace opk
 			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MINFILTER, filterTable[m_samplerState.m_nMinFilter] ));
 			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MIPFILTER, filterTable[m_samplerState.m_nMipFilter] ));
 			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_MAXANISOTROPY, m_samplerState.m_nMaxAnisotoropy ));
-			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_BORDERCOLOR, D3DCOLOR_ARGB((uint32)m_samplerState.m_fBorderColorA, (uint32)m_samplerState.m_fBorderColorR, (uint32)m_samplerState.m_fBorderColorG, (uint32)m_samplerState.m_fBorderColorB)));
+			V_RETURN( pD3DDevice->SetSamplerState( nSamplerIndex, D3DSAMP_BORDERCOLOR, D3DCOLOR_ARGB((uint32)(m_samplerState.m_fBorderColorA * 255), (uint32)(m_samplerState.m_fBorderColorR * 255), (uint32)(m_samplerState.m_fBorderColorG * 255), (uint32)(m_samplerState.m_fBorderColorB * 255))));
 
 			// テクスチャの適用
 			V_RETURN( pD3DDevice->SetTexture( nSamplerIndex, m_pd3dBaseTexture ) );

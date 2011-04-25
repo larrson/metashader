@@ -610,7 +610,7 @@ namespace metashader.ShaderGraphData
             System.Console.WriteLine("< Node List >");            
             foreach( ShaderNodeDataBase node in m_nodeList.Values)
             {
-                System.Console.WriteLine( node.Name + "(" + "{0}" + ")", node.GetHashCode());
+                node.DebugPrint();
             }
             System.Console.WriteLine("");
         }
