@@ -62,6 +62,13 @@ extern "C" DLLEXPORT void Resize(int i_nScreenWidth, int i_nScreenHeight );
 extern "C" DLLEXPORT void CreatePixelShaderFromBuffer( const char* i_pBuffer, uint32 i_nSize );
 
 /**
+	@brief シェーダの浮動小数点(スカラー)のユニフォームパラメータに値を設定する
+	@param [in] i_pszName パラメータ名
+	@param [in] i_fValue 設定する値
+*/
+extern "C" DLLEXPORT void SetUniformFloat( const char* i_pszName, float i_fValue );
+
+/**
 	@brief シェーダの4次元ベクトルのユニフォームパラメータに値を設定する
 	@param [in] i_pszName パラメータ名
 	@param [in] x 4Dベクトルのx

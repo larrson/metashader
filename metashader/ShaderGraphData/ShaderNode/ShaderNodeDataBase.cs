@@ -15,14 +15,18 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public enum ShaderNodeType : int
     {        
+        Uniform_Float,      // スカラー(浮動小数点値)
         Uniform_Vector4,    // 4Dベクトル       
         Uniform_Texture2D,  // 2Dテクスチャ
         Uniform_TextureCube,// Cubeテクスチャ
-
+        
         Input_UV,           // 入力UVベクトル
         Input_Normal,       // 入力法線ベクトル
 
         Operator_Add,   // 加算
+        Operator_Sub,   // 減算
+        Operator_Mul,   // 乗算
+        Operator_Div,   // 除算
 
         Output_Color,   // 出力色        
         Max, // 最大数
@@ -41,7 +45,8 @@ namespace metashader.ShaderGraphData
         public static string ToStringExt( this ShaderNodeType e )
         {
             switch( e )
-            {                
+            {
+                case ShaderNodeType.Uniform_Float:      return "Uniform_Float";
                 case ShaderNodeType.Uniform_Vector4:    return "Uniform_Vector4";                    
                 case ShaderNodeType.Uniform_Texture2D:  return "Uniform_Texture2D";
                 case ShaderNodeType.Uniform_TextureCube: return "Uniform_TextureCube";
@@ -50,6 +55,10 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Input_Normal: return "Input_Normal";
                 
                 case ShaderNodeType.Operator_Add: return "Operator_Add";
+                case ShaderNodeType.Operator_Sub: return "Operator_Sub";
+                case ShaderNodeType.Operator_Mul: return "Operator_Mul";
+                case ShaderNodeType.Operator_Div: return "Operator_Div";
+
                 case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -63,7 +72,8 @@ namespace metashader.ShaderGraphData
         public static uint GetMaxNodeNum( this ShaderNodeType e )
         {
             switch( e )
-            {                
+            {
+                case ShaderNodeType.Uniform_Float: return uint.MaxValue;
                 case ShaderNodeType.Uniform_Vector4: return uint.MaxValue;
                 case ShaderNodeType.Uniform_Texture2D: return uint.MaxValue;
                 case ShaderNodeType.Uniform_TextureCube: return uint.MaxValue;
@@ -72,6 +82,10 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Input_Normal: return uint.MaxValue;
 
                 case ShaderNodeType.Operator_Add: return uint.MaxValue;
+                case ShaderNodeType.Operator_Sub: return uint.MaxValue;
+                case ShaderNodeType.Operator_Mul: return uint.MaxValue;
+                case ShaderNodeType.Operator_Div: return uint.MaxValue;
+
                 case ShaderNodeType.Output_Color: return 1;               
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -85,6 +99,16 @@ namespace metashader.ShaderGraphData
         public static bool IsInputNode( this ShaderNodeType e )
         {            
             return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Normal;
+        }
+
+        /// <summary>
+        /// 演算ノードか判定する
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool IsOperatorNode( this ShaderNodeType e)
+        {
+            return ShaderNodeType.Operator_Add <= e && e <= ShaderNodeType.Operator_Div;
         }
 
         /// <summary>

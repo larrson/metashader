@@ -141,6 +141,12 @@ namespace opk
 			HRESULT CreateShaderFromBuffer( Profile i_nProfile, const char* i_pBuffer, uint32 i_nSize );
 
 			/**
+				@brief float型のパラメータへ値を設定する
+				@note 存在しないパラメータ名が指定された場合は、何も行わない
+			*/
+			void SetFloatValue(Profile i_nProfile, const std::string& i_strname, float i_fValue );
+
+			/**
 				@brief ベクトル型のパラメータへ値を設定する
 				@note 存在しないパラメータ名が指定された場合は、何も行わない
 			*/			

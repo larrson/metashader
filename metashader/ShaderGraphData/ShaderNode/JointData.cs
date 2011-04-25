@@ -41,6 +41,26 @@ namespace metashader.ShaderGraphData
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
+
+        /// <summary>
+        /// スカラー型か判定
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool IsScalar(this VariableType e)
+        {
+            return VariableType.FLOAT == e;
+        }
+
+        /// <summary>
+        /// ベクトル型か判定
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool IsVector(this VariableType e)
+        {
+            return VariableType.FLOAT2 <= e && e <= VariableType.FLOAT4;
+        }        
     }
     #endregion
    

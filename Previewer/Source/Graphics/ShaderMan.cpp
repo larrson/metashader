@@ -109,6 +109,22 @@ namespace opk
 		}
 
 		//------------------------------------------------------------------------------------------
+		void CShaderMan::SetFloatValue(Profile i_nProfile, const std::string& i_strName, float i_fValue )
+		{
+			CShader& rShader = m_pShaders[i_nProfile];
+			TParameterPtr pParameter = rShader.FindParameter(i_strName);
+
+			// 有効なパラメータが見つかった
+			if( pParameter.get() != NULL )
+			{
+				CFloatParameter* pFloatParam = dynamic_cast<CFloatParameter*>(pParameter.get());
+				MY_ASSERT( pFloatParam );
+				if( pFloatParam )
+					pFloatParam->SetValue( i_fValue );
+			}
+		}
+
+		//------------------------------------------------------------------------------------------
 		void CShaderMan::SetVector4Value(Profile i_nProfile, const std::string& i_strName, const D3DXVECTOR4& i_vValue )
 		{
 			CShader& rShader = m_pShaders[i_nProfile];
