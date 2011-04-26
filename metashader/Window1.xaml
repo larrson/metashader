@@ -4,25 +4,26 @@
     xmlns:ge="clr-namespace:metashader.GraphEditor"
     xmlns:pe="clr-namespace:metashader.PropertyEditor"
     Title="Window1" Height="800" Width="800"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded">    
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="_mainMenu" >
             <MenuItem Header="ファイル(_F)">
-                <MenuItem Header="新規作成" Command="{Binding Path=CreateNewCommand }"/>
-                <MenuItem Header="開く" Command="{Binding Path=LoadCommand }" />
+                <MenuItem Header="新規作成" Command="{Binding Path=CreateNewCommand }" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="開く" Command="{Binding Path=LoadCommand }"  InputGestureText="Ctrl+O"/>
+                <!-- @@@ 上書き保存コマンドの実装 -->
                 <MenuItem Header="上書き保存" />
-                <MenuItem Header="名前を付けて保存" Command="{Binding Path=SaveAsCommand }" />
+                <MenuItem Header="名前を付けて保存" Command="{Binding Path=SaveAsCommand }" InputGestureText="Ctrl+Shift+S"/>
                 <Separator />
                 <MenuItem Header="エクスポート" Command="{Binding Path=ExportCommand }"/>
             </MenuItem>
             <MenuItem Header="編集(_E)">
-                <MenuItem Header="元に戻す" Command="{Binding Path=UndoCommand }"/>
-                <MenuItem Header="やり直し" Command="{Binding Path=RedoCommand }"/>
+                <MenuItem Header="元に戻す" Command="{Binding Path=UndoCommand }" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="やり直し" Command="{Binding Path=RedoCommand }" InputGestureText="Ctrl+Y"/>
                 <Separator />
-                <MenuItem Header="削除" Command="{Binding Path=DeleteCommand }"/>
+                <MenuItem Header="削除" Command="{Binding Path=DeleteCommand }" InputGestureText="Delete"/>
             </MenuItem>
             <MenuItem Header="制御(_C)">
-                <MenuItem Header="実行" Command="{Binding Path=ExecuteShaderCommand }"/>
+                <MenuItem Header="実行" Command="{Binding Path=ExecuteShaderCommand }" InputGestureText="F5"/>
             </MenuItem>
         </Menu>
         <!-- 残りの部分全てをウィンドウの機能が占有 -->
