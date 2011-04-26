@@ -257,8 +257,7 @@ namespace metashader.ShaderGraphData
             if( IsValid() == false )
                 return VariableType.INDEFINITE;
 
-            // 自身の入力ジョイントに依存する
-            // HLSLのmul関数を参照
+            // 自身の入力ジョイントに依存する            
             VariableType typeLeft = GetInputJointVariableType(0);
             VariableType typeRight = GetInputJointVariableType(1);
 
@@ -272,6 +271,10 @@ namespace metashader.ShaderGraphData
                 ret = typeRight;
             // Vector x Scalar -> Vector
             if (typeLeft.IsVector() && typeRight.IsScalar())
+                ret = typeLeft;
+            // Vector x Vector -> Vector
+            // 次元数も同じである必要がある
+            if (typeLeft.IsVector() && typeLeft == typeRight)
                 ret = typeLeft;
 
             return ret;
@@ -287,17 +290,35 @@ namespace metashader.ShaderGraphData
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);
 
+            // 入力型
+            VariableType typeLeft = GetInputJointVariableType(0);
+            VariableType typeRight = GetInputJointVariableType(1);
+
             // 入力変数1の名前
             string inputName1 = GetInputJoint(0).VariableName;
             // 入力変数2の名前
             string inputName2 = GetInputJoint(1).VariableName;
 
-            stream.WriteLine("\t{0} {1} = mul( {2}, {3} );",
+            // 入力型が同じ場合「*」演算子を使用
+            if( typeLeft == typeRight )
+            {
+                stream.WriteLine("\t{0} {1} = {2} * {3};",
                 outputType.ToStringExt()
                 , Name
-                , inputName1                
+                , inputName1
                 , inputName2
                 );
+            }            
+            // 入力型が異なる場合「mul」関数を使用
+            else
+            {
+                stream.WriteLine("\t{0} {1} = mul( {2}, {3} );",
+                outputType.ToStringExt()
+                , Name
+                , inputName1
+                , inputName2
+                );
+            }            
         }
             
 
@@ -315,8 +336,7 @@ namespace metashader.ShaderGraphData
                     return false;
             }
 
-            // 入力型が適当か(演算子に即しているか)
-            // 適当性は、HLSLのmul関数の9つのオーバーロードに準拠
+            // 入力型が適当か(演算子に即しているか)            
 
             VariableType typeLeft = GetInputJointVariableType(0);
             VariableType typeRight = GetInputJointVariableType(1);
@@ -330,7 +350,10 @@ namespace metashader.ShaderGraphData
             // Vector x Scalar
             if (typeLeft.IsVector() && typeRight.IsScalar())
                 return true;
-            // Vector x Vector -> Matrix // @@ 未実装
+            // Vector x Vector -> Vector
+            // 次元数も同じである必要がある
+            if (typeLeft.IsVector() && typeLeft == typeRight)
+                return true;
             // Vector x Matrix -> Vector // @@ 未実装
             // Matrix x Vector -> Vector // @@ 未実装
             // Matrix x Matrix -> Matrix // @@ 未実装

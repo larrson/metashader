@@ -503,17 +503,24 @@ namespace metashader.Console
 
             string path = options[1];
 
-            using ( StreamReader reader = new StreamReader(path) )
+            try
             {
-                while( reader.EndOfStream == false )
+                using (StreamReader reader = new StreamReader(path))
                 {
-                    // 1行読み込み
-                    string line = reader.ReadLine();
+                    while (reader.EndOfStream == false)
+                    {
+                        // 1行読み込み
+                        string line = reader.ReadLine();
 
-                    // コマンドを実行
-                    m_interpreter.Interpret(line);
-                }                
+                        // コマンドを実行
+                        m_interpreter.Interpret(line);
+                    }
+                }
             }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }            
         }
     }
 

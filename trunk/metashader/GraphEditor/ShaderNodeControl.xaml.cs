@@ -213,10 +213,20 @@ namespace metashader.GraphEditor
             _thumnailGrid.Children.Add(m_thumnailControl);
 
             // イベントハンドラ登録
+            // マウス操作を行う箇所が分かれているため、それぞれ登録する
+            // 左クリック
             _nameTextBlock.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
+            _thumnailGrid.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
+            // 右クリック
+            _nameTextBlock.MouseRightButtonDown += new MouseButtonEventHandler(_nameTextBlock_MouseRightButtonDown);
+            _thumnailGrid.MouseRightButtonDown += new MouseButtonEventHandler(_nameTextBlock_MouseRightButtonDown);
+            // マウスアップ
             _nameTextBlock.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
+            _thumnailGrid.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
+            // マウスムーブ
             _nameTextBlock.MouseMove += new MouseEventHandler(Node_MouseMove);
-        } 
+            _thumnailGrid.MouseMove += new MouseEventHandler(Node_MouseMove);
+        }        
 #endregion        
       
 #region public methods
@@ -283,7 +293,7 @@ namespace metashader.GraphEditor
                     break;
             }
 
-            // サムネイル側の処理を呼ぶ(@イベントドリブンにすべきか)
+            // サムネイル側の処理を呼ぶ
             m_thumnailControl.OnNodePropertyChanged(sender, args);
         }
 #endregion
@@ -308,6 +318,22 @@ namespace metashader.GraphEditor
             e.Handled = true;
         }
 
+        /// <summary>
+        /// ノードが右クリックされた際に呼ばれるイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _nameTextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // ノードを選択する
+            App.CurrentApp.SelectManager.Select(m_node);
+        } 
+
+        /// <summary>
+        /// ノード上でマウスが離された際に呼ばれるイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Node_MouseUp(object sender, MouseButtonEventArgs e)
         {            
             if( e.LeftButton == MouseButtonState.Released )
@@ -316,6 +342,11 @@ namespace metashader.GraphEditor
             }            
         }
 
+        /// <summary>
+        /// ノード上でマウスが動いた際に呼ばれるイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Node_MouseMove(object sender, MouseEventArgs e)
         {
             Point pos = GetPositionInCanvas(e.GetPosition(this));
