@@ -23,10 +23,14 @@ namespace metashader
         {
             InitializeComponent();
 
-            // メニューの初期化
-            _mainMenu.DataContext = App.CurrentApp.UICommandManager;
-        }
+            // 依存するデータの設定
+            // コマンドベースなので、コマンドマネージャを渡す
+            this.DataContext = App.CurrentApp.UICommandManager;
 
+            // ショートカットキーの設定
+            InitializeShortCutKeys();
+        }
+        
 #region event handlers
         /// <summary>
         /// UI初期化完了イベント
@@ -45,6 +49,36 @@ namespace metashader
             consoleWindow.Owner = this;
             consoleWindow.Show();
         }
-#endregion        
+#endregion      
+  
+#region private methods
+        /// <summary>
+        /// ショートカットキーの初期化
+        /// </summary>
+        private void InitializeShortCutKeys()
+        {
+            this.InputBindings.Add(
+                new KeyBinding(App.CurrentApp.UICommandManager.CreateNewCommand, new KeyGesture(Key.N, ModifierKeys.Control))
+            );
+            this.InputBindings.Add(
+                    new KeyBinding(App.CurrentApp.UICommandManager.LoadCommand, new KeyGesture(Key.O, ModifierKeys.Control))
+                );
+            this.InputBindings.Add(
+                    new KeyBinding(App.CurrentApp.UICommandManager.SaveAsCommand, new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift))
+                );
+            this.InputBindings.Add(
+                    new KeyBinding(App.CurrentApp.UICommandManager.UndoCommand, new KeyGesture(Key.Z, ModifierKeys.Control))
+                );
+            this.InputBindings.Add(
+                    new KeyBinding(App.CurrentApp.UICommandManager.RedoCommand, new KeyGesture(Key.Y, ModifierKeys.Control))
+                );
+            this.InputBindings.Add(
+                new KeyBinding(App.CurrentApp.UICommandManager.DeleteCommand, new KeyGesture(Key.Delete))
+            );
+            this.InputBindings.Add(
+                new KeyBinding(App.CurrentApp.UICommandManager.ExecuteShaderCommand, new KeyGesture(Key.F5))
+            );
+        }
+#endregion
     }
 }

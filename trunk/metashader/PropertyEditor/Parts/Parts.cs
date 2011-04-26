@@ -59,9 +59,8 @@ namespace metashader.PropertyEditor.Parts
         {
             set
             {
-                m_valueController.NodeData = value;
-                if( m_userControl.DataContext == null )
-                    m_userControl.DataContext = m_valueController;
+                m_valueController.NodeData = value;                
+                m_userControl.DataContext = m_valueController;
             }
             get 
             {
