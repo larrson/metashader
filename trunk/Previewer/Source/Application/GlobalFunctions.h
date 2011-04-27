@@ -93,6 +93,11 @@ extern "C" DLLEXPORT void SetTexturePath( const char* i_pszName, const char* i_p
 extern "C" DLLEXPORT void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_samplerState );
 
 /**
+	@brief シェーダをデフォルトへ切り替える
+*/
+extern "C" DLLEXPORT void UseDefaultShader();
+
+/**
 	@brief 指定したバッファへ画像ファイルのサムネイルデータを取得する
 	@param [in] i_pszPath サムネイルを作成する元画像のファイルパス
 	@param [in] i_nWidth サムネイルの幅

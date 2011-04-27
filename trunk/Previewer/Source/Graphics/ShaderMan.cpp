@@ -10,9 +10,11 @@
 
 // Global Variable Definitions ---------------------------------------------------------------	
 namespace
-{
-	/// 頂点シェーダパス(@@@相対パス化)
-	static const char* g_pszVSPath = "C:\\projects\\metashader\\data\\shader\\simple_vs.fx";	
+{	
+	/// デフォルト頂点シェーダパス(@@@相対パス化)
+	static const char* g_pszVSPath = "..\\..\\data\\shader\\simple_vs.fx";	
+	/// デフォルトピクセルシェーダパス
+	static const char* g_pszPSPath = "..\\..\\data\\shader\\simple_ps.fx";
 }
 
 namespace opk
@@ -25,7 +27,9 @@ namespace opk
 
 		//------------------------------------------------------------------------------------------
 		CShaderMan::CShaderMan()
-			: m_pShaders( NULL )
+			: m_pCurrentShaders(NULL)
+			, m_pShaders( NULL )
+			, m_pDefaultShaders( NULL )
 		{
 			Initialize();
 		}
@@ -55,18 +59,37 @@ namespace opk
 		//------------------------------------------------------------------------------------------
 		void CShaderMan::Initialize()
 		{
+			char psPath[MAX_PATH];
+			char vsPath[MAX_PATH];
+			// 頂点シェーダのパスを絶対パスへ変換
+			sprintf_s( vsPath, MAX_PATH, "%s%s", CApp::GetInstance()->GetApplicationDirectory(), g_pszVSPath );
+			// ピクセルシェーダのパスを絶対パスへ変換
+			sprintf_s( psPath, MAX_PATH, "%s%s", CApp::GetInstance()->GetApplicationDirectory(), g_pszPSPath );
+
 			// プロファイルの数だけシェーダを作成
 			m_pShaders = new CShader[Profile_Max];
+			m_pDefaultShaders = new CShader[Profile_Max];
 
-			// 頂点シェーダのみファイルから作成						 
-			m_pShaders[Profile_Vertex].CreateFromFile( Profile_Vertex, g_pszVSPath);						
+			// 頂点シェーダはデフォルトを利用
+			m_pShaders[Profile_Vertex].CreateFromFile( Profile_Vertex, vsPath);						
+
+			// デフォルトの各シェーダを作成
+			m_pDefaultShaders[Profile_Vertex].CreateFromFile( Profile_Vertex, vsPath);
+			m_pDefaultShaders[Profile_Pixel ].CreateFromFile( Profile_Pixel , psPath);
+
+			// デフォルトのシェーダを現在のシェーダに設定
+			m_pCurrentShaders = m_pDefaultShaders;
 		}
 
 		//------------------------------------------------------------------------------------------
 		void CShaderMan::Destroy()
 		{
+			// 現在ののシェーダをNULLに設定
+			m_pCurrentShaders = NULL;
+
 			// シェーダを破棄
 			SAFE_DELETE_ARRAY( m_pShaders );
+			SAFE_DELETE_ARRAY( m_pDefaultShaders );
 		}
 
 		//------------------------------------------------------------------------------------------
@@ -75,7 +98,7 @@ namespace opk
 			// 各シェーダを開始
 			for(uint32 i = 0; i < Profile_Max; ++i)
 			{
-				if( FAILED(m_pShaders[i].Activate()) )
+				if( FAILED(m_pCurrentShaders[i].Activate()) )
 					return E_FAIL;
 			}
 
@@ -88,7 +111,7 @@ namespace opk
 			// 各シェーダを終了
 			for(uint32 i = 0; i < Profile_Max; ++i)
 			{
-				m_pShaders[i].Deactivate();
+				m_pCurrentShaders[i].Deactivate();
 			}
 		}
 
@@ -104,6 +127,9 @@ namespace opk
 
 			// 作成
 			V_RETURN( rShader.Create( i_nProfile, i_pBuffer, i_nSize ) ) ;
+
+			// 使用するシェーダをデフォルトから変更
+			m_pCurrentShaders = m_pShaders;
 
 			return S_OK;
 		}
@@ -170,6 +196,13 @@ namespace opk
 				if( pTexParam )
 					pTexParam->SetSamplerState( i_samplerState );
 			}
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CShaderMan::UseDefaultShader()
+		{
+			// デフォルトシェーダを設定
+			m_pCurrentShaders = m_pDefaultShaders;
 		}
 
 	} // end of namespace shader

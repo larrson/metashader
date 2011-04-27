@@ -37,7 +37,9 @@ namespace metashader.Previewer
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
             // シェーダノードの値が変更された
             App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
-        }                
+            // グラフ構成でエラーが発生した
+            App.CurrentApp.EventManager.GraphErrorEvent += new metashader.Event.GraphErrorEventHandler(EventManager_GraphErrorEvent);
+        }
 
 #region event handlers
         /// <summary>
@@ -144,7 +146,26 @@ namespace metashader.Previewer
                 // 変更されたプロパティに関わらずパラメータを適用
                 appliableParam.ApplyParameter();
             }
-        }        
+        }
+
+        /// <summary>
+        /// グラフ構成にエラーが発生した
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_GraphErrorEvent(object sender, metashader.Event.GraphErrorEventArgs args)
+        {
+            // 自動実行が有効なら、成功の場合シェーダを実行する
+            if( Properties.Settings.Default.AutoExecution && args.Type == metashader.Event.GraphErrorType.NoError )
+            {
+                App.CurrentApp.UICommandManager.ExecuteShaderCommand.Execute(null);
+            }
+            else
+            {
+                // エラーに関わらず、デフォルトへ切り替え
+                NativeMethods.UseDefaultShader();            
+            }            
+        }                
 #endregion        
     }
 }

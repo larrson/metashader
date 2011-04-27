@@ -114,6 +114,13 @@ void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_
 }
 
 //-------------------------------------------------------------------------------------------
+void UseDefaultShader()
+{
+	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();
+	pShaderMan->UseDefaultShader();
+}
+
+//-------------------------------------------------------------------------------------------
 void GetImagePixelData( const char* i_pszPath, int i_nWidth, int i_nHeight, uint8* o_pBuffer )
 {
 	HRESULT hr;	

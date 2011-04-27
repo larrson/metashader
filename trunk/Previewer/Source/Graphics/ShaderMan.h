@@ -102,9 +102,11 @@ namespace opk
 		class CShaderMan
 		{
 		private:
-			static CShaderMan* s_pInstance; ///< シングルトンのインスタンス
+			static CShaderMan* s_pInstance; ///< シングルトンのインスタンス			
 
-			CShader*		   m_pShaders;	///< シェーダ
+			CShader*		   m_pCurrentShaders;	///< 現在使用中のシェーダの配列
+			CShader*		   m_pShaders;			///< シェーダ
+			CShader*		   m_pDefaultShaders;	///< メタシェーダによって作成されたシェーダが使用できない場合用
 
 		public:
 			/// インスタンスの取得
@@ -163,6 +165,11 @@ namespace opk
 				@note 存在しないパラメータ名が指定された場合は、何も行わない
 			*/
 			void SetSamplerState(Profile i_nProfile, const std::string& i_strName, const SSamplerState& i_samplerState );
+
+			/**
+				@brief デフォルトシェーダを利用する
+			*/
+			void UseDefaultShader();
 
 		private:
 			/**
