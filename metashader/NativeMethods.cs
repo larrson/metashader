@@ -36,6 +36,10 @@ namespace metashader
         [DllImport(dllName)]
         public unsafe static extern void CreatePixelShaderFromBuffer(byte[] i_buffer, int i_nSize );
 
+        // シェーダの切り替え
+        [DllImport(dllName)]
+        public unsafe static extern void UseDefaultShader();
+
         /// パラメータの設定系        
         [DllImport(dllName, CharSet = CharSet.Ansi)]
         public unsafe static extern void SetUniformFloat(string i_pszName, float i_fValue);

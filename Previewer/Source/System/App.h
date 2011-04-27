@@ -19,7 +19,9 @@ namespace opk
 	class CApp
 	{
 	private:
-		static CApp*	s_pInstance; ///< シングルトンの唯一のインスタンス				
+		static CApp*	s_pInstance; ///< シングルトンの唯一のインスタンス	
+
+		char m_appDirectoryPath[MAX_PATH];	///< アプリケーションのディレクトリのパス
 
 		CGraphicDevice*	m_pGraphicDevice; ///< グラフィックデバイス
 
@@ -47,8 +49,8 @@ namespace opk
 			@param [in] i_nScreenHeight	スクリーンの高さ
 			@retval 初期化に成功したか			
 		*/
-		bool Initialize(LPWSTR i_lpCmdLine, int i_nScreenWidth, int i_nScreenHeight);
-		
+		bool Initialize(LPWSTR i_lpCmdLine, int i_nScreenWidth, int i_nScreenHeight);		
+
 		/**
 			@brief グラフィックデバイスのリセット
 			@param [in] i_nScreenWidth	スクリーンの幅
@@ -68,6 +70,11 @@ namespace opk
 		/// レンダリング
 		bool Render();
 
+		/**
+			@brief アプリケーションの実行ファイルの置かれているディレクトリのパスを取得する			
+		*/
+		const char*	GetApplicationDirectory(){ return m_appDirectoryPath; };
+
 	private:
 		/// コンストラクタ
 		CApp();
@@ -80,5 +87,10 @@ namespace opk
 
 		/// 代入演算の禁止
 		CApp& operator=(const CApp& app);
+
+		/**
+			@brief アプリケーションディレクトリの初期化
+		*/
+		void InitializeApplicationDirectoryPath();		
 	};
 } // end of namespace opk

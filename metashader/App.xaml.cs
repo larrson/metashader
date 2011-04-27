@@ -182,6 +182,17 @@ namespace metashader
             // イベントマネージャ初期化
             m_eventManager = new Event.EventManager();
         }
-#endregion        
+
+        /// <summary>
+        /// アプリケーション終了時に呼ばれるイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // アプリケーション設定の保存
+            metashader.Properties.Settings.Default.Save();
+        }
+#endregion                
     }
 }

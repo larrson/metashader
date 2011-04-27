@@ -48,6 +48,9 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CApp::Initialize(LPWSTR i_lpCmdLine, int i_nScreenWidth, int i_nScreenHeight)
 	{						
+		// アプリケーションのディレクトリのパスの初期化
+		InitializeApplicationDirectoryPath();
+
 		// デバイスの初期化
 		m_pGraphicDevice = new CGraphicDevice();
 		m_pGraphicDevice->Initialize(i_nScreenWidth, i_nScreenHeight);
@@ -55,6 +58,22 @@ namespace opk
 		m_model.Restore(); ///< モデル @@@削除		
 
 		return true;
+	}
+
+	//------------------------------------------------------------------------------------------
+	void CApp::InitializeApplicationDirectoryPath()
+	{
+		char drive[MAX_PATH];
+		char dir[MAX_PATH];
+		char fname[MAX_PATH];
+		char ext[MAX_PATH];
+
+		const HMODULE handle = GetModuleHandle(NULL);
+		GetModuleFileNameA( handle, m_appDirectoryPath, MAX_PATH);	
+		_splitpath_s( m_appDirectoryPath, drive, dir, fname, ext);
+
+		// アプリケーションのディレクトリ迄のパスを保持
+		sprintf_s(m_appDirectoryPath, MAX_PATH, "%s%s", drive, dir);
 	}
 
 	//------------------------------------------------------------------------------------------
