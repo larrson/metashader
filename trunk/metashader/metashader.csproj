@@ -93,13 +93,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GraphEditor\GraphEditorPanel.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="GraphEditor\GEViewport3D.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GraphEditor\JointControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GraphEditor\LinkPathControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GraphEditor\ShaderNodeControl.xaml">
       <SubType>Designer</SubType>
@@ -169,14 +173,17 @@
     <Compile Include="Event\NodeEvents.cs" />
     <Compile Include="FileSettings.cs" />
     <Compile Include="GraphEditor\BezierCurve.cs" />
-    <Compile Include="GraphEditor\GraphEditorPanel.xaml.cs">
-      <DependentUpon>GraphEditorPanel.xaml</DependentUpon>
+    <Compile Include="GraphEditor\GECamera.cs" />
+    <Compile Include="GraphEditor\GEViewport3D.xaml.cs">
+      <DependentUpon>GEViewport3D.xaml</DependentUpon>
     </Compile>
     <Compile Include="GraphEditor\JointControl.xaml.cs">
       <DependentUpon>JointControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GraphEditor\LinkPath.cs" />
     <Compile Include="GraphEditor\DragAdorner.cs" />
+    <Compile Include="GraphEditor\LinkPathControl.xaml.cs">
+      <DependentUpon>LinkPathControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GraphEditor\ShaderNodeControl.xaml.cs">
       <DependentUpon>ShaderNodeControl.xaml</DependentUpon>
     </Compile>
