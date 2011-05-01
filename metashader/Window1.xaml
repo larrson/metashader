@@ -38,7 +38,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="0.6*" />
             </Grid.RowDefinitions>
-            <ge:GraphEditorPanel Grid.Row="0" />
+            <ge:GEViewport3D Grid.Row="0" />
             <GridSplitter Grid.Row="1" Height="3" Background="Black" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext" ResizeDirection="Rows" ShowsPreview="True" />
             <pe:PropertyBasePanel Grid.Row="2" />
         </Grid>

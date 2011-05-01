@@ -63,9 +63,10 @@ namespace metashader.GraphEditor
         {
             set 
             {
-                m_startPos = value;
+                m_startPos = value;               
                 UpdateControlPoints();
             }
+            get { return m_startPos; }
         }
 
         /// <summary>
@@ -78,6 +79,7 @@ namespace metashader.GraphEditor
                 m_endPos = value;
                 UpdateControlPoints();
             }
+            get { return m_endPos; }
         }
 
         /// <summary>
@@ -87,8 +89,8 @@ namespace metashader.GraphEditor
         {
             get
             {
-                double x = (m_endPos.X - m_startPos.X) * 0.25 + m_startPos.X;
-                double y = m_startPos.Y;
+                double x = (m_endPos.X - m_startPos.X) * 0.25;
+                double y = 0;
 
                 return new Point(x, y);
             }
@@ -101,12 +103,28 @@ namespace metashader.GraphEditor
         {
             get
             {
-                double x = (m_endPos.X - m_startPos.X) * 0.75 + m_startPos.X;
-                double y = m_endPos.Y;
+                double x = (m_endPos.X - m_startPos.X) * 0.75;
+                double y = m_endPos.Y - m_startPos.Y;
 
                 return new Point(x, y);
             }
-        }                
+        }   
+        
+        /// <summary>
+        /// 幅
+        /// </summary>
+        public double Width
+        {
+            get { return Math.Abs(m_startPos.X - m_endPos.X); }
+        }
+
+        /// <summary>
+        /// 高さ
+        /// </summary>
+        public double Height
+        {
+            get { return Math.Abs(m_startPos.Y - m_endPos.Y);  }
+        }
 #endregion
 
 #region constructors
@@ -131,17 +149,57 @@ namespace metashader.GraphEditor
         }
 #endregion
 
+
         #region private methods
+        /// <summary>
+        /// Bezierの中間制御点1
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        Point GetControlPoint1(Point start, Point end)
+        {
+            double x = (end.X - start.X) * 0.25;
+            double y = 0;
+
+            return new Point(x, y);
+        }
+
+        /// <summary>
+        /// Bezierの中間制御点2
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        Point GetControlPoint2(Point start, Point end)
+        {
+            double x = (end.X - start.X) * 0.75;
+            double y = (end.Y - start.Y);
+            
+            return new Point(x, y);
+        }
+
         /// <summary>
         /// パスの制御点を更新する
         /// </summary>
         private void UpdateControlPoints()
-        {
-            m_pathFigure.StartPoint = m_startPos;
-            m_bezierSegment.Point1 = ControlPoint1;
-            m_bezierSegment.Point2 = ControlPoint2;
-            m_bezierSegment.Point3 = m_endPos;
+        {            
+            Point start = m_startPos;
+            Point end = m_endPos;
+
+            // 常に左側にStartPosが来るようにSwapする
+            if (start.X >= end.X)
+            {
+                Point temp = end;
+                end = start;
+                start = temp;
+            }
+
+            m_pathFigure.StartPoint = new Point(0,0);
+            m_bezierSegment.Point1 = GetControlPoint1(start, end);
+            m_bezierSegment.Point2 = GetControlPoint2(start, end);
+            m_bezierSegment.Point3 = new Point(end.X - start.X, end.Y - start.Y);
         }
-        #endregion
+        #endregion            
     }
 }

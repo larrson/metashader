@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.Windows.Media.Media3D;
 
 namespace metashader.GraphEditor
 {
@@ -105,6 +106,16 @@ namespace metashader.GraphEditor
         /// サムネイルのコントロール
         /// </summary>
         Thumnail.ThumnailControl m_thumnailControl;
+        
+        /// <summary>
+        /// 描画位置
+        /// </summary>
+        Point m_pos;
+
+        /// <summary>
+        /// 3D表現
+        /// </summary>
+        Viewport2DVisual3D m_visual3D;
 
         /// <summary>
         /// 選択中か
@@ -126,14 +137,23 @@ namespace metashader.GraphEditor
         /// </summary>
         public Point Position
         {
-            get { return new Point(Canvas.GetLeft(this), Canvas.GetTop(this));  }
+            get { return m_pos; }
             set 
             {                
-                Canvas.SetLeft(this, value.X); Canvas.SetTop(this, value.Y); 
+                m_pos = value;
                 
                 NotifyPropertyChanged("Position");                
             }
         }        
+
+		/// <summary>
+        /// 3D表現
+        /// </summary>
+        public Viewport2DVisual3D Visual3D
+        {
+            get { return m_visual3D; }
+            set { m_visual3D = value; }
+        }
 
         /// <summary>
         /// 選択中か
@@ -175,7 +195,8 @@ namespace metashader.GraphEditor
 
             // 変数初期化
             m_node = node;
-            m_isMouseLeftButtonDown = false;            
+            m_isMouseLeftButtonDown = false;
+            m_pos = node.Position;                
 
             // DataContextの設定
             DataContext = m_node;
