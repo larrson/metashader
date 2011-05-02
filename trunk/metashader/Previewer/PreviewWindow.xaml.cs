@@ -125,10 +125,13 @@ namespace metashader.Previewer
         /// <param name="handled"></param>
         /// <returns></returns>
         private static IntPtr WinProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            handled = false;
+        {            
+            IntPtr ret =  NativeMethods.WndProc(hwnd, msg, wParam, lParam);
 
-            return NativeMethods.WndProc(hwnd, msg, wParam, lParam);
+            // 上記のメソッドで全てのメッセージ処理を行う
+            handled = true;
+
+            return ret;
         }
 
         /// <summary>
