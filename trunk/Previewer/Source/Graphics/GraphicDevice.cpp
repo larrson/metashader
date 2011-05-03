@@ -42,11 +42,11 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	CGraphicDevice::CGraphicDevice()
 		: m_pd3d9		(NULL)
-		, m_pd3dDevice9	(NULL)		
+		, m_pd3dDevice9	(NULL)	
 		, m_pd3dSurface9(NULL)
 		, m_hWnd		(0)
 		, m_bValid	(false)
-		, m_bActive (false)
+		, m_bActive (false)		
 		, m_nWidth (0)
 		, m_nHeight(0)
 		, m_viewport()
@@ -177,17 +177,28 @@ namespace opk
 	//------------------------------------------------------------------------------------------
 	bool CGraphicDevice::CreateRenderTarget(int i_nWidth, int i_nHeight)
 	{
-		HRESULT hr = m_pd3dDevice9->CreateRenderTarget(
-					i_nWidth
+		HRESULT hr;		
+		hr = m_pd3dDevice9->CreateRenderTarget(
+				i_nWidth
 				,	i_nHeight
 				,	D3DFMT_A8R8G8B8
 				,	D3DMULTISAMPLE_NONE
 				,	0
 				,	true
-				,	&m_pd3dSurface9
+				,	&(m_pd3dSurface9)
 				,	NULL
-			);
-		return SUCCEEDED(hr);
+				);
+		if( FAILED(hr) )
+		{
+			return false;
+		}		
+
+		if( FAILED( m_pd3dDevice9->SetRenderTarget(0, m_pd3dSurface9) ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -196,8 +207,8 @@ namespace opk
 		// シェーダ管理の破棄		
 		shader::CShaderMan::DisposeInstance();
 
-		// 破棄処理		
-		SAFE_RELEASE( m_pd3dSurface9 );
+		// 破棄処理				
+		SAFE_RELEASE( m_pd3dSurface9 );	
 		SAFE_RELEASE( m_pd3dDevice9 );
 		SAFE_RELEASE( m_pd3d9 );
 		
@@ -213,8 +224,8 @@ namespace opk
 	{
 		HRESULT hr;
 
-		// サーフェースの破棄
-		SAFE_RELEASE( m_pd3dSurface9 );
+		// サーフェースの破棄		
+		SAFE_RELEASE( m_pd3dSurface9 );		
 
 		// デバイスのリセット
 		// Presentation Parameter の初期化		
@@ -256,10 +267,7 @@ namespace opk
 
 		// 実行中フラグをセット
 		m_bActive = true;
-
-		// レンダーターゲットの設定
-		V_RETURN( m_pd3dDevice9->SetRenderTarget(0, m_pd3dSurface9) );
-
+		
 		// ビューポートを設定
 		V_RETURN( m_pd3dDevice9->SetViewport(&m_viewport) );
 
@@ -273,31 +281,27 @@ namespace opk
 
 	//------------------------------------------------------------------------------------------
 	void CGraphicDevice::Deactivate()
-	{
-		// レンダーターゲットの解除
-		HRESULT hr = m_pd3dDevice9->SetRenderTarget(0, NULL);
-
+	{		
 		// レンダリング終了
-		m_pd3dDevice9->EndScene();
+		m_pd3dDevice9->EndScene();	
 
-		// スワップ
-		// m_pd3dDevice9->Present(NULL, NULL, NULL, NULL);
-
-		// 実行中フラグをセット
-		m_bActive = false;
+		// 実行中フラグを下ろす
+		m_bActive = false;		
 	}
 	
 	//------------------------------------------------------------------------------------------
 	IDirect3DSurface9* CGraphicDevice::GetBackBuffer()
 	{
-		// バックバッファの取得		
+		// バックバッファの取得				
 		return m_pd3dSurface9;
 	}
 	
 	//------------------------------------------------------------------------------------------
 	HRESULT CGraphicDevice::SetTransform(TransformType i_nTransformType, D3DXMATRIX i_mMatrix)
 	{		
+#if !USE_SHADER
 		HRESULT hr;
+#endif // USE_SHADER
 
 		// IDirect3DDevice9::SetTransform用変換テーブル
 		static const D3DTRANSFORMSTATETYPE tbStateType[TransformType_Max] =
