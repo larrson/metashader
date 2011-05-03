@@ -43,15 +43,17 @@ namespace opk
 		};
 
 	private:
-		IDirect3D9*			m_pd3d9;		///< DirectXオブジェクト	
-		IDirect3DDevice9*	m_pd3dDevice9;  ///< グラフィックデバイス
-		IDirect3DSurface9*	m_pd3dSurface9;	///< サーフェース
-		D3DPRESENT_PARAMETERS m_d3dpp;		///< プレゼンテーションパラメータ
+		IDirect3D9*			m_pd3d9;			///< DirectXオブジェクト	
+		IDirect3DDevice9*	m_pd3dDevice9;		///< グラフィックデバイス
+		IDirect3DSurface9*	m_pd3dSurface9;		///< サーフェース(ダブルバッファ)
+		D3DPRESENT_PARAMETERS m_d3dpp;			///< プレゼンテーションパラメータ
 
 		HWND m_hWnd;		///< ダミーのウィンドウハンドル
 
 		bool m_bValid;		///< 有効か
 		bool m_bActive;		///< 実行中か
+
+		int m_nBufferIndex; ///< バッファインデックス
 
 		int m_nWidth;  ///< バックバッファの幅
 		int m_nHeight; ///< バックバッファの高さ		

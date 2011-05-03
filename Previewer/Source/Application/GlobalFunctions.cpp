@@ -50,22 +50,24 @@ LRESULT WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam)
 }
 
 //-------------------------------------------------------------------------------------------
-void* GetNextSurface()
+void* GetBackBuffer()
 {
-	void* ret = NULL;
+	return opk::CApp::GetInstance()->GetGraphicDevice()->GetBackBuffer();
+}
 
+//-------------------------------------------------------------------------------------------
+void Render()
+{	
 	// 更新
 	if( opk::CApp::GetInstance()->Update() == false )
 	{
-		return false;
+		return;
 	}
 
 	// レンダリング
 	if( opk::CApp::GetInstance()->Render() )
-	{
-		ret = opk::CApp::GetInstance()->GetGraphicDevice()->GetBackBuffer();
-	}	
-	return ret;
+	{		
+	}		
 }
 
 //-------------------------------------------------------------------------------------------

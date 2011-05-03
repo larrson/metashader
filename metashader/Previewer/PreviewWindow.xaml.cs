@@ -32,9 +32,7 @@ namespace metashader.Previewer
             // フロントバッファの有効性が変更された
             _d3dimg.IsFrontBufferAvailableChanged += new DependencyPropertyChangedEventHandler(_d3dimg_IsFrontBufferAvailableChanged);
             // サイズが変更された
-            this.SizeChanged += new SizeChangedEventHandler(PreviewWindow_SizeChanged);
-            // 定期的な描画コールバック
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+            this.SizeChanged += new SizeChangedEventHandler(PreviewWindow_SizeChanged);            
             // シェーダノードの値が変更された
             App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
             // グラフ構成でエラーが発生した
@@ -48,7 +46,7 @@ namespace metashader.Previewer
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void PreviewWindow_Loaded(object sender, RoutedEventArgs e)
-        {
+        {         
             // Previewerのエントリポイントを呼び出し
             NativeMethods.PreviewerMain((int)this.Width, (int)this.Height);
 
@@ -56,6 +54,15 @@ namespace metashader.Previewer
             WindowInteropHelper winInteropHelper = new WindowInteropHelper(this);
             HwndSource hwndSource = HwndSource.FromHwnd(winInteropHelper.Handle);
             hwndSource.AddHook(WinProc);
+
+            // バックバッファを設定
+            _d3dimg.Lock();
+            _d3dimg.SetBackBuffer(System.Windows.Interop.D3DResourceType.IDirect3DSurface9
+                , NativeMethods.GetBackBuffer());
+            _d3dimg.Unlock();     
+       
+            // 定期的な描画コールバック
+            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);          
         }
 
         /// <summary>
@@ -64,13 +71,10 @@ namespace metashader.Previewer
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void _d3dimg_IsFrontBufferAvailableChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
+        {                                                   
+            // @@@@
             // 有効から無効へ変化した場合は、デバイスロストをチェックする
-            if( (bool)e.NewValue == false && (bool)e.OldValue == true )
-            {
-                // @@@@
-                // http://msdn.microsoft.com/ja-jp/library/cc324253.aspx
-            }
+            // http://msdn.microsoft.com/ja-jp/library/cc324253.aspx
         }
 
         /// <summary>
@@ -79,13 +83,11 @@ namespace metashader.Previewer
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void PreviewWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            /*
+        {            
             _d3dimg.Lock();
             _d3dimg.SetBackBuffer(D3DResourceType.IDirect3DSurface9, IntPtr.Zero);
             _d3dimg.Unlock();
-            NativeMethods.Resize((int)e.NewSize.Width, (int)e.NewSize.Height);
-             */
+            NativeMethods.Resize((int)e.NewSize.Width, (int)e.NewSize.Height);             
         }
 
         /// <summary>
@@ -100,17 +102,16 @@ namespace metashader.Previewer
             // 同じフレームで2回呼ばれる可能性があるため、
             // 2回目のレンダリングを避ける
             if( _d3dimg.IsFrontBufferAvailable && m_lastRenderTime != args.RenderingTime )
-            {
-                IntPtr pSurface = NativeMethods.GetNextSurface();
-                if( pSurface != IntPtr.Zero )
-                {
-                    _d3dimg.Lock();
-                    _d3dimg.SetBackBuffer(System.Windows.Interop.D3DResourceType.IDirect3DSurface9, pSurface);
-                    _d3dimg.AddDirtyRect(new Int32Rect(0, 0, _d3dimg.PixelWidth, _d3dimg.PixelHeight));
-                    _d3dimg.Unlock();
-
-                    m_lastRenderTime = args.RenderingTime;
-                }
+            {                
+                // D3DImageの更新
+                _d3dimg.Lock();
+                NativeMethods.Render();
+                _d3dimg.AddDirtyRect(new Int32Rect(0, 0, _d3dimg.PixelWidth, _d3dimg.PixelHeight));
+                _d3dimg.Unlock();
+                
+                // 最後にレンダリングされた時刻を記録
+                m_lastRenderTime = args.RenderingTime;             
+                 
             }
         }
         

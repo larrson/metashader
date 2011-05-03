@@ -16,11 +16,6 @@
 extern "C" DLLEXPORT int PreviewerMain(int i_nScreenWidth, int i_nScreenHeight);
 
 /**
-	@brief 現在のフレームをレンダリング
-*/
-extern "C" DLLEXPORT void RenderFrame();
-
-/**
 	@brief 終了処理
 	@retval 終了処理に成功したか
 */
@@ -37,10 +32,15 @@ extern "C" DLLEXPORT int ShutDown();
 extern "C" DLLEXPORT LRESULT WndProc(int *i_hWnd, int i_nMsg, int* i_wParam, int* i_lParam);
 
 /**
-	@brief 次のレンダリングされたフレームのサーフェイスを取得する
+	@brief バックバッファを取得する
 	@retval サーフェイスのポインタ
 */
-extern "C" DLLEXPORT void* GetNextSurface();
+extern "C" DLLEXPORT void* GetBackBuffer();
+
+/**
+	@brief レンダリングする	
+*/
+extern "C" DLLEXPORT void Render();
 
 /**
 	@brief グラフィックデバイスの有効性を確認し、ロストしていたらその対応を行う

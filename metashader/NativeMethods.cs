@@ -28,7 +28,9 @@ namespace metashader
         [DllImport(dllName)]
         public unsafe static extern IntPtr WndProc(IntPtr i_hWnd, int i_nMsg, IntPtr i_wParam, IntPtr i_lParam);
         [DllImport(dllName)]
-        public unsafe static extern IntPtr GetNextSurface();
+        public unsafe static extern IntPtr GetBackBuffer();
+        [DllImport(dllName)]
+        public unsafe static extern void Render();
         [DllImport(dllName)]
         public unsafe static extern void Resize(int i_nScreenWidth, int i_nScreenHeight);
 
