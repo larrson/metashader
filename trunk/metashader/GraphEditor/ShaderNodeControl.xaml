@@ -18,7 +18,14 @@
         </Border>        
         <!-- サムネイル -->
         <Border Grid.Row="1" Grid.Column="1" Name="_thumnailBorder" BorderThickness="2" BorderBrush="White">
-            <Grid Name="_thumnailGrid" Background="LightGray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Grid Name="_centralGrid" Background="LightGray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="100">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Name="_thumnailGrid" Grid.Column="0"/>
+                <UniformGrid Name="_inputJointLabelGrid" Grid.Column="1" Columns="1" Width="auto" Height="auto" VerticalAlignment="Stretch" />
+            </Grid>            
         </Border>
         <!-- 入力ジョイント -->
         <UniformGrid Name="_inputJointGrid" Grid.Row="1" Grid.Column="2" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" />                   

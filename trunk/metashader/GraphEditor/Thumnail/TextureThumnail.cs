@@ -23,7 +23,8 @@ namespace metashader.GraphEditor.Thumnail
             : base(node)
         {
             // サムネイル表示用のイメージを作成して追加
-            m_image = new Image() { Width = base.Width, Height = base.Height };
+            // 正方形のため、高さに合わせる(幅が不定なので)
+            m_image = new Image() { Width = base.Height, Height = base.Height };
             base._grid.Children.Add(m_image);
 
             // データにパスが設定されていれば、サムネイル画像を作成する
@@ -112,19 +113,19 @@ namespace metashader.GraphEditor.Thumnail
             // プラットフォーム呼び出しによるDirectXAPIを使用したデコード
 
             int bytePerPixel = 4; // 1ピクセル当たりのバイト数(Brga32フォーマットを作成するため4)            
-            int size = bytePerPixel * (int)this.Width * (int)this.Height;
+            int size = bytePerPixel * (int)m_image.Width * (int)m_image.Height;
                         
             // P/Invokeでサムネイルデータを取得            
             // サーフェース格納用にアンマネージメモリを確保する
             IntPtr bufferPtr = Marshal.AllocHGlobal(size);
-            NativeMethods.GetImagePixelData(path, (int)this.Width, (int)this.Height, bufferPtr);
+            NativeMethods.GetImagePixelData(path, (int)m_image.Width, (int)m_image.Height, bufferPtr);
 
             // 格納用バッファを作成            
             byte[] pixelData = new byte[size];
             Marshal.Copy(bufferPtr, pixelData, 0, size);
                         
             // バッファからBitmapSourceを作成
-            m_image.Source = BitmapSource.Create((int)this.Width, (int)this.Height, 96, 96, PixelFormats.Bgra32, null, pixelData, (int)this.Width * bytePerPixel);
+            m_image.Source = BitmapSource.Create((int)m_image.Width, (int)m_image.Height, 96, 96, PixelFormats.Bgra32, null, pixelData, (int)m_image.Width * bytePerPixel);
 
             // アンマネージメモリを解放
             Marshal.FreeHGlobal(bufferPtr);

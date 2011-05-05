@@ -70,11 +70,28 @@ namespace metashader.ShaderGraphData
             return GetInputJointVariableType(0);
         }
 
+        /// <summary>
+        /// 入力ジョイントのラベルを取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override string GetInputJointLabel(int index)
+        {
+            switch( index )
+            {
+                case 0:
+                    return "L";
+                case 1:
+                    return "R";
+                default:
+                    throw new ArgumentException("index");                   
+            }
+        }
+
          /// <summary>
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="localCount">ローカル変数のカウンタ</param>
+        /// <param name="stream"></param>        
         public override void WritingShaderMainCode(StringWriter stream)
         {
             // 出力型
@@ -283,8 +300,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="localCount">ローカル変数のカウンタ</param>
+        /// <param name="stream"></param>        
         public override void WritingShaderMainCode(StringWriter stream)
         {
             // 出力型
@@ -434,5 +450,5 @@ namespace metashader.ShaderGraphData
             return false;
         }
         #endregion         
-    }
+    }    
 }

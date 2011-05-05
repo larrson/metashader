@@ -28,6 +28,11 @@ namespace metashader.ShaderGraphData
         Operator_Mul,   // 乗算
         Operator_Div,   // 除算
 
+        Func_Normalize, // 正規化
+        Func_Dot,       // 内積
+        Func_Reflect,   // 反射
+        Func_Pow,       // べき乗
+
         Output_Color,   // 出力色        
         Max, // 最大数
     };
@@ -59,6 +64,11 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Operator_Mul: return "Operator_Mul";
                 case ShaderNodeType.Operator_Div: return "Operator_Div";
 
+                case ShaderNodeType.Func_Normalize: return "Func_Normalize";
+                case ShaderNodeType.Func_Dot: return "Func_Dot";
+                case ShaderNodeType.Func_Reflect: return "Func_Reflect";
+                case ShaderNodeType.Func_Pow: return "Func_Pow";
+
                 case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -85,6 +95,11 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Operator_Sub: return uint.MaxValue;
                 case ShaderNodeType.Operator_Mul: return uint.MaxValue;
                 case ShaderNodeType.Operator_Div: return uint.MaxValue;
+
+                case ShaderNodeType.Func_Normalize: return uint.MaxValue;
+                case ShaderNodeType.Func_Dot: return uint.MaxValue;
+                case ShaderNodeType.Func_Reflect: return uint.MaxValue;
+                case ShaderNodeType.Func_Pow: return uint.MaxValue;
 
                 case ShaderNodeType.Output_Color: return 1;               
                 default: throw new ArgumentOutOfRangeException("e");
@@ -313,6 +328,16 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// 入力ジョイントのラベルを取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual string GetInputJointLabel( int index )
+        {
+            return "";
+        }
+
+        /// <summary>
         /// 有効なノードか判定する
         /// @@ エラーメッセージの付加       
         /// </summary>
@@ -360,8 +385,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="localCount">ローカル変数のカウンタ</param>
+        /// <param name="stream"></param>        
         public virtual void WritingShaderMainCode(StringWriter stream){}
 
 #if DEBUG
