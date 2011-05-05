@@ -124,9 +124,21 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Operator_Div:
                     ret = new Operator_DivNode(name, pos);
                     break;
+                case ShaderNodeType.Func_Normalize:
+                    ret = new Func_Normalize(name, pos);
+                    break;
+                case ShaderNodeType.Func_Dot:
+                    ret = new Func_Dot(name, pos);
+                    break;
+                case ShaderNodeType.Func_Reflect:
+                    ret = new Func_Reflect(name, pos);
+                    break;
+                case ShaderNodeType.Func_Pow:
+                    ret = new Func_Pow(name, pos);
+                    break;
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);
-                    break;                
+                    break;                                    
                 default:
                     throw new ArgumentException("適合するタイプのコンストラクタが有りません", type.ToStringExt());
             }

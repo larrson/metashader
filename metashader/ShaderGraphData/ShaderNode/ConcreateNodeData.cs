@@ -98,7 +98,7 @@ namespace metashader.ShaderGraphData
             m_values[0] = 0.0f;
             m_values[1] = 0.0f;
             m_values[2] = 0.0f;
-            m_values[3] = 0.0f;
+            m_values[3] = 1.0f; // w成分を1に設定
         }
 #endregion
 

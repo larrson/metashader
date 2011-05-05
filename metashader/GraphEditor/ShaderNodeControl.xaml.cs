@@ -201,53 +201,24 @@ namespace metashader.GraphEditor
             // DataContextの設定
             DataContext = m_node;
 
-            // ジョイント作成
-            // 入力ジョイント
-            for (int i = 0; i < node.InputJointNum; ++i)
-            {
-                _inputJointGrid.Children.Add(new JointControl(m_node.GetInputJoint(i), this));                    
-            }
-            // 出力ジョイント
-            for (int i = 0; i < node.OutputJointNum; ++i)
-            {
-                _outputJointGrid.Children.Add(new JointControl(m_node.GetOutputJoint(i), this));
-            }            
-
-            // 中央のサムネイルを作成
-            ShaderGraphData.ShaderNodeType type = node.Type;
-            // Vector4用
-            if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
-            {
-                m_thumnailControl = new Thumnail.ColorThumnail(m_node);
-            }
-            // テクスチャ用
-            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
-                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
-            {
-                m_thumnailControl = new Thumnail.TextureThumnail(m_node);
-            }  
-            // デフォルト
-            else
-            {
-                m_thumnailControl = new Thumnail.DefaultThumnail(m_node);
-            }            
-            _thumnailGrid.Children.Add(m_thumnailControl);
+            // コントロールの初期化
+            InitializeControl();
 
             // イベントハンドラ登録
             // マウス操作を行う箇所が分かれているため、それぞれ登録する
             // 左クリック
             _nameTextBlock.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
-            _thumnailGrid.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
+            _centralGrid.MouseLeftButtonDown += new MouseButtonEventHandler(Node_MouseLeftButtonDown);
             // 右クリック
             _nameTextBlock.MouseRightButtonDown += new MouseButtonEventHandler(_nameTextBlock_MouseRightButtonDown);
-            _thumnailGrid.MouseRightButtonDown += new MouseButtonEventHandler(_nameTextBlock_MouseRightButtonDown);
+            _centralGrid.MouseRightButtonDown += new MouseButtonEventHandler(_nameTextBlock_MouseRightButtonDown);
             // マウスアップ
             _nameTextBlock.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
-            _thumnailGrid.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
+            _centralGrid.MouseUp += new MouseButtonEventHandler(Node_MouseUp);
             // マウスムーブ
             _nameTextBlock.MouseMove += new MouseEventHandler(Node_MouseMove);
-            _thumnailGrid.MouseMove += new MouseEventHandler(Node_MouseMove);
-        }        
+            _centralGrid.MouseMove += new MouseEventHandler(Node_MouseMove);
+        }
 #endregion        
       
 #region public methods
@@ -269,7 +240,7 @@ namespace metashader.GraphEditor
 
             // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth + _nameTextBlock.ActualWidth;
-            double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
+            double offsetY = _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
 
             return new Point(basicPos.X + offsetX, basicPos.Y + offsetY);
         }
@@ -292,7 +263,7 @@ namespace metashader.GraphEditor
 
             // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth / 2;
-            double offsetY = _nameTextBlock.ActualHeight + (_thumnailGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
+            double offsetY = _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
 
             return new Point(basicPos.X + offsetX, basicPos.Y + offsetY);
         }
@@ -396,6 +367,55 @@ namespace metashader.GraphEditor
 #endregion        
 
 #region private methods
+        /// <summary>
+        /// コントロールの初期化
+        /// </summary>        
+        private void InitializeControl()
+        {
+            // ジョイント作成
+            // 入力ジョイント
+            for (int i = 0; i < m_node.InputJointNum; ++i)
+            {
+                _inputJointGrid.Children.Add(new JointControl(m_node.GetInputJoint(i), this));
+            }
+            // 出力ジョイント
+            for (int i = 0; i < m_node.OutputJointNum; ++i)
+            {
+                _outputJointGrid.Children.Add(new JointControl(m_node.GetOutputJoint(i), this));
+            }
+
+            // 中央のサムネイルを作成
+            ShaderGraphData.ShaderNodeType type = m_node.Type;
+            // Vector4用
+            if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+            {
+                m_thumnailControl = new Thumnail.ColorThumnail(m_node);
+            }
+            // テクスチャ用
+            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
+                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
+            {
+                m_thumnailControl = new Thumnail.TextureThumnail(m_node);
+            }
+            // デフォルト
+            else
+            {
+                m_thumnailControl = new Thumnail.DefaultThumnail(m_node);
+            }
+            _thumnailGrid.Children.Add(m_thumnailControl);
+
+            // ジョイントのラベルを追加
+            for(int i = 0; i < m_node.InputJointNum; ++i)
+            {
+                Label label = new Label() { 
+                    Content = m_node.GetInputJointLabel(i),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center
+                };                
+                _inputJointLabelGrid.Children.Add(label);
+            }
+        }        
+
         /// <summary>
         /// キャンバスに対する位置を取得する
         /// </summary>

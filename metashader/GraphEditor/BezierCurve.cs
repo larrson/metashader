@@ -115,7 +115,7 @@ namespace metashader.GraphEditor
         /// </summary>
         public double Width
         {
-            get { return Math.Abs(m_startPos.X - m_endPos.X); }
+            get { return Math.Max( Math.Abs(m_startPos.X - m_endPos.X), 1); }
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace metashader.GraphEditor
         /// </summary>
         public double Height
         {
-            get { return Math.Abs(m_startPos.Y - m_endPos.Y);  }
+            get { return Math.Max(Math.Abs(m_startPos.Y - m_endPos.Y), 1);  }
         }
 #endregion
 

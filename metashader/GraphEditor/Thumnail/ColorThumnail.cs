@@ -20,12 +20,16 @@ namespace metashader.GraphEditor.Thumnail
     public class ColorThumnail : ThumnailControl
     {
         #region variables
+
         #endregion
 
         public ColorThumnail(ShaderGraphData.ShaderNodeDataBase node)
             : base(node)
         {
-            InitializeComponent();                        
+            InitializeComponent();                              
+ 
+            // サムネイル部分が正方形になるように幅を設定
+            this.Width = this.Height;
 
             // 背景色変更
             ShaderGraphData.Uniform_Vector4Node vector4Node = NodeData as ShaderGraphData.Uniform_Vector4Node;
