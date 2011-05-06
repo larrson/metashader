@@ -31,9 +31,26 @@ namespace metashader.GraphEditor.Thumnail
             // サムネイル部分が正方形になるように幅を設定
             this.Width = this.Height;
 
-            // 背景色変更
-            ShaderGraphData.Uniform_Vector4Node vector4Node = NodeData as ShaderGraphData.Uniform_Vector4Node;
-            SetBackgroundColor(vector4Node.Values);            
+            // 背景色変更            
+            float r,g,b,a;
+            r = g = b = a = 0.0f;
+            if( NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3 )
+            {
+                ShaderGraphData.Uniform_Vector3Node vector3Node = NodeData as ShaderGraphData.Uniform_Vector3Node;
+                r = vector3Node.Values[0];
+                g = vector3Node.Values[1];
+                b = vector3Node.Values[2];
+                a = 1.0f;
+            }
+            else if ( NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4 )
+            {
+                ShaderGraphData.Uniform_Vector4Node vector4Node = NodeData as ShaderGraphData.Uniform_Vector4Node;
+                r = vector4Node.Values[0];
+                g = vector4Node.Values[1];
+                b = vector4Node.Values[2];
+                a = vector4Node.Values[3];
+            }
+            SetBackgroundColor(r, g, b, a);            
         }
 
         #region event handlers
@@ -55,11 +72,22 @@ namespace metashader.GraphEditor.Thumnail
                 ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
 
                 // ベクトルの4成分を取得
-                float[] values = new float[4];
-                values[0] = dialog.Color.R / 255f;
-                values[1] = dialog.Color.G / 255f;
-                values[2] = dialog.Color.B / 255f;
-                values[3] = dialog.Color.A / 255f;
+                float[] values = null;
+                if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+                {
+                    values = new float[4];
+                    values[0] = dialog.Color.R / 255f;
+                    values[1] = dialog.Color.G / 255f;
+                    values[2] = dialog.Color.B / 255f;
+                    values[3] = dialog.Color.A / 255f;
+                }
+                else if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+                {
+                    values = new float[3];
+                    values[0] = dialog.Color.R / 255f;
+                    values[1] = dialog.Color.G / 255f;
+                    values[2] = dialog.Color.B / 255f;
+                }
 
                 App.CurrentApp.GraphData.ChangeNodeProperty<float[]>(NodeData, "Values", values, undoredo);
 
@@ -88,9 +116,26 @@ namespace metashader.GraphEditor.Thumnail
             
             if( bChangeBackground )
             {
-                 // 背景色を変更 
-                ShaderGraphData.Uniform_Vector4Node vector4Node = args.Node as ShaderGraphData.Uniform_Vector4Node;
-                SetBackgroundColor(vector4Node.Values);                    
+                // 背景色を変更 
+                float r, g, b, a; r = g = b = a = 0.0f;
+
+                if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+                {
+                    ShaderGraphData.Uniform_Vector3Node vector3Node = args.Node as ShaderGraphData.Uniform_Vector3Node;
+                    r = vector3Node.Values[0];
+                    g = vector3Node.Values[1];
+                    b = vector3Node.Values[2];
+                    a = 1.0f;
+                }
+                else if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+                {
+                    ShaderGraphData.Uniform_Vector4Node vector4Node = args.Node as ShaderGraphData.Uniform_Vector4Node;
+                    r = vector4Node.Values[0];
+                    g = vector4Node.Values[1];
+                    b = vector4Node.Values[2];
+                    a = vector4Node.Values[3];
+                }
+                SetBackgroundColor(r, g, b, a);      
             }
         }
         #endregion
@@ -98,15 +143,14 @@ namespace metashader.GraphEditor.Thumnail
         #region private methods
         /// <summary>
         /// 背景色を設定する
-        /// </summary>
-        /// <param name="values"></param>
-        private void SetBackgroundColor(float[] values)
+        /// </summary>        
+        private void SetBackgroundColor(float r, float g, float b, float a)
         {
             Color color = new Color();
-            color.R = (Byte)(values[0] * 255);
-            color.G = (Byte)(values[1] * 255);
-            color.B = (Byte)(values[2] * 255);
-            color.A = (Byte)(values[3] * 255);
+            color.R = (Byte)(r * 255);
+            color.G = (Byte)(g * 255);
+            color.B = (Byte)(b * 255);
+            color.A = (Byte)(a * 255);
             base.Background = new SolidColorBrush(color);
         }
         #endregion

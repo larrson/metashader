@@ -18,6 +18,7 @@ namespace metashader.GraphEditor
 {
     /// <summary>
     /// ShaderNodeControl.xaml の相互作用ロジック
+    /// 単一のシェーダノードを表すUI
     /// </summary>
     public partial class ShaderNodeControl : UserControl, INotifyPropertyChanged
     {
@@ -279,7 +280,7 @@ namespace metashader.GraphEditor
             {
                 case "Position":
                     Position = (Point)args.NewValue;
-                    break;
+                    break;                
                 default:
                     // throw new NotImplementedException();                  
                     break;
@@ -386,8 +387,9 @@ namespace metashader.GraphEditor
 
             // 中央のサムネイルを作成
             ShaderGraphData.ShaderNodeType type = m_node.Type;
-            // Vector4用
-            if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+            // Vectot3/Vector4用
+            if (    type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector3
+                ||  type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
             {
                 m_thumnailControl = new Thumnail.ColorThumnail(m_node);
             }
@@ -413,7 +415,7 @@ namespace metashader.GraphEditor
                     VerticalAlignment = VerticalAlignment.Center
                 };                
                 _inputJointLabelGrid.Children.Add(label);
-            }
+            }            
         }        
 
         /// <summary>

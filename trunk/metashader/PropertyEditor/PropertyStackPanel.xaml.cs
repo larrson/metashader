@@ -16,6 +16,8 @@ namespace metashader.PropertyEditor
 {
     /// <summary>
     /// PropertyStackPanel.xaml の相互作用ロジック
+    /// シェーダノードや全体の設定を行うための編集用パネル
+    /// 各クラスごとにパネル内のスタックに異なる部品を積んで使用する
     /// </summary>
     public partial class PropertyStackPanel : UserControl
     {

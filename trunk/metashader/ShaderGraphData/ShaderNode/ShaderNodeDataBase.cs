@@ -16,6 +16,8 @@ namespace metashader.ShaderGraphData
     public enum ShaderNodeType : int
     {        
         Uniform_Float,      // スカラー(浮動小数点値)
+        Uniform_Vector2,    // 2Dベクトル
+        Uniform_Vector3,    // 3Dベクトル
         Uniform_Vector4,    // 4Dベクトル       
         Uniform_Texture2D,  // 2Dテクスチャ
         Uniform_TextureCube,// Cubeテクスチャ
@@ -51,8 +53,10 @@ namespace metashader.ShaderGraphData
         {
             switch( e )
             {
-                case ShaderNodeType.Uniform_Float:      return "Uniform_Float";
-                case ShaderNodeType.Uniform_Vector4:    return "Uniform_Vector4";                    
+                case ShaderNodeType.Uniform_Float:   return "Uniform_Float";
+                case ShaderNodeType.Uniform_Vector2: return "Uniform_Vector2";
+                case ShaderNodeType.Uniform_Vector3: return "Uniform_Vector3";
+                case ShaderNodeType.Uniform_Vector4: return "Uniform_Vector4";                    
                 case ShaderNodeType.Uniform_Texture2D:  return "Uniform_Texture2D";
                 case ShaderNodeType.Uniform_TextureCube: return "Uniform_TextureCube";
 
@@ -84,6 +88,8 @@ namespace metashader.ShaderGraphData
             switch( e )
             {
                 case ShaderNodeType.Uniform_Float: return uint.MaxValue;
+                case ShaderNodeType.Uniform_Vector2: return uint.MaxValue;
+                case ShaderNodeType.Uniform_Vector3: return uint.MaxValue;
                 case ShaderNodeType.Uniform_Vector4: return uint.MaxValue;
                 case ShaderNodeType.Uniform_Texture2D: return uint.MaxValue;
                 case ShaderNodeType.Uniform_TextureCube: return uint.MaxValue;
@@ -136,7 +142,7 @@ namespace metashader.ShaderGraphData
             return ShaderNodeType.Output_Color == e;
         }
     }
-#endregion    
+#endregion       
 
     /// <summary>
     /// シェーダグラフを構成するノードのデータ構造の基本クラス  
@@ -161,6 +167,11 @@ namespace metashader.ShaderGraphData
         protected Point m_pos;
 
         /// <summary>
+        /// 説明文
+        /// </summary>
+        protected string m_description = "";
+
+        /// <summary>
         /// 入力ジョイント数
         /// </summary>
         protected int m_inputJointNum;
@@ -180,7 +191,7 @@ namespace metashader.ShaderGraphData
         /// 出力ジョイント
         /// </summary>
         [NonSerialized]
-        protected JointData[] m_outputJoints;
+        protected JointData[] m_outputJoints;       
 #endregion        
 
 #region constructors
@@ -214,6 +225,15 @@ namespace metashader.ShaderGraphData
         public string Name
         {
             get { return m_name; }
+        }
+
+        /// <summary>
+        /// 説明文
+        /// </summary>
+        public string Description
+        {
+            get { return m_description; }
+            set { m_description = value; }
         }
 
         /// <summary>
@@ -424,5 +444,14 @@ namespace metashader.ShaderGraphData
 #region protected methods
         protected abstract void InitializeJoints();        
 #endregion
+    }
+
+    /// <summary>
+    /// Previewerへのパラメータ適用メソッドを実装するためのインターフェース
+    /// 主にUniform型ノード用
+    /// </summary>    
+    public interface IAppliableParameter
+    {
+        void ApplyParameter();
     }
 }

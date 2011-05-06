@@ -99,11 +99,27 @@ namespace metashader.PropertyEditor
 
             // ノードの種類ごとにスタックへUIを積む
 
+            // 説明文は共通
+            panel.AddParts("説明", new Parts.Parts<string>("Description", new Parts.StringTextbox()));
+
             // Float値用
             if( type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Float )
             {
                 panel.AddParts("値", new Parts.Parts<float>("Value", new Parts.FloatTextBox()));
             }
+            // Vector2用
+            else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector2)
+            {
+                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));                
+            }            
+            // Vector3用
+            else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+            {
+                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
+                panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));                
+            }            
             // Vector4用
             else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
             {
