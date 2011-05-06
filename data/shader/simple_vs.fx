@@ -24,7 +24,7 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 
    Output.Position	= mul(mul( Input.Position , mWorldView ) , mProjection);
    Output.Texcoord0 = Input.Texcoord0;
-   Output.Normal	= normalize( mul( float4(Input.Normal, 0.0f), mWorldView ).xyz );
+   Output.Normal	= normalize( mul( float4(Input.Normal, 0.0f), mWorld ).xyz );
    
    return( Output );
    

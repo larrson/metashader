@@ -133,6 +133,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PropertyEditor\Parts\StringTextbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertyEditor\PropertyBasePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -221,6 +225,9 @@
     <Compile Include="PropertyEditor\Parts\SamplerState.xaml.cs">
       <DependentUpon>SamplerState.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditor\Parts\StringTextbox.xaml.cs">
+      <DependentUpon>StringTextbox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertyEditor\Parts\ValueController.cs" />
     <Compile Include="PropertyEditor\Parts\StringTag.xaml.cs">
       <DependentUpon>StringTag.xaml</DependentUpon>
@@ -245,6 +252,7 @@
     <Compile Include="ShaderGraphData\ShaderNode\Operator_Node.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\ShaderNodeDataBase.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\ShaderNodeFactory.cs" />
+    <Compile Include="ShaderGraphData\ShaderNode\Uniform_NumericalNode.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\Uniform_TextureNode.cs" />
     <Compile Include="ShaderGraphData\UndoRedo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

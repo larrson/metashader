@@ -97,6 +97,12 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Uniform_Float:
                     ret = new Uniform_FloatNode(name, pos);
                     break;
+                case ShaderNodeType.Uniform_Vector2:
+                    ret = new Uniform_Vector2Node(name, pos);
+                    break;
+                case ShaderNodeType.Uniform_Vector3:
+                    ret = new Uniform_Vector3Node(name, pos);
+                    break;
                 case ShaderNodeType.Uniform_Vector4:
                     ret = new Uniform_Vector4Node(name, pos);
                     break;
