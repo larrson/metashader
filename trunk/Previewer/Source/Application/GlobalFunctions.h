@@ -92,6 +92,8 @@ extern "C" DLLEXPORT void SetTexturePath( const char* i_pszName, const char* i_p
 */
 extern "C" DLLEXPORT void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_samplerState );
 
+extern "C" DLLEXPORT void SetBlendMode( opk::CGraphicDevice::BlendMode i_nBlendMode );
+
 /**
 	@brief シェーダをデフォルトへ切り替える
 */

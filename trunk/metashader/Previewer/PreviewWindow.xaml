@@ -5,13 +5,7 @@
     Title="PreviewWindow" Width="640" Height="480"
     ResizeMode="NoResize"
     WindowStyle="ToolWindow">
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="DarkGray" Offset="0.0" />
-                <GradientStop Color="Black" Offset="1.0" />
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid Background="Black">        
         <Image x:Name="_imagelt" Width="640" Height="480">
             <Image.Source>
                 <i:D3DImage x:Name="_d3dimg" />

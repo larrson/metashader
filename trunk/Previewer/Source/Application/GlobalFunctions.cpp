@@ -116,6 +116,13 @@ void SetSamplerState( const char* i_pszName, const opk::shader::SSamplerState i_
 }
 
 //-------------------------------------------------------------------------------------------
+void SetBlendMode( opk::CGraphicDevice::BlendMode i_nBlendMode )
+{
+	opk::CGraphicDevice* pDevice = opk::CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+	pDevice->SetBlendMode( i_nBlendMode );
+}
+
+//-------------------------------------------------------------------------------------------
 void UseDefaultShader()
 {
 	opk::shader::CShaderMan* pShaderMan = opk::shader::CShaderMan::GetInstance();

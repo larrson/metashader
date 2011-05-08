@@ -37,7 +37,9 @@ namespace metashader.Previewer
             App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
             // グラフ構成でエラーが発生した
             App.CurrentApp.EventManager.GraphErrorEvent += new metashader.Event.GraphErrorEventHandler(EventManager_GraphErrorEvent);
-        }
+            // グローバル設定が変更された
+            App.CurrentApp.EventManager.GlobalSettingPropertyChangedEvent += new metashader.Event.GlobalSettingPropertyChangedEventHandler(EventManager_GlobalSettingPropertyChangedEvent);
+        }        
 
 #region event handlers
         /// <summary>
@@ -169,7 +171,25 @@ namespace metashader.Previewer
                 // エラーに関わらず、デフォルトへ切り替え
                 NativeMethods.UseDefaultShader();            
             }            
-        }                
+        }
+
+        /// <summary>
+        /// グローバル設定が変更された
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_GlobalSettingPropertyChangedEvent(object sender, metashader.Event.GlobalSettingPropertyChangedEventArgs args)
+        {
+            // プロパティごとに行う処理を変更
+            switch( args.PropertyName )
+            {
+                case "BlendMode":
+                    NativeMethods.SetBlendMode((int)args.NewValue);
+                    break;
+                default:
+                    break;
+            }
+        }
 #endregion        
     }
 }

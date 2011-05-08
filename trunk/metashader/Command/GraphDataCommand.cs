@@ -9,6 +9,7 @@ using System.Windows.Input;
 using metashader.ShaderGraphData;
 using System.Windows;
 using System.Collections.ObjectModel;
+using metashader.Common;
 
 namespace metashader.Command
 {   

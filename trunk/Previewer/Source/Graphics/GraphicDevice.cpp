@@ -275,6 +275,9 @@ namespace opk
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZENABLE, TRUE ) );
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZWRITEENABLE, TRUE ) );
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL ) );
+
+		// ブレンドモードの設定
+		V_RETURN( SetBlendMode( m_nBlendMode, true ) );
 		
 		return hr;
 	}
@@ -355,6 +358,65 @@ namespace opk
 		V_RETURN( SetTransform(TransformType_Projection, mProj) );
 
 		return S_OK;
+	}
+
+	//------------------------------------------------------------------------------------------
+	HRESULT CGraphicDevice::SetBlendMode( BlendMode i_nBlendMode, bool i_bForced )
+	{
+		HRESULT hr = S_OK;
+
+		// 同じであればなにもしない
+		if( !i_bForced && m_nBlendMode == i_nBlendMode )
+			return hr;
+		
+		// 新しい値を保持
+		m_nBlendMode = i_nBlendMode;
+
+		// 実行時ならセット
+		if( m_bActive )
+		{
+			switch( i_nBlendMode )
+			{
+			case BlendMode_None:
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE) );
+				break;
+			case BlendMode_Normal:
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
+				// RGB
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD ));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA ));
+				// A
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD ));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE ));
+				break;
+			case BlendMode_Add:
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
+				// RGB
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD) );
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE ));
+				// A
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD ));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE ));
+				break;
+			case BlendMode_Sub:
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
+				// RGB
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT ));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE ));
+				// A
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD ));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE));
+				V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE ))
+				break;
+			}			
+		}
+
+		return hr;
 	}
 
 	//------------------------------------------------------------------------------------------

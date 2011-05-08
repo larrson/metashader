@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using metashader.ShaderGraphData;
+using metashader.Common;
 
 namespace metashader.GraphEditor
 {

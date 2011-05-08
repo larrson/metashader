@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.ObjectModel;
+using metashader.Common;
 
 namespace metashader.ShaderGraphData
 {
@@ -310,7 +311,7 @@ namespace metashader.ShaderGraphData
         public bool ChangeNodeProperty<ParameterType>(ShaderNodeDataBase node, string propertyName, ParameterType newValue, UndoRedoBuffer undoredo)
         {
             // パラメータ設定用のIUndoRedoクラスのインタンス
-            ParameterUndoRedo<ParameterType> parameterUndoRedo = new ParameterUndoRedo<ParameterType>(node, propertyName, newValue);
+            ParameterUndoRedo<ParameterType, ShaderNodeDataBase> parameterUndoRedo = new ParameterUndoRedo<ParameterType, ShaderNodeDataBase>(node, propertyName, newValue);
 
             // 値の設定を試みる
             if( parameterUndoRedo.Do() == false )

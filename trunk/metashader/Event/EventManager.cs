@@ -41,6 +41,11 @@ namespace metashader.Event
         /// エラーがない場合もその旨を報告する
         /// </summary>
         public event GraphErrorEventHandler GraphErrorEvent;
+
+        /// <summary>
+        /// グローバル設定のプロパティ変更イベント
+        /// </summary>
+        public event GlobalSettingPropertyChangedEventHandler GlobalSettingPropertyChangedEvent;
 #endregion
 
 #region constructors
@@ -124,6 +129,19 @@ namespace metashader.Event
             if( GraphErrorEvent != null)
             {
                 GraphErrorEvent(sender, args);
+            }
+        }
+
+        /// <summary>
+        /// グローバル設定のプロパティ変更イベントの起動
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void RaiseGlobalSettingPropertyChanged(object sender, GlobalSettingPropertyChangedEventArgs args)
+        {
+            if( GlobalSettingPropertyChangedEvent != null )
+            {
+                GlobalSettingPropertyChangedEvent(sender, args);
             }
         }
 #endregion

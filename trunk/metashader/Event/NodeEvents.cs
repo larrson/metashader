@@ -72,8 +72,7 @@ namespace metashader.Event
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="node">変更対象ノード</param>
-        /// <param name="propertyType">変更対象のプロパティの型</param>
+        /// <param name="node">変更対象ノード</param>        
         /// <param name="propertyName">変更対象のプロパティ名</param>
         /// <param name="newValue">変更後の値</param>
         public NodePropertyChangedEventArgs(ShaderGraphData.ShaderNodeDataBase node, string propertyName, object newValue)

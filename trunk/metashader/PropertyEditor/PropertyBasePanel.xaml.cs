@@ -92,8 +92,10 @@ namespace metashader.PropertyEditor
         void EventManager_NodeDeletedEvent(object sender, metashader.Event.NodeDeletedEventArgs args)
         {
             // 削除対象が選択されていたら、グローバル設定に表示を切り替える
-            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;
-            if( panel.NodeData.GetHashCode() == args.NodeHashCode )
+            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;                       
+                
+            if( ReferenceEquals(panel, m_globalSettingPanel) == false
+                && panel.NodeData.GetHashCode() == args.NodeHashCode )
             {
                 _scrollViewer.Content = m_globalSettingPanel;
             }
@@ -113,6 +115,9 @@ namespace metashader.PropertyEditor
 
             // 現在表示されているパネルを取得
             PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;
+
+            if ( ReferenceEquals(panel, m_globalSettingPanel) )
+                return;
 
             // 表示中のノードと変更されたノードが等しければ、表示を更新する
             if( ReferenceEquals(panel.NodeData, node) )
