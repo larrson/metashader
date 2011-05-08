@@ -319,9 +319,15 @@ namespace metashader.GraphEditor
                     Rect.IsEnabled = false; // UIとしては無効(表示するだけ)に設定
                     m_visual3DForNodeDrag = CreateViewport2DVisual3D(Rect);
                     _dragViewport.Children.Add(m_visual3DForNodeDrag);  
+
+                    // 仮想スクリーン上の位置を取得
+                    Point screenPos = m_camera.ToVirtualScreenPos(e.GetPosition(_grid));
+                    // ドラッグ開始位置で補正
+                    screenPos.X -= nodeDragData.StartedMousePos.X;
+                    screenPos.Y -= nodeDragData.StartedMousePos.Y;
                     
-                    // 位置を調整
-                    Vector3D worldPos = m_camera.ToWorldPosFromClient(e.GetPosition(_grid));
+                    // viewport上の位置を調整
+                    Vector3D worldPos = m_camera.ToWorldPosFromVirtualScreen(screenPos);
                     SetPosition(m_visual3DForNodeDrag, worldPos);
                 }                
             }
@@ -345,9 +351,17 @@ namespace metashader.GraphEditor
             // ノードのドラッグ
             if (e.Data.GetDataPresent(ShaderNodeControl.NodeDragData.Format))
             {
-                // ドラッグ用表示オブジェクトを移動させる
-                Vector3D worldPos = m_camera.ToWorldPosFromClient(pos);
-                SetPosition(m_visual3DForNodeDrag, worldPos);
+                ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;                
+
+                // 仮想スクリーン上の位置を取得
+                Point screenPos = m_camera.ToVirtualScreenPos(pos);
+                // ドラッグ開始位置で補正
+                screenPos.X -= nodeDragData.StartedMousePos.X;
+                screenPos.Y -= nodeDragData.StartedMousePos.Y;
+
+                // viewport上の位置を調整
+                Vector3D worldPos = m_camera.ToWorldPosFromVirtualScreen(screenPos);
+                SetPosition(m_visual3DForNodeDrag, worldPos);                
             }
             // ジョイントのドラッグ
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
@@ -416,10 +430,13 @@ namespace metashader.GraphEditor
 
                 // ノードデータを取り出す
                 ShaderNodeControl.NodeDragData nodeDragData = e.Data.GetData(ShaderNodeControl.NodeDragData.Format) as ShaderNodeControl.NodeDragData;
-                ShaderGraphData.ShaderNodeDataBase nodeData = nodeDragData.ShaderNodeControl.Node;
+                ShaderGraphData.ShaderNodeDataBase nodeData = nodeDragData.ShaderNodeControl.Node;                
 
                 // 仮想スクリーン上の位置を求める
                 Point screenPos = m_camera.ToVirtualScreenPos(pos);
+                // 位置を補正
+                screenPos.X -= nodeDragData.StartedMousePos.X;
+                screenPos.Y -= nodeDragData.StartedMousePos.Y;
 
                 // Undo/Redoバッファ
                 ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();                

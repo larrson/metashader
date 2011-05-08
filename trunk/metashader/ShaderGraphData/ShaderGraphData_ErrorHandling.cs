@@ -11,8 +11,23 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public partial class ShaderGraphData
     {
+#region private variables
+        /// <summary>
+        /// グラフのトポロジによるエラーが存在しないフラグ
+        /// デシリアライズ時にエラー検出イベントを通じて自動的に設定されるため、シリアライズしない
+        /// </summary>
+        [NonSerialized]
+        bool m_noError = false;
+#endregion
+
 #region properties
-        
+        /// <summary>
+        /// エラーがないか
+        /// </summary>
+        public bool NoError
+        {
+            get { return m_noError; }
+        }
 #endregion
 
 #region private methods
@@ -21,7 +36,11 @@ namespace metashader.ShaderGraphData
         /// @@ 検出するエラーのマスクにフラグを用いる        
         /// </summary>
         private void DetectError()
-        {
+        {            
+            // エラーの有無を記録
+            // エラーが無ければ、最終return前にtrueに設定
+            m_noError = false;
+
             // 出力ノードの存在に関して
             if( m_outputNodeList.Count == 0 )
             {
@@ -56,6 +75,9 @@ namespace metashader.ShaderGraphData
                     return;
                 }                    
             }
+
+            // エラーが無いことを記録しておく
+            m_noError = true;
 
             // エラー無し
             App.CurrentApp.EventManager.RaiseGraphError(this, Event.GraphErrorEventArgs.NoError());

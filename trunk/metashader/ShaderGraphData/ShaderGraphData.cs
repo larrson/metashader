@@ -36,6 +36,15 @@ namespace metashader.ShaderGraphData
         ShaderNodeFactory m_shaderNodeFactory = new ShaderNodeFactory();       
 #endregion
 
+#region constructors
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public ShaderGraphData()
+        {                    
+        }        
+#endregion
+
 #region properties
         /// <summary>
         /// 格納されているノードのリストを取得する

@@ -62,6 +62,17 @@ namespace metashader.Common
                     , FlowDirection.LeftToRight
                     , new Typeface("メイリオ")
                     , 14
+                    , Brushes.Black
+                    )
+                    , new Point(6, 6)
+                );
+            drawingContext.DrawText(
+                new FormattedText(
+                    Text
+                    , Thread.CurrentThread.CurrentCulture
+                    , FlowDirection.LeftToRight
+                    , new Typeface("メイリオ")
+                    , 14
                     , Brushes.Red
                     )
                     , new Point( 5, 5 )

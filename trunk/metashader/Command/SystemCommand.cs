@@ -135,7 +135,7 @@ namespace metashader.Command
         #region override methods
         public override bool CanExecute(object parameter)
         {
-            return true;
+            return App.CurrentApp.GraphData.NoError;
         }
 
         public override void Execute(object parameter)
@@ -175,7 +175,7 @@ namespace metashader.Command
 #region override methods
        public override bool CanExecute(object parameter)
        {
-           return true;
+           return App.CurrentApp.GraphData.NoError;
        }
 
        public override void Execute(object parameter)
