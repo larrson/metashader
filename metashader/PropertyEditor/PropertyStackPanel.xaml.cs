@@ -27,11 +27,7 @@ namespace metashader.PropertyEditor
 
         public PropertyStackPanel()
         {
-            InitializeComponent();
-                        
-            UserControl control = new Parts.StringTag();
-            Parts.Parts<string> parts = new Parts.Parts<string>("Name", control);
-            AddParts("ノード名", parts );                                                
+            InitializeComponent();                                                                                
         }        
 
 #region properties

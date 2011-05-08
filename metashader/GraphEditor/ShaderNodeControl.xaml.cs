@@ -178,8 +178,8 @@ namespace metashader.GraphEditor
                 // 非選択
                 else
                 {
-                    _nameBorder.BorderBrush = Brushes.White;
-                    _thumnailBorder.BorderBrush = Brushes.White;
+                    _nameBorder.BorderBrush = Brushes.Black;
+                    _thumnailBorder.BorderBrush = Brushes.Black;
                 }
             }
         }
@@ -241,7 +241,7 @@ namespace metashader.GraphEditor
 
             // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth + _nameTextBlock.ActualWidth;
-            double offsetY = _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
+            double offsetY = _descGrid.ActualHeight + _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.InputJointNum) * ((double)index + 0.5);
 
             return new Point(basicPos.X + offsetX, basicPos.Y + offsetY);
         }
@@ -264,7 +264,7 @@ namespace metashader.GraphEditor
 
             // X座標オフセット
             double offsetX = _outputJointGrid.ActualWidth / 2;
-            double offsetY = _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
+            double offsetY = _descGrid.ActualHeight + _nameTextBlock.ActualHeight + (_centralGrid.ActualHeight / Node.OutputJointNum) * ((double)index + 0.5);
 
             return new Point(basicPos.X + offsetX, basicPos.Y + offsetY);
         }
@@ -280,7 +280,10 @@ namespace metashader.GraphEditor
             {
                 case "Position":
                     Position = (Point)args.NewValue;
-                    break;                
+                    break;    
+                case "Description":
+                    _descLabel.Content = (string)args.NewValue;
+                    break;
                 default:
                     // throw new NotImplementedException();                  
                     break;
@@ -355,8 +358,10 @@ namespace metashader.GraphEditor
                     m_isMouseLeftButtonDown = false;
                     
                     // ドラッグ開始
+                    //  マウスのコントロールからの相対位置を渡す
+                    Point relatedPos = e.GetPosition(this);
                     DragDrop.DoDragDrop(this
-                        , new DataObject(NodeDragData.Format, new NodeDragData(this, pos))
+                        , new DataObject(NodeDragData.Format, new NodeDragData(this, relatedPos)) 
                         , DragDropEffects.Move);
                 }
             }            
@@ -416,6 +421,9 @@ namespace metashader.GraphEditor
                 };                
                 _inputJointLabelGrid.Children.Add(label);
             }            
+
+            // 説明文を設定
+            _descLabel.Content = m_node.Description;
         }        
 
         /// <summary>

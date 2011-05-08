@@ -22,9 +22,15 @@ namespace metashader.PropertyEditor
     public partial class PropertyBasePanel : UserControl
     {
 #region variables
-        PropertyStackPanel m_globalSettingPanel;
+        /// <summary>
+        /// グローバル設定の編集用パネル
+        /// </summary>
+        PropertyStackPanel m_globalSettingPanel = new PropertyStackPanel();
 
-        PropertyStackPanel[] m_nodePanels;
+        /// <summary>
+        /// 各ノードの編集用パネル
+        /// </summary>
+        Dictionary<int,PropertyStackPanel> m_nodePanels = new Dictionary<int,PropertyStackPanel>();
 #endregion
 
         public PropertyBasePanel()
@@ -32,18 +38,16 @@ namespace metashader.PropertyEditor
             InitializeComponent();
 
             // メンバ変数の初期化
-            m_globalSettingPanel = new PropertyStackPanel();
-            m_nodePanels = new PropertyStackPanel[(int)ShaderGraphData.ShaderNodeType.Max];
-            for(int i = 0; i < (int)ShaderGraphData.ShaderNodeType.Max; ++i)
-            {
-                m_nodePanels[i] = CreateNodePropertyPanel((metashader.ShaderGraphData.ShaderNodeType)i);
-            }
-            _scrollViewer.Content = m_globalSettingPanel;
+            
+            // 初期表示をグローバル設定用に指定
+            this._scrollViewer.Content = m_globalSettingPanel;
 
-            // イベント登録
+            // イベント登録            
             App.CurrentApp.SelectManager.SelectionChanged += new metashader.ShaderGraphData.SelectManager.SelectionChangedEventHandler(SelectManager_SelectionChanged);
+            App.CurrentApp.EventManager.NodeAddedEvent += new metashader.Event.NodeAddedEventHandler(EventManager_NodeAddedEvent);
             App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
-        }
+            App.CurrentApp.EventManager.NodeDeletedEvent += new metashader.Event.NodeDeletedEventHandler(EventManager_NodeDeletedEvent);
+        }        
 
 #region event handlers
         /// <summary>
@@ -57,9 +61,8 @@ namespace metashader.PropertyEditor
             {
                 ShaderGraphData.ShaderNodeDataBase node = args.SelectedNodes[0];
 
-                PropertyStackPanel panel = m_nodePanels[(int)node.Type];                
-                _scrollViewer.Content = panel;
-                panel.NodeData = node;                
+                PropertyStackPanel panel = m_nodePanels[node.GetHashCode()];                
+                _scrollViewer.Content = panel;                
             }
             // ノード以外の選択
             else
@@ -67,6 +70,37 @@ namespace metashader.PropertyEditor
                 _scrollViewer.Content = m_globalSettingPanel;
             }
         }
+
+        /// <summary>
+        /// シェーダノードが追加された際のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_NodeAddedEvent(object sender, metashader.Event.NodeAddedEventArgs args)
+        {
+            // 新しいノードに対応するパネルを追加
+            PropertyStackPanel panel = CreateNodePropertyPanel(args.Node.Type);
+            panel.NodeData = args.Node;
+            m_nodePanels[args.Node.GetHashCode()] = panel;
+        }
+
+        /// <summary>
+        /// ノードが削除された際のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_NodeDeletedEvent(object sender, metashader.Event.NodeDeletedEventArgs args)
+        {
+            // 削除対象が選択されていたら、グローバル設定に表示を切り替える
+            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;
+            if( panel.NodeData.GetHashCode() == args.NodeHashCode )
+            {
+                _scrollViewer.Content = m_globalSettingPanel;
+            }
+
+            // 既存のノードを削除
+            m_nodePanels.Remove(args.NodeHashCode);
+        }        
 
         /// <summary>
         /// シェーダノードのプロパティが変更された際のイベント
@@ -99,7 +133,10 @@ namespace metashader.PropertyEditor
 
             // ノードの種類ごとにスタックへUIを積む
 
-            // 説明文は共通
+            // 共通項目
+            // 名前            
+            panel.AddParts("ノード名", new Parts.Parts<string>("Name", new Parts.StringTag()));    
+            // 説明文
             panel.AddParts("説明", new Parts.Parts<string>("Description", new Parts.StringTextbox()));
 
             // Float値用
