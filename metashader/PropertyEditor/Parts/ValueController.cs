@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using metashader.Common;
 
 namespace metashader.PropertyEditor.Parts
 {
@@ -54,7 +55,7 @@ namespace metashader.PropertyEditor.Parts
                 // 値の変更はUndoRedoを考慮
 
                 // Undo/Redoバッファ
-                ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+                UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
                 // 新しいプロパティを設定
                 if (m_nodeData != null)
@@ -63,7 +64,7 @@ namespace metashader.PropertyEditor.Parts
 
                     if (undoredo.IsValid)
                     {
-                        ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                        UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                     }
                 }    
             }

@@ -15,7 +15,7 @@ namespace opk
 	*/
 	class CGraphicDevice
 	{
-	public:
+	public:		
 		/**
 			@brief 座標変換の種類
 			@note CGraphicDeviceが保持する行列のインデックスに対応する
@@ -42,6 +42,17 @@ namespace opk
 			float		fFar;			///< 遠クリップ平面までの距離
 		};
 
+		/**
+			@brief αブレンディングの種類
+		*/
+		enum BlendMode
+		{
+			BlendMode_None,		///< 無し
+			BlendMode_Normal,	///< 通常
+			BlendMode_Add,		///< 加算
+			BlendMode_Sub,		///< 減算
+		};
+
 	private:
 		IDirect3D9*			m_pd3d9;			///< DirectXオブジェクト	
 		IDirect3DDevice9*	m_pd3dDevice9;		///< グラフィックデバイス
@@ -63,6 +74,8 @@ namespace opk
 		SCameraInfo		m_cameraInfo; ///< カメラ情報
 
 		D3DXMATRIX		m_mTransform[TransformType_Max]; ///< 変換行列
+
+		BlendMode		m_nBlendMode; ///< ブレンドモード
 
 	public:
 		/// コンストラクタ
@@ -112,6 +125,13 @@ namespace opk
 
 		/// カメラ情報の設定
 		HRESULT SetCameraInfo( const SCameraInfo& i_cameraInfo );	
+		
+		/** 
+			@brief ブレンドモードの設定
+			@param [in] i_nBlendMode ブレンドモード
+			@param [in] i_bForced 強制設定を行うか（trueならば現在の状態に関係なく設定する）
+		*/
+		HRESULT SetBlendMode( BlendMode i_nBlendMode, bool i_bForced = false );
 
 		/** 
 			@brief バッファのクリア

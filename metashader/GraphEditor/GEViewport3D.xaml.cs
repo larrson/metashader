@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using metashader.ShaderGraphData;
+using metashader.Common;
 
 namespace metashader.GraphEditor
 {    
@@ -439,7 +440,7 @@ namespace metashader.GraphEditor
                 screenPos.Y -= nodeDragData.StartedMousePos.Y;
 
                 // Undo/Redoバッファ
-                ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();                
+                UndoRedoBuffer undoredo = new UndoRedoBuffer();                
 
                 // 移動用のUndoRedoインスタンスを生成
                 App.CurrentApp.GraphData.ChangeNodeProperty<Point>(nodeData, "Position", screenPos, undoredo);
@@ -447,7 +448,7 @@ namespace metashader.GraphEditor
                 // Undo/Redoを登録
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
 
                 // ドラッグ用のVisual3Dを削除

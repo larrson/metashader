@@ -144,7 +144,7 @@ namespace opk
 			return false;
 		}
 
-		m_pGraphicDevice->Clear( 0.0f, 0.0f, 0.0f, 0.0f );				
+		m_pGraphicDevice->Clear( 0.5f, 0.5f, 0.5f, 1.0f );				
 		
 		m_pGraphicDevice->SetCameraInfo( m_cameraController.GetCameraInfo() );
 

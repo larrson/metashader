@@ -90,7 +90,7 @@ namespace metashader.ShaderGraphData
             /// 生成した文字列で置き換える
 
             // テンプレートファイル
-            string templatePath = FileSettings.ApplicationFolderPath + m_shaderTemplatePath;
+            string templatePath = Setting.FileSettings.ApplicationFolderPath + m_shaderTemplatePath;
             using (StreamReader templateStream = new StreamReader( templatePath 
                 , Encoding.GetEncoding("shift_jis")))
             {

@@ -45,15 +45,14 @@ namespace metashader
         /// パラメータの設定系        
         [DllImport(dllName, CharSet = CharSet.Ansi)]
         public unsafe static extern void SetUniformFloat(string i_pszName, float i_fValue);
-
         [DllImport(dllName, CharSet = CharSet.Ansi)]
         public unsafe static extern void SetUniformVector4(string i_pszName, float x, float y, float z, float w);
-
         [DllImport(dllName, CharSet=CharSet.Ansi)]
         public unsafe static extern void SetTexturePath(string i_pszName, string i_pszPath);
-
         [DllImport(dllName)]
         public unsafe static extern void SetSamplerState(string i_pszName, ShaderGraphData.SamplerState i_samplerState);
+        [DllImport(dllName)]
+        public unsafe static extern void SetBlendMode( int i_nBlendMode );
 
         /// テクスチャサムネイル用データの取得
         [DllImport(dllName, CharSet=CharSet.Ansi)]

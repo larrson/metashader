@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using metashader.Common;
 
 namespace metashader
 {
@@ -18,7 +19,13 @@ namespace metashader
         /// <summary>
         /// ファイル関連の設定
         /// </summary>
-        FileSettings m_fileSettings;
+        Setting.FileSettings m_fileSettings;
+
+        /// <summary>
+        /// グローバル設定
+        /// グラフデータや、UI設定以外の設定項目
+        /// </summary>
+        Setting.GlobalSettings m_globalSettings;
 
         /// <summary>
         /// グラフデータ
@@ -54,9 +61,17 @@ namespace metashader
         /// <summary>
         /// ファイル設定
         /// </summary>
-        public FileSettings FileSettings
+        public Setting.FileSettings FileSettings
         {
             get { return m_fileSettings; }
+        }
+
+        /// <summary>
+        /// グローバル設定
+        /// </summary>
+        public Setting.GlobalSettings GlobalSettings
+        {
+            get { return m_globalSettings; }
         }
 
         /// <summary>
@@ -97,17 +112,21 @@ namespace metashader
         /// 新規作成
         /// </summary>
         public void CreateNew()
-        {                       
+        {                  
+            // undoredoの無効化
+            UndoRedoManager.Instance.Clear();
+
             // 選択の解除
             m_selectManager.Clear();
 
             // グラフデータの初期化
             m_graphData.Reset();
-
-            // @@@ シェーダのリセット
-
+            
             // ファイル設定の初期化
             m_fileSettings.Reset();
+
+            // 設定のリセット
+            m_globalSettings.Reset();
         }
 
         /// <summary>
@@ -116,20 +135,18 @@ namespace metashader
         public void Save(string path, BinaryFormatter formatter)
         {
             path = Path.GetFullPath(path);
-            FileStream fs = new FileStream(path,
-            FileMode.Create,
-            FileAccess.Write);
-
-            // ファイル設定の保存
+            using ( FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write) )
             {
-                // 作業フォルダを設定する
-                m_fileSettings.OldWorkFolderPath = Path.GetDirectoryName(path);
-                formatter.Serialize(fs, m_fileSettings);
-            }            
+                // ファイル設定の保存
+                {
+                    // 作業フォルダを設定する
+                    m_fileSettings.OldWorkFolderPath = Path.GetDirectoryName(path);
+                    formatter.Serialize(fs, m_fileSettings);
+                }
 
-            // グラフの保存
-            m_graphData.Save(fs, formatter);            
-            fs.Close();
+                // グラフの保存
+                m_graphData.Save(fs, formatter);                        
+            }            
         }
 
         /// <summary>
@@ -141,18 +158,15 @@ namespace metashader
         {
             // @@@ファイルの有効性のチェック
 
-            FileStream fs = new FileStream(path,
-            FileMode.Open,
-            FileAccess.Read);            
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))            
+            {
+                // ファイル設定の読み込み
+                m_fileSettings = formatter.Deserialize(fs) as Setting.FileSettings;
+                m_fileSettings.CurrentFilePath = System.IO.Path.GetFullPath(path);
 
-            // ファイル設定の読み込み
-            m_fileSettings = formatter.Deserialize(fs) as FileSettings;
-            m_fileSettings.CurrentFilePath = System.IO.Path.GetFullPath(path);
-
-            // グラフの読み込み
-            m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
-
-            fs.Close();
+                // グラフの読み込み
+                m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
+            }                        
 
             // 選択解除
             m_selectManager.Clear();
@@ -168,7 +182,10 @@ namespace metashader
         private void Application_Startup(object sender, StartupEventArgs e)
         {            
             // フォルダ設定初期化
-            m_fileSettings = new FileSettings();
+            m_fileSettings = new Setting.FileSettings();
+
+            // グローバル設定初期化
+            m_globalSettings = new Setting.GlobalSettings();
 
             // データ初期化
             m_graphData = new ShaderGraphData.ShaderGraphData();

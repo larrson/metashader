@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using metashader.Common;
 
 namespace metashader.Console
 {          
@@ -98,7 +99,7 @@ namespace metashader.Console
             float value = float.Parse(options[3]);
 
             // Undo/Redoバッファ
-            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
             // 新しいプロパティを設定
             if (node != null)
@@ -107,7 +108,7 @@ namespace metashader.Console
 
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }
         }
@@ -146,7 +147,7 @@ namespace metashader.Console
             values[3] = float.Parse( options[6] );
 
             // Undo/Redoバッファ
-            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
             
             // 新しいプロパティを設定
             if( node != null )            
@@ -155,7 +156,7 @@ namespace metashader.Console
 
                 if( undoredo.IsValid )
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }            
         }
@@ -190,7 +191,7 @@ namespace metashader.Console
             string newStr = options[3];
 
             // Undo/Redoバッファ
-            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
             // 新しいプロパティを設定
             if (node != null)
@@ -199,7 +200,7 @@ namespace metashader.Console
 
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }            
         }
@@ -233,7 +234,7 @@ namespace metashader.Console
             Point pos = new Point(x, y);
 
             // Undo/Redoバッファ
-            ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
             // 新しいプロパティを設定
             if (node != null)
@@ -242,7 +243,7 @@ namespace metashader.Console
 
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }
         }
@@ -470,6 +471,40 @@ namespace metashader.Console
             command.Execute(
                  null
                 );
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのブレンドモード変更コマンド
+    /// </summary>
+    public class ChangeBlendModeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+            {
+                return;
+            }
+            
+            // 新しいブレンドモード名
+            string typeName = options[1];
+
+            Setting.BlendMode type = (Setting.BlendMode)Enum.Parse(Type.GetType("metashader.Setting.BlendMode"), typeName);                            
+
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定            
+            App.CurrentApp.GlobalSettings.ChangeProperty<Setting.BlendMode>("BlendMode", type, undoredo);
+
+            if (undoredo.IsValid)
+            {
+                UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+            }            
         }
     }
 

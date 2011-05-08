@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
+using metashader.Common;
 
 namespace metashader.GraphEditor.Thumnail
 {
@@ -76,14 +77,14 @@ namespace metashader.GraphEditor.Thumnail
             {
                 // データ側のテクスチャパスを変更
                 // Undo/Redoバッファ
-                ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+                UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
                 // 新しいプロパティを設定                
                 App.CurrentApp.GraphData.ChangeNodeProperty<string>(NodeData, "Path", dlg.FileName, undoredo);
 
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
 
             }

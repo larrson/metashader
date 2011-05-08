@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using metashader.Common;
 
 namespace metashader.GraphEditor.Thumnail
 {
@@ -69,7 +70,7 @@ namespace metashader.GraphEditor.Thumnail
             {
                 // 4Dベクトルパラメータを変更
                 // Undo/Redoバッファ
-                ShaderGraphData.UndoRedoBuffer undoredo = new ShaderGraphData.UndoRedoBuffer();
+                UndoRedoBuffer undoredo = new UndoRedoBuffer();
 
                 // ベクトルの4成分を取得
                 float[] values = null;
@@ -93,7 +94,7 @@ namespace metashader.GraphEditor.Thumnail
 
                 if (undoredo.IsValid)
                 {
-                    ShaderGraphData.UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
                 }
             }
         }
