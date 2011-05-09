@@ -25,7 +25,7 @@ namespace metashader.PropertyEditor
         /// <summary>
         /// グローバル設定の編集用パネル
         /// </summary>
-        PropertyStackPanel m_globalSettingPanel = new PropertyStackPanel();
+        GlobalSettingsPanel m_globalSettingPanel = new GlobalSettingsPanel();
 
         /// <summary>
         /// 各ノードの編集用パネル
@@ -139,6 +139,8 @@ namespace metashader.PropertyEditor
             // ノードの種類ごとにスタックへUIを積む
 
             // 共通項目
+            // 題名
+            panel._captionTextBlock.Text = "ノード設定";
             // 名前            
             panel.AddParts("ノード名", new Parts.Parts<string>("Name", new Parts.StringTag()));    
             // 説明文

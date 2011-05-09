@@ -173,7 +173,7 @@ namespace metashader
         }
 #endregion
 
-#region event handlers
+#region event handlers        
         /// <summary>
         /// アプリケーション開始時に呼ばれるイベントハンドラ
         /// </summary>
@@ -197,7 +197,7 @@ namespace metashader
             m_uiCommandManager = new Command.CommandManager();
 
             // イベントマネージャ初期化
-            m_eventManager = new Event.EventManager();
+            m_eventManager = new Event.EventManager();            
         }
 
         /// <summary>

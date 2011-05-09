@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 
 namespace metashader.PropertyEditor.Parts
-{
+{  
     /// <summary>
     /// FilePath.xaml の相互作用ロジック
     /// </summary>
