@@ -34,7 +34,7 @@ namespace opk
 			ret = OnRButtonUp(LOWORD(i_lParam), HIWORD(i_lParam));
 			break;
 		case WM_MOUSEWHEEL:
-			ret = OnMouseWheel( GET_WHEEL_DELTA_WPARAM(i_wParam) );
+			ret = OnMouseWheel( GET_WHEEL_DELTA_WPARAM(i_wParam) / WHEEL_DELTA );
 			break;
 		}
 
