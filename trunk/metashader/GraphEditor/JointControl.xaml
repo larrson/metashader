@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Height="auto" Width="auto">
     <Grid>
-        <Thumb Name="_thumb" Width="12" Height="12" >
+        <Thumb Name="_thumb" Width="12" Height="12" Margin="1, 0, 1, 0">
             <Thumb.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="リンクを解除" Click="MenuItem_DeleteLink_Click" />

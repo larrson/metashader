@@ -146,6 +146,9 @@ namespace metashader.GraphEditor
             m_path.Data = new PathGeometry();
             (m_path.Data as PathGeometry).Figures = new PathFigureCollection();
             (m_path.Data as PathGeometry).Figures.Add(m_pathFigure);
+
+            // UIとしては無効
+            m_path.IsEnabled = false;
         }
 #endregion
 
@@ -198,7 +201,7 @@ namespace metashader.GraphEditor
             m_pathFigure.StartPoint = new Point(0,0);
             m_bezierSegment.Point1 = GetControlPoint1(start, end);
             m_bezierSegment.Point2 = GetControlPoint2(start, end);
-            m_bezierSegment.Point3 = new Point(end.X - start.X, end.Y - start.Y);
+            m_bezierSegment.Point3 = new Point(end.X - start.X, end.Y - start.Y);            
         }
         #endregion            
     }
