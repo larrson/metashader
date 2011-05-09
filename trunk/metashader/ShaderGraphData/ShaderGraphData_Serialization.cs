@@ -63,27 +63,7 @@ namespace metashader.ShaderGraphData
         /// </summary>        
         public static ShaderGraphData Load(FileStream fileStream, BinaryFormatter formatter)
         {
-            ShaderGraphData graph = formatter.Deserialize(fileStream) as ShaderGraphData;
-
-            /// ノードのデシリアライズ ///            
-            LinkedList<ShaderNodeDataBase> nodeList = 
-                formatter.Deserialize(fileStream) as LinkedList<ShaderNodeDataBase>;
-            // ノードを再構築
-            foreach( ShaderNodeDataBase itr in nodeList )
-            {
-                graph.AddNode(itr, null);
-            }
-
-            /// リンクのデシリアライズ ///            
-            LinkedList<LinkData> linkList =
-                formatter.Deserialize(fileStream) as LinkedList<LinkData>;
-
-            // グラフ内のリンクを再構築
-            foreach( LinkData itr in linkList)
-            {
-                graph.AddLink(itr._outNodeHash, itr._outJointIndex, itr._inNodeHash, itr._inJointIndex, null);
-            }
-
+            ShaderGraphData graph = formatter.Deserialize(fileStream) as ShaderGraphData;            
             return graph;
         }
 #endregion        

@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="metashader.PropertyEditor.Parts.BlendModeComboBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch">
+    <Grid>
+        <ComboBox Name="_blendModeComboBox">
+            <ComboBoxItem>None</ComboBoxItem>
+            <ComboBoxItem>Normal</ComboBoxItem>
+            <ComboBoxItem>Add</ComboBoxItem>
+            <ComboBoxItem>Sub</ComboBoxItem>
+        </ComboBox>
+    </Grid>    
+</UserControl>

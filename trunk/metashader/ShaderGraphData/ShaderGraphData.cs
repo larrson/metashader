@@ -521,7 +521,9 @@ namespace metashader.ShaderGraphData
         {
             buffer = null;
 
-            ///@@@ 書き出し可能か判定
+            // 書き出し可能か判定
+            if (NoError == false)
+                return false;
             
             // ジェネレータに処理を移譲
             ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
@@ -537,7 +539,9 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public bool ExportShaderCode(string path)
         {
-            //@@@ 書き出し可能か判定
+            // 書き出し可能か判定
+            if (NoError == false)
+                return false;
 
             // ジェネレータに処理を移譲
             ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
