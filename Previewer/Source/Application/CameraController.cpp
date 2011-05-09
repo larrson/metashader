@@ -9,8 +9,10 @@
 // Global Variables Definitions ------------------------------------------------------------------
 namespace
 {
-	static const float c_fMaxPitch = 3.14f * 0.45f;
-	static const float c_fMinDistance = 0.0001f;
+	static const float c_fMaxPitch = D3DXToRadian(85.0f);
+	static const float c_fMinFov = D3DXToRadian(10.0f);
+	static const float c_fMaxFov = D3DXToRadian(60.0f);
+	static const float c_fDefaultFov = D3DXToRadian(30.0f);
 }
 
 namespace opk
@@ -26,11 +28,11 @@ namespace opk
 		, m_fYaw	( 0.0f )
 		, m_fPitch	( 0.0f )
 		, m_fDistance ( 200.0f )
+		, m_fFov( c_fDefaultFov )
 	{
 		// カメラ情報の初期化
 		m_cameraInfo.fNear = 1.0f;
-		m_cameraInfo.fFar = 3000.0f;
-		m_cameraInfo.fFov = 3.14f / 6.0f;
+		m_cameraInfo.fFar = 3000.0f;		
 		m_cameraInfo.vInterestPos = D3DXVECTOR3( 0.0f, 0.0f, 0.0f );		
 		m_cameraInfo.vUpDir = D3DXVECTOR3( 0.0f, 1.0f, 0.0f );
 		// 初期パラメータに基づいて更新
@@ -91,10 +93,11 @@ namespace opk
 	//-------------------------------------------------------------------------------------------
 	bool CCameraController::OnMouseWheel( int i_nDelta )
 	{
-		static float fScale = 0.001f;
+		// ズーム処理
+		static float fScale = D3DXToRadian(1.0f);
 		
-		m_fDistance += i_nDelta * fScale;
-		m_fDistance = max(m_fDistance, c_fMinDistance );
+		m_fFov += -i_nDelta * fScale;
+		m_fFov = min( c_fMaxFov, max(m_fFov, c_fMinFov ));
 
 		// カメラ情報を更新
 		UpdateCameraInfo();
@@ -120,5 +123,7 @@ namespace opk
 		m_cameraInfo.vEyePos.x = vNewPos.x;
 		m_cameraInfo.vEyePos.y = vNewPos.y;
 		m_cameraInfo.vEyePos.z = vNewPos.z;
+
+		m_cameraInfo.fFov = m_fFov;
 	}
 } // end of namespace opk

@@ -22,7 +22,8 @@ namespace opk
 		
 		float m_fYaw;		///< カメラのヨー角度
 		float m_fPitch;		///< カメラのピッチ角度
-		float m_fDistance;	///< 注視点からの距離		
+		float m_fDistance;	///< 注視点からの距離	
+		float m_fFov;		///< 垂直画角
 
 		CGraphicDevice::SCameraInfo m_cameraInfo; ///< カメラ情報
 
