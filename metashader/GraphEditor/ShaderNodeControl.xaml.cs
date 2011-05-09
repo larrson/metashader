@@ -417,7 +417,8 @@ namespace metashader.GraphEditor
                 Label label = new Label() { 
                     Content = m_node.GetInputJointLabel(i),
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    VerticalAlignment = VerticalAlignment.Center
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Foreground = Brushes.White
                 };                
                 _inputJointLabelGrid.Children.Add(label);
             }            

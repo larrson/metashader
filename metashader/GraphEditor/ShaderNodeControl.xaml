@@ -52,14 +52,14 @@
             <UniformGrid Name="_inputJointGrid" Grid.Row="1" Grid.Column="2" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
             <!-- 出力ジョイント -->
             <UniformGrid Name="_outputJointGrid" Grid.Row="1" Grid.Column="0" Columns="1" Width="auto" Height="auto"  VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
-            <!-- 影を付ける -->
+            <!-- 影を付ける -->           
             <Grid.Effect>
                 <DropShadowEffect
-                  ShadowDepth="4"
-                  Direction="330"
+                  ShadowDepth="2"
+                  Direction="280"
                   Color="Black"
                   Opacity="0.5"
-                 BlurRadius="4"/>
+                 BlurRadius="2"/>
             </Grid.Effect>
         </Grid>
     </Grid>    
