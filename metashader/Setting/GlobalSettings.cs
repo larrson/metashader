@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using metashader.Common;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace metashader.Setting
 {
@@ -40,7 +43,7 @@ namespace metashader.Setting
     /// グラフ構造やUI設定以外の設定項目
     /// </summary>
     [Serializable]
-    public class GlobalSettings
+    public class GlobalSettings : IDeserializationCallback
     {
 #region variables
         /// <summary>
@@ -60,7 +63,32 @@ namespace metashader.Setting
         }
 #endregion
 
+        #region override methods        
+        /// <summary>
+        /// デシリアライズ時のコールバック
+        /// </summary>
+        /// <param name="sender"></param>
+        void IDeserializationCallback.OnDeserialization(object sender)
+        {
+            // リセット対象のプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
+            ChangeProperty<BlendMode>("BlendMode", m_blendMode, null);            
+        }
+        #endregion
+
 #region public methods
+        /// <summary>
+        /// ファイルからロード
+        /// </summary>
+        /// <param name="fileStream"></param>
+        /// <param name="formatter"></param>
+        public void Load(FileStream fileStream, BinaryFormatter formatter)
+        {
+            GlobalSettings settings = formatter.Deserialize(fileStream) as GlobalSettings;
+
+            // ロードしたプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
+            ChangeProperty<BlendMode>("BlendMode", settings.BlendMode, null);
+        }
+
         /// <summary>
         /// 初期化処理
         /// 「新規作成」機能用
@@ -99,7 +127,7 @@ namespace metashader.Setting
             }
 
             return true;
-        }
+        }        
 #endregion
     }
 }

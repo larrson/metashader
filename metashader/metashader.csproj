@@ -117,7 +117,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PropertyEditor\GlobalSettingsPanel.xaml">
+    <Page Include="PropertyEditor\Parts\BlendModeComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -180,8 +180,8 @@
     <Compile Include="Event\EventManager.cs" />
     <Compile Include="Event\NodeEvents.cs" />
     <Compile Include="Event\SettingEvents.cs" />
-    <Compile Include="PropertyEditor\GlobalSettingsPanel.xaml.cs">
-      <DependentUpon>GlobalSettingsPanel.xaml</DependentUpon>
+    <Compile Include="PropertyEditor\Parts\BlendModeComboBox.xaml.cs">
+      <DependentUpon>BlendModeComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Setting\FileSettings.cs" />
     <Compile Include="GraphEditor\BezierCurve.cs" />

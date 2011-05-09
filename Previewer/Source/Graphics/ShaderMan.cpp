@@ -11,7 +11,7 @@
 // Global Variable Definitions ---------------------------------------------------------------	
 namespace
 {	
-	/// デフォルト頂点シェーダパス(@@@相対パス化)
+	/// デフォルト頂点シェーダパス
 	static const char* g_pszVSPath = "..\\..\\data\\shader\\simple_vs.fx";	
 	/// デフォルトピクセルシェーダパス
 	static const char* g_pszPSPath = "..\\..\\data\\shader\\simple_ps.fx";

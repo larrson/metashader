@@ -25,7 +25,7 @@ namespace metashader.PropertyEditor
         /// <summary>
         /// グローバル設定の編集用パネル
         /// </summary>
-        GlobalSettingsPanel m_globalSettingPanel = new GlobalSettingsPanel();
+        PropertyStackPanel m_globalSettingPanel;
 
         /// <summary>
         /// 各ノードの編集用パネル
@@ -40,6 +40,7 @@ namespace metashader.PropertyEditor
             // メンバ変数の初期化
             
             // 初期表示をグローバル設定用に指定
+            m_globalSettingPanel = CreateGlobalSettingsPanel(App.CurrentApp.GlobalSettings);
             this._scrollViewer.Content = m_globalSettingPanel;
 
             // イベント登録            
@@ -47,6 +48,7 @@ namespace metashader.PropertyEditor
             App.CurrentApp.EventManager.NodeAddedEvent += new metashader.Event.NodeAddedEventHandler(EventManager_NodeAddedEvent);
             App.CurrentApp.EventManager.NodePropertyChangedEvent += new metashader.Event.NodePropertyChangedEventHandler(EventManager_NodePropertyChangedEvent);
             App.CurrentApp.EventManager.NodeDeletedEvent += new metashader.Event.NodeDeletedEventHandler(EventManager_NodeDeletedEvent);
+            App.CurrentApp.EventManager.GlobalSettingPropertyChangedEvent += new metashader.Event.GlobalSettingPropertyChangedEventHandler(EventManager_GlobalSettingPropertyChangedEvent);
         }        
 
 #region event handlers
@@ -79,8 +81,7 @@ namespace metashader.PropertyEditor
         void EventManager_NodeAddedEvent(object sender, metashader.Event.NodeAddedEventArgs args)
         {
             // 新しいノードに対応するパネルを追加
-            PropertyStackPanel panel = CreateNodePropertyPanel(args.Node.Type);
-            panel.NodeData = args.Node;
+            PropertyStackPanel panel = CreateNodePropertyPanel(args.Node);            
             m_nodePanels[args.Node.GetHashCode()] = panel;
         }
 
@@ -92,10 +93,10 @@ namespace metashader.PropertyEditor
         void EventManager_NodeDeletedEvent(object sender, metashader.Event.NodeDeletedEventArgs args)
         {
             // 削除対象が選択されていたら、グローバル設定に表示を切り替える
-            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;                       
-                
-            if( ReferenceEquals(panel, m_globalSettingPanel) == false
-                && panel.NodeData.GetHashCode() == args.NodeHashCode )
+            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;
+
+            ShaderGraphData.ShaderNodeDataBase nodeData = panel.Target as ShaderGraphData.ShaderNodeDataBase;
+            if( nodeData != null && nodeData.GetHashCode() == args.NodeHashCode )
             {
                 _scrollViewer.Content = m_globalSettingPanel;
             }
@@ -113,72 +114,95 @@ namespace metashader.PropertyEditor
         {
             ShaderGraphData.ShaderNodeDataBase node = args.Node;
 
-            // 現在表示されているパネルを取得
-            PropertyStackPanel panel = _scrollViewer.Content as PropertyStackPanel;
+            // 対応するパネルを探す
+            PropertyStackPanel panel = m_nodePanels[args.NodeHashCode];
 
-            if ( ReferenceEquals(panel, m_globalSettingPanel) )
-                return;
+            // 表示を更新する
+            panel.UpdateAllTargets();
+        }
 
-            // 表示中のノードと変更されたノードが等しければ、表示を更新する
-            if( ReferenceEquals(panel.NodeData, node) )
-            {
-                panel.UpdateAllTargets();
-            }
+        /// <summary>
+        /// グローバル設定のプロパティが変更された際のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void EventManager_GlobalSettingPropertyChangedEvent(object sender, metashader.Event.GlobalSettingPropertyChangedEventArgs args)
+        {
+            // 表示を更新する
+            m_globalSettingPanel.UpdateAllTargets();
         }        
 #endregion
 
 #region private methods
         /// <summary>
+        /// グローバル設定用のプロパティパネルを作成する
+        /// </summary>
+        /// <param name="globalSettings"></param>
+        /// <returns></returns>
+        private PropertyStackPanel CreateGlobalSettingsPanel(Setting.GlobalSettings globalSettings)
+        {
+            PropertyStackPanel panel = new PropertyStackPanel();            
+
+            // 題名
+            panel._captionTextBlock.Text = "全体設定";
+
+            // ブレンドモード
+            panel.AddParts("アルファブレンディング", new Parts.Parts<Setting.BlendMode>(globalSettings, "BlendMode", new Parts.BlendModeComboBox()));
+            return panel;
+        }
+
+        /// <summary>
         /// シェーダーノードのタイプに応じたプロパティパネルを作成する
         /// </summary>
         /// <param name="type"></param>
-        private PropertyStackPanel CreateNodePropertyPanel(ShaderGraphData.ShaderNodeType type)
+        private PropertyStackPanel CreateNodePropertyPanel(ShaderGraphData.ShaderNodeDataBase nodeData)
         {
-            PropertyStackPanel panel = new PropertyStackPanel();
+            PropertyStackPanel panel = new PropertyStackPanel();            
 
             // ノードの種類ごとにスタックへUIを積む
+            ShaderGraphData.ShaderNodeType type = nodeData.Type;
 
             // 共通項目
             // 題名
             panel._captionTextBlock.Text = "ノード設定";
             // 名前            
-            panel.AddParts("ノード名", new Parts.Parts<string>("Name", new Parts.StringTag()));    
+            panel.AddParts("ノード名", new Parts.Parts<string>(nodeData, "Name", new Parts.StringTag()));    
             // 説明文
-            panel.AddParts("説明", new Parts.Parts<string>("Description", new Parts.StringTextbox()));
+            panel.AddParts("説明", new Parts.Parts<string>(nodeData, "Description", new Parts.StringTextbox()));
 
             // Float値用
             if( type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Float )
             {
-                panel.AddParts("値", new Parts.Parts<float>("Value", new Parts.FloatTextBox()));
+                panel.AddParts("値", new Parts.Parts<float>(nodeData, "Value", new Parts.FloatTextBox()));
             }
             // Vector2用
             else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector2)
             {
-                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
-                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));                
+                panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));                
             }            
             // Vector3用
             else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector3)
             {
-                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
-                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
-                panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));                
+                panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));
+                panel.AddParts("Z", new Parts.Parts<float>(nodeData, "Z", new Parts.FloatTextBox()));                
             }            
             // Vector4用
             else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
             {
-                panel.AddParts("X", new Parts.Parts<float>("X", new Parts.FloatTextBox()));
-                panel.AddParts("Y", new Parts.Parts<float>("Y", new Parts.FloatTextBox()));
-                panel.AddParts("Z", new Parts.Parts<float>("Z", new Parts.FloatTextBox()));
-                panel.AddParts("W", new Parts.Parts<float>("W", new Parts.FloatTextBox()));
+                panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
+                panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));
+                panel.AddParts("Z", new Parts.Parts<float>(nodeData, "Z", new Parts.FloatTextBox()));
+                panel.AddParts("W", new Parts.Parts<float>(nodeData, "W", new Parts.FloatTextBox()));
             }            
             // テクスチャ用
             else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
                         || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
             {
-                panel.AddParts("テクスチャファイル", new Parts.Parts<string>("Path", new Parts.FilePath()));
-                panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>("TextureSamplerState", new Parts.SamplerState()));
-            }                                                    
+                panel.AddParts("テクスチャファイル", new Parts.Parts<string>(nodeData, "Path", new Parts.FilePath()));
+                panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>(nodeData, "TextureSamplerState", new Parts.SamplerState()));
+            }            
 
             return panel;
         }

@@ -143,6 +143,8 @@ namespace metashader
                     m_fileSettings.OldWorkFolderPath = Path.GetDirectoryName(path);
                     formatter.Serialize(fs, m_fileSettings);
                 }
+                // 全体設定の保存
+                formatter.Serialize(fs, m_globalSettings);
 
                 // グラフの保存
                 m_graphData.Save(fs, formatter);                        
@@ -164,13 +166,16 @@ namespace metashader
                 m_fileSettings = formatter.Deserialize(fs) as Setting.FileSettings;
                 m_fileSettings.CurrentFilePath = System.IO.Path.GetFullPath(path);
 
-                // グラフの読み込み
-                m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);            
+                // 全体設定の読み込み
+                m_globalSettings.Load(fs, formatter);
+
+                // グラフの読み込み                
+                LoadGraphData(fs, formatter);                
             }                        
 
             // 選択解除
             m_selectManager.Clear();
-        }
+        }        
 #endregion
 
 #region event handlers        
@@ -211,5 +216,39 @@ namespace metashader
             metashader.Properties.Settings.Default.Save();
         }
 #endregion                
+
+#region private methods
+        /// <summary>
+        /// グラフロードのサブルーチン
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="formatter"></param>
+        private void LoadGraphData(FileStream fs, BinaryFormatter formatter)
+        {
+            m_graphData.Reset();
+
+            // ノードとリンク以外のデータ構造をデシリアライズする
+            m_graphData = ShaderGraphData.ShaderGraphData.Load(fs, formatter);
+
+            /// ノードのデシリアライズ ///            
+            LinkedList<ShaderGraphData.ShaderNodeDataBase> nodeList =
+                formatter.Deserialize(fs) as LinkedList<ShaderGraphData.ShaderNodeDataBase>;
+            // ノードを再構築
+            foreach (ShaderGraphData.ShaderNodeDataBase itr in nodeList)
+            {
+                m_graphData.AddNode(itr, null);
+            }
+
+            /// リンクのデシリアライズ ///            
+            LinkedList<ShaderGraphData.LinkData> linkList =
+                formatter.Deserialize(fs) as LinkedList<ShaderGraphData.LinkData>;
+
+            // グラフ内のリンクを再構築
+            foreach (ShaderGraphData.LinkData itr in linkList)
+            {
+                m_graphData.AddLink(itr._outNodeHash, itr._outJointIndex, itr._inNodeHash, itr._inJointIndex, null);
+            }
+        }
+#endregion
     }
 }

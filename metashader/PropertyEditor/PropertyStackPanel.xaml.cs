@@ -32,26 +32,15 @@ namespace metashader.PropertyEditor
 
 #region properties
         /// <summary>
-        /// シェーダノードデータ
+        /// パラメータ設定先のオブジェクト
+        /// 各子コントロールにBindingされているValueControllerではなく、
+        /// ValueControllerが設定するオブジェクト
         /// </summary>
-        public ShaderGraphData.ShaderNodeDataBase NodeData
-        {
-            set
-            {
-                if (value != null)
-                {
-                    foreach (Parts.IParts parts in m_partsList)
-                    {
-                        parts.NodeData = value;                        
-                    }
-
-                    // UserControl上の表示を更新
-                    UpdateAllTargets();
-                }    
-            }
+        public object Target
+        {            
             get 
             {
-                return m_partsList[0].NodeData;
+                return m_partsList[0].Target;
             }
         }
 #endregion
@@ -86,7 +75,7 @@ namespace metashader.PropertyEditor
             
             _rightStack.Children.Add(parts.UserControl);
 
-            // @@@ 左側のラベルから右のコントロールへフォーカスの設定
+            // @@ 左側のラベルから右のコントロールへフォーカスの設定
         }
 
         /// <summary>

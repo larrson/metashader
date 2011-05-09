@@ -12,9 +12,7 @@
 
 //-------------------------------------------------------------------------------------------
 int PreviewerMain(int i_nScreenWidth, int i_nScreenHeight)
-{
-	// @@@@	
-
+{	
 	// アプリケーションを作成
 	if( opk::CApp::CreateInstance() == false )
 		return false;	
@@ -33,9 +31,7 @@ int PreviewerMain(int i_nScreenWidth, int i_nScreenHeight)
 
 //-------------------------------------------------------------------------------------------
 int ShutDown()
-{
-	// @@@@
-
+{	
 	// アプリケーションを破棄
 	opk::CApp::DisposeInstance();
 

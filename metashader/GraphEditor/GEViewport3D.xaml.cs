@@ -390,7 +390,7 @@ namespace metashader.GraphEditor
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
             {
                 // リンクを表す曲線を非表示
-                m_curveForLinkDrag.Visibility = Visibility.Hidden;
+                m_curveForLinkDrag.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -458,7 +458,7 @@ namespace metashader.GraphEditor
             if (e.Data.GetDataPresent(JointControl.JointDragData.Format))
             {
                 // リンクを表す曲線を非表示
-                m_curveForLinkDrag.Visibility = Visibility.Hidden;
+                m_curveForLinkDrag.Visibility = Visibility.Collapsed;
 
                 // ハンドリングされた
                 e.Handled = true;
@@ -796,7 +796,7 @@ namespace metashader.GraphEditor
             // 位置合わせは、SizeChangedイベント内で処理するので明示的な処理は必要ない
 
             // ドラッグ時に表示させていた曲線を非表示に
-            m_curveForLinkDrag.Visibility = Visibility.Hidden;
+            m_curveForLinkDrag.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

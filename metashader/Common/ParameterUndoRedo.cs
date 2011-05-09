@@ -76,7 +76,8 @@ namespace metashader.Common
 
 #region public methods
         /// <summary>
-        /// 値変更を実行する        
+        /// 値変更を実行する       
+        /// 保持している値と異なる場合のみ設定する
         /// </summary>
         /// <returns>値の変更が実行されたか</returns>
         public bool Do()
@@ -94,7 +95,7 @@ namespace metashader.Common
             RaisePropertyChangeEvent(m_newValue);            
 
             return true;
-        }
+        }        
 #endregion
 
 #region private methods
