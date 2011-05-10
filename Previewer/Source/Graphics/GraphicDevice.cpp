@@ -420,6 +420,45 @@ namespace opk
 	}
 
 	//------------------------------------------------------------------------------------------
+	void CGraphicDevice::SetDirLightEnable( int i_nIndex, bool i_bEnable )
+	{
+		MY_ASSERT( i_nIndex < DirLight_Max );
+		m_dirLightInfo[ i_nIndex ].bEnable = i_bEnable;
+	}
+
+	//------------------------------------------------------------------------------------------
+	D3DXVECTOR3 CGraphicDevice::GetDirLightColor( int i_nIndex )
+	{
+		MY_ASSERT( i_nIndex < DirLight_Max );
+		return m_dirLightInfo[ i_nIndex ].vColor;
+	}
+
+	//------------------------------------------------------------------------------------------
+	void CGraphicDevice::SetDirLightColor( int i_nIndex, float i_fR, float i_fG, float i_fB)
+	{
+		MY_ASSERT( i_nIndex < DirLight_Max );
+		m_dirLightInfo[ i_nIndex ].vColor.x = i_fR;
+		m_dirLightInfo[ i_nIndex ].vColor.y = i_fG;
+		m_dirLightInfo[ i_nIndex ].vColor.z = i_fB;
+	}
+
+	//------------------------------------------------------------------------------------------
+	D3DXVECTOR3 CGraphicDevice::GetDirLightDir( int i_nIndex )
+	{
+		MY_ASSERT( i_nIndex < DirLight_Max );
+		return m_dirLightInfo[ i_nIndex ].vDir;
+	}
+
+	//------------------------------------------------------------------------------------------
+	void CGraphicDevice::SetDirLightDir( int i_nIndex, float i_fX, float i_fY, float i_fZ)
+	{
+		MY_ASSERT( i_nIndex < DirLight_Max );
+		m_dirLightInfo[ i_nIndex ].vDir.x = i_fX;
+		m_dirLightInfo[ i_nIndex ].vDir.y = i_fY;
+		m_dirLightInfo[ i_nIndex ].vDir.z = i_fZ;
+	}
+
+	//------------------------------------------------------------------------------------------
 	HRESULT CGraphicDevice::Clear(float i_fR, float i_fG, float i_fB, float i_fA)
 	{
 		HRESULT hr;

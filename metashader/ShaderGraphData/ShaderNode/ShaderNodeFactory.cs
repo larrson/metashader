@@ -142,6 +142,12 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Pow:
                     ret = new Func_Pow(name, pos);
                     break;
+                case ShaderNodeType.Light_DirLightDir:
+                    ret = new Light_DirLightDirNode(name, pos);
+                    break;
+                case ShaderNodeType.Light_DirLightColor:
+                    ret = new Light_DirLightColorNode(name, pos);
+                    break;
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);
                     break;                                    

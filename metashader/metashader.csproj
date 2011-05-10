@@ -258,6 +258,7 @@
     <Compile Include="ShaderGraphData\ShaderGraphData.cs" />
     <Compile Include="ShaderGraphData\ShaderGraphData_Serialization.cs" />
     <Compile Include="ShaderGraphData\ShaderGraphData_UndoRedo.cs" />
+    <Compile Include="ShaderGraphData\ShaderNode\Light_Node.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\Operator_Node.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\ShaderNodeDataBase.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\ShaderNodeFactory.cs" />

@@ -8,12 +8,76 @@
 #include "Graphics/Shader.h"
 #include "Graphics/ShaderParameter.h"
 
-// Global Variable Definitions ---------------------------------------------------------------	
 namespace opk
 {
+	// Global Variable Definitions ---------------------------------------------------------------	
+	namespace
+	{
+		const char* c_pszUniformDirLightDir = "Uniform_DirLightDir_";
+		const char* c_pszUniformDirLightColor = "Uniform_DirLightColor_";
+	}
+
 	namespace shader
 	{
-		// Function Definitions ----------------------------------------------------------------------
+		// Data Type Definitions ---------------------------------------------------------------------
+		namespace vector4param
+		{
+			/**
+			@brief 平行光源の方向ベクトル取得用ファンクタ
+			*/
+			class CDirLightDirFunc : public CVector4Parameter::IFunctor
+			{
+			private:
+				int m_nIndex; ///< インデックス			
+
+			public:
+				/// コンストラクタ
+				CDirLightDirFunc(int i_nIndex)
+					: m_nIndex( i_nIndex )
+				{
+				}
+
+				/// デストラクタ
+				virtual ~CDirLightDirFunc(){}
+
+				/// 値取得メソッド
+				virtual D3DXVECTOR4 GetValue()
+				{
+					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+					D3DXVECTOR3 vDir = pDevice->GetDirLightDir(m_nIndex);
+					return D3DXVECTOR4( vDir.x, vDir.y, vDir.z, 0.0f );
+				}
+			};
+
+			/**
+			@brief 平行光源の色取得用ファンクタ
+			*/
+			class CDirLightColorFunc : public CVector4Parameter::IFunctor
+			{
+			private:
+				int m_nIndex; ///< インデックス
+
+			public:
+				/// コンストラクタ
+				CDirLightColorFunc(int i_nIndex)
+					: m_nIndex( i_nIndex )
+				{
+				}
+
+				/// デストラクタ
+				virtual ~CDirLightColorFunc(){}
+
+				/// 値取得メソッド
+				virtual D3DXVECTOR4 GetValue()
+				{
+					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+					D3DXVECTOR3 vColor = pDevice->GetDirLightColor(m_nIndex);
+					return D3DXVECTOR4( vColor.x, vColor.y, vColor.z, 0.0f );
+				}
+			};				
+		} // end of namespace vector4param
+
+		// Function Definitions ----------------------------------------------------------------------		
 
 		//------------------------------------------------------------------------------------------
 		CParameterBase::CParameterBase( std::string i_strName, D3DXHANDLE i_nHandle )
@@ -25,11 +89,69 @@ namespace opk
 		//------------------------------------------------------------------------------------------
 		CParameterBase::~CParameterBase()
 		{
+		}						
+
+		//------------------------------------------------------------------------------------------
+		CVector4Parameter::CVector4Parameter(std::string i_strName, D3DXHANDLE i_nHandle )
+			: CGeneralParameter<D3DXVECTOR4>( i_strName, i_nHandle )
+			, m_pGetValueFunc(NULL)
+		{
+			// パラメータの値を設定するファンクタの初期化
+			SetupGetValueFunc();
+		}
+
+		//------------------------------------------------------------------------------------------
+		CVector4Parameter::~CVector4Parameter()
+		{
+			// ファンクタの解放
+			SAFE_DELETE( m_pGetValueFunc );
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CVector4Parameter::SetupGetValueFunc()
+		{
+			MY_ASSERT( m_pGetValueFunc == NULL );
+
+			const std::string& strName = GetName();
+			IFunctor *pFunc = NULL;
+
+			// 平行光源の方向
+			if( strncmp( strName.c_str(), c_pszUniformDirLightDir, strlen(c_pszUniformDirLightDir) ) == 0)
+			{
+				int nIndex = atoi( strName.c_str() + strlen(c_pszUniformDirLightDir));
+				pFunc = new vector4param::CDirLightDirFunc(nIndex);
+			}
+			// 平行光源の色
+			else if( strncmp( strName.c_str(), c_pszUniformDirLightColor, strlen(c_pszUniformDirLightColor) ) == 0)
+			{
+				int nIndex = atoi( strName.c_str() + strlen(c_pszUniformDirLightColor));
+				pFunc = new vector4param::CDirLightColorFunc(nIndex);
+			}
+			// その他
+			else
+			{
+				// ファンクタを使用しない
+			}
+
+			m_pGetValueFunc = pFunc;
+		}
+
+		//------------------------------------------------------------------------------------------
+		const D3DXVECTOR4* CVector4Parameter::GetValue()
+		{		
+			// ファンクタが作成されていれば、それを使用
+			if( m_pGetValueFunc )
+			{
+				m_tValue = m_pGetValueFunc->GetValue();
+			}			
+			
+			return &m_tValue;
 		}		
 
 		//------------------------------------------------------------------------------------------
 		CMatrixParameter::CMatrixParameter(std::string i_strName, D3DXHANDLE i_nHandle )
 			: CGeneralParameter<D3DXMATRIX>( i_strName, i_nHandle)
+			, m_pGetValueFunc(NULL)
 		{
 			// パラメータの値を設定する関数のポインタを初期化
 			SetupGetValueFunc();
@@ -37,8 +159,7 @@ namespace opk
 
 		//------------------------------------------------------------------------------------------
 		CMatrixParameter::~CMatrixParameter()
-		{
-
+		{			
 		}
 
 		//------------------------------------------------------------------------------------------
