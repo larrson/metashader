@@ -53,6 +53,24 @@ namespace opk
 			BlendMode_Sub,		///< 減算
 		};
 
+		/**
+			@struct SDirLightInfo
+			@brief 並行光源情報の構造体
+		*/
+		struct SDirLightInfo
+		{
+			D3DXVECTOR3 vColor;		///< 色
+			D3DXVECTOR3 vDir;		///< 方向
+			bool		bEnable;	///< 有効フラグ
+		};
+
+		/**
+			@brief ライトの最大数
+		*/
+		enum LightMax {
+			DirLight_Max = 3, ///< 並行光源の最大数
+		};
+
 	private:
 		IDirect3D9*			m_pd3d9;			///< DirectXオブジェクト	
 		IDirect3DDevice9*	m_pd3dDevice9;		///< グラフィックデバイス
@@ -62,9 +80,7 @@ namespace opk
 		HWND m_hWnd;		///< ダミーのウィンドウハンドル
 
 		bool m_bValid;		///< 有効か
-		bool m_bActive;		///< 実行中か
-
-		int m_nBufferIndex; ///< バッファインデックス
+		bool m_bActive;		///< 実行中か		
 
 		int m_nWidth;  ///< バックバッファの幅
 		int m_nHeight; ///< バックバッファの高さ		
@@ -76,6 +92,8 @@ namespace opk
 		D3DXMATRIX		m_mTransform[TransformType_Max]; ///< 変換行列
 
 		BlendMode		m_nBlendMode; ///< ブレンドモード
+
+		SDirLightInfo	m_dirLightInfo[DirLight_Max];	///< 並行光源
 
 	public:
 		/// コンストラクタ
@@ -132,6 +150,48 @@ namespace opk
 			@param [in] i_bForced 強制設定を行うか（trueならば現在の状態に関係なく設定する）
 		*/
 		HRESULT SetBlendMode( BlendMode i_nBlendMode, bool i_bForced = false );
+
+		/**
+			@brief 並行光源の有効/無効切り替え
+			@param [in] i_nIndex 並行光源のインデックス
+			@param [in] i_bEnable 有効or無効
+			@note i_nIndexの範囲は[0, DirLight_Max - 1]
+		*/
+		void SetDirLightEnable( int i_nIndex, bool i_bEnable );
+
+		/**
+			@brief 並行光源の色を取得する
+			@param [in] i_nIndex 並行光源のインデックス
+			@note i_nIndexの範囲は[0, DirLight_Max - 1]
+		*/
+		D3DXVECTOR3 GetDirLightColor( int i_nIndex );
+
+		/**
+			@brief 並行光源の色を設定する
+			@param [in] i_nIndex 並行光源のインデックス
+			@param [in] i_fR 赤成分
+			@param [in] i_fG 緑成分
+			@param [in] i_fB 青成分
+			@note i_nIndexの範囲は[0, DirLight_Max - 1]
+		*/
+		void SetDirLightColor( int i_nIndex, float i_fR, float i_fG, float i_fB);
+
+		/**
+			@brief 並行光源の方向を取得する
+			@param [in] i_nIndex 並行光源のインデックス
+			@note i_nIndexの範囲は[0, DirLight_Max - 1]
+		*/
+		D3DXVECTOR3 GetDirLightDir( int i_nIndex );
+
+		/**
+			@brief 並行光源の方向を設定する
+			@param [in] i_nIndex 並行光源のインデックス
+			@param [in] i_fX 方向ベクトルのX成分
+			@param [in] i_fY 方向ベクトルのY成分
+			@param [in] i_fZ 方向ベクトルのZ成分
+			@note i_nIndexの範囲は[0, DirLight_Max - 1]
+		*/
+		void SetDirLightDir( int i_nIndex, float i_fX, float i_fY, float i_fZ);
 
 		/** 
 			@brief バッファのクリア

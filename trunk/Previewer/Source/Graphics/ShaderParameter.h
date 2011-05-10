@@ -148,7 +148,39 @@ namespace opk
 		/// 型パラメータに合わせた型名をtypedef
 
 		typedef CGeneralParameter<float>		CFloatParameter;
-		typedef CGeneralParameter<D3DXVECTOR4>	CVector4Parameter;
+
+
+		class CVector4Parameter : public CGeneralParameter<D3DXVECTOR4>
+		{
+		public:
+			/// 値取得用ファンクタインターフェースの宣言
+			interface IFunctor
+			{
+			public:
+				/// 値取得メソッド
+				virtual D3DXVECTOR4 GetValue()=0;
+			};			
+						
+			IFunctor*	m_pGetValueFunc; ///< 値取得用ファンクタ
+
+		public:
+			/// コンストラクタ
+			CVector4Parameter(std::string i_strName, D3DXHANDLE i_nHandle );
+
+			/// デストラクタ
+			virtual ~CVector4Parameter();
+
+			/**
+				@brief 値を取得するためのファンクタを設定する
+			*/
+			void SetupGetValueFunc();
+
+			/** 
+				@brief 値を取得
+				@note Applyメソッド用
+			*/
+			virtual const D3DXVECTOR4* GetValue();			
+		};
 
 		/**
 			@class CMatrixParameter

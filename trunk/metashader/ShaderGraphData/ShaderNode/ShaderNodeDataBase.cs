@@ -18,7 +18,7 @@ namespace metashader.ShaderGraphData
         Uniform_Float,      // スカラー(浮動小数点値)
         Uniform_Vector2,    // 2Dベクトル
         Uniform_Vector3,    // 3Dベクトル
-        Uniform_Vector4,    // 4Dベクトル       
+        Uniform_Vector4,    // 4Dベクトル               
         Uniform_Texture2D,  // 2Dテクスチャ
         Uniform_TextureCube,// Cubeテクスチャ
         
@@ -34,6 +34,9 @@ namespace metashader.ShaderGraphData
         Func_Dot,       // 内積
         Func_Reflect,   // 反射
         Func_Pow,       // べき乗
+
+        Light_DirLightDir,      // 並行光源の方向
+        Light_DirLightColor,    // 並行光源のカラー
 
         Output_Color,   // 出力色        
         Max, // 最大数
@@ -73,6 +76,9 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Reflect: return "Func_Reflect";
                 case ShaderNodeType.Func_Pow: return "Func_Pow";
 
+                case ShaderNodeType.Light_DirLightDir: return "Light_DirLightDir";
+                case ShaderNodeType.Light_DirLightColor: return "Light_DirLightColor";
+
                 case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -80,6 +86,7 @@ namespace metashader.ShaderGraphData
 
         /// <summary>
         /// 各タイプごとのノードの最大数
+        /// @@ Previewer側へ問い合わせるべき
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
@@ -106,6 +113,9 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Dot: return uint.MaxValue;
                 case ShaderNodeType.Func_Reflect: return uint.MaxValue;
                 case ShaderNodeType.Func_Pow: return uint.MaxValue;
+
+                case ShaderNodeType.Light_DirLightDir: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
+                case ShaderNodeType.Light_DirLightColor: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
 
                 case ShaderNodeType.Output_Color: return 1;               
                 default: throw new ArgumentOutOfRangeException("e");

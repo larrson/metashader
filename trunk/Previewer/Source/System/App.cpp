@@ -55,7 +55,22 @@ namespace opk
 		m_pGraphicDevice = new CGraphicDevice();
 		m_pGraphicDevice->Initialize(i_nScreenWidth, i_nScreenHeight);
 
-		m_model.Restore(); ///< モデル @@@削除		
+		/// @@@@ モデル＆ライトはシーンクラスの初期化処理中に記述すべき
+		m_model.Restore(); ///< モデル @@@削除	
+
+		// ライト初期化
+		// 0 Fill
+		D3DXVECTOR3 vLightDir0(-1, -1, -1); D3DXVec3Normalize( &vLightDir0, &vLightDir0);		
+		m_pGraphicDevice->SetDirLightDir( 0, vLightDir0.x, vLightDir0.y, vLightDir0.z );
+		m_pGraphicDevice->SetDirLightColor( 0, 1.0f, 1.0f, 1.0f );		
+		// 1 Back
+		D3DXVECTOR3 vLightDir1( 0, 0, -1); D3DXVec3Normalize( &vLightDir1, &vLightDir1);		
+		m_pGraphicDevice->SetDirLightDir( 1, vLightDir1.x, vLightDir1.y, vLightDir1.z );
+		m_pGraphicDevice->SetDirLightColor( 1, 0.2f, 0.2f, 1.0f );		
+		// 2 Key
+		D3DXVECTOR3 vLightDir2( -1, -1, 0); D3DXVec3Normalize( &vLightDir2, &vLightDir2);		
+		m_pGraphicDevice->SetDirLightDir( 2, vLightDir2.x, vLightDir2.y, vLightDir2.z );
+		m_pGraphicDevice->SetDirLightColor( 2, 1.0f, 1.0f, 1.0f );		
 
 		return true;
 	}
