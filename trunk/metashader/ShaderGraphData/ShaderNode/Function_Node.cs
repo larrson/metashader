@@ -493,4 +493,113 @@ namespace metashader.ShaderGraphData
         }
         #endregion
     }
+
+    /// <summary>
+    /// [0,1]クランプノード
+    /// </summary>
+    [Serializable]
+    class Func_Saturate : ShaderNodeDataBase
+    {
+        #region constructors
+        public Func_Saturate(string name, Point pos)
+            : base(ShaderNodeType.Func_Saturate, name, pos)
+        {
+
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// 入力ジョイントに対応する変数型を取得
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override VariableType GetInputJointVariableType(int index)
+        {
+            // 接続元ノードの出力ジョイントに依存する
+
+            // 接続されていない場合は不定
+            if (GetInputJoint(index).JointList.Count == 0)
+            {
+                return VariableType.INDEFINITE;
+            }
+            // 接続されていれば接続元に依存
+            else
+            {
+                JointData outputJoint = GetInputJoint(index).JointList.First.Value;
+                ShaderNodeDataBase node = outputJoint.ParentNode;
+
+                return node.GetOutputJointVariableType(outputJoint.JointIndex);
+            }
+        }
+
+        /// <summary>
+        /// 出力ジョイントに対応する変数型を取得
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override VariableType GetOutputJointVariableType(int index)
+        {
+            // 出力型は入力ベクトル型
+            return GetInputJointVariableType(0);
+        }
+
+        /// <summary>
+        /// ストリームへシェーダの本文を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>        
+        public override void WritingShaderMainCode(StringWriter stream)
+        {
+            // 出力型
+            VariableType outputType = GetOutputJointVariableType(0);
+
+            // 入力変数の名前
+            string inputName = GetInputJoint(0).VariableName;
+
+            stream.WriteLine("\t{0} {1} = saturate({2});",
+                outputType.ToStringExt()
+                , Name
+                , inputName
+                );
+        }
+
+        /// <summary>
+        /// ノードの有効性を判定
+        /// </summary>
+        /// <returns></returns>
+        public override bool IsValid()
+        {
+            // 入力リンクの有効性を確認する
+            // 全ての入力が埋まっているか？
+            foreach (JointData inputJoint in m_inputJoints)
+            {
+                if (inputJoint.JointList.Count != 1)
+                    return false;
+            }
+
+            // 入力型が適当か          
+            // 型がベクトル型orスカラー型ならば有効
+            VariableType inputType = GetInputJointVariableType(0);
+            return inputType.IsVector() || inputType.IsScalar();
+        }
+        #endregion
+
+        #region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // ジョイントの初期化
+            // 入力         
+            m_inputJointNum = 1;
+            m_inputJoints = new JointData[m_inputJointNum];
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            // 出力            
+            m_outputJointNum = 1;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.DEPENDENT, JointData.SuffixType.None);
+        }
+        #endregion
+    }
 }

@@ -17,8 +17,9 @@ namespace metashader.ShaderGraphData
         #region variables
         /// <summary>
         /// セマンティックスに付随するインデックス
+        /// @@@@ インデックスを用意しているが未使用
         /// </summary>
-        uint m_index;
+        protected uint m_index;
         #endregion
 
         #region constructors
@@ -36,7 +37,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// セマンティックに付随するインデックス
         /// </summary>
-        public uint Index
+        public virtual uint Index
         {
             get { return m_index; }
             set { m_index = value; }
@@ -63,7 +64,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public override string VariableName
         {
-            get { return "In.Texcoord" + Index; }
+            get { return "In.Texcoord0"; }
         }
         #endregion
 
@@ -74,7 +75,7 @@ namespace metashader.ShaderGraphData
         /// <param name="stream"></param>
         public override void WritingShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat2 Texcoord{0} : TEXCOORD{0};", Index);
+            stream.WriteLine("\tfloat2 Texcoord0 : TEXCOORD0;");
         }
         #endregion
 
@@ -117,7 +118,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public override string VariableName
         {
-            get { return "In.Normal" + Index; }
+            get { return "Normal0"; }
         }
         #endregion
 
@@ -128,7 +129,16 @@ namespace metashader.ShaderGraphData
         /// <param name="stream"></param>
         public override void WritingShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat3 Normal{0} : NORMAL{0};", Index);
+            stream.WriteLine("\tfloat3 Normal0 : TEXCOORD1;");
+        }
+
+        /// <summary>
+        /// ストリームへシェーダの本文を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>        
+        public override void WritingShaderMainCode(StringWriter stream) 
+        {
+            stream.WriteLine("\tfloat3 {0} = normalize( In.Normal0 );", VariableName);
         }
         #endregion
 
@@ -143,12 +153,70 @@ namespace metashader.ShaderGraphData
             m_inputJoints = new JointData[m_inputJointNum];
 
             // 出力
-            m_outputJointNum = 4;
+            m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);
-            m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
-            m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
-            m_outputJoints[3] = new JointData(this, 3, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Z);
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);            
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 入力ワールド位置ノード
+    /// </summary>
+    [Serializable]
+    class Input_PositionNode : Input_NodeBase
+    {
+        #region constructors
+        public Input_PositionNode(string name, Point pos)
+            : base(ShaderNodeType.Input_Position, name, pos)
+        {
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// インデックス
+        /// </summary>
+        public override uint Index
+        {
+            get { return 0; }
+            set { m_index = value; }
+        }
+
+        /// <summary>
+        /// ノードの変数名
+        /// </summary>
+        public override string VariableName
+        {
+            get { return "In.Position0"; }
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// ストリームへシェーダの入力属性を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WritingShaderInputCode(StringWriter stream)
+        {
+            stream.WriteLine("\tfloat4 Position0 : TEXCOORD2;");
+        }
+        #endregion
+
+        #region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // 入力
+            m_inputJointNum = 0;
+            m_inputJoints = new JointData[m_inputJointNum];
+
+            // 出力
+            m_outputJointNum = 1;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);            
         }
         #endregion
     }    
