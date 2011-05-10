@@ -15,6 +15,7 @@ namespace opk
 	{
 		const char* c_pszUniformDirLightDir = "Uniform_DirLightDir_";
 		const char* c_pszUniformDirLightColor = "Uniform_DirLightColor_";
+		const char* c_pszUniformCameraPosition = "Uniform_Camera_Position";
 	}
 
 	namespace shader
@@ -75,6 +76,29 @@ namespace opk
 					return D3DXVECTOR4( vColor.x, vColor.y, vColor.z, 0.0f );
 				}
 			};				
+
+			/**
+				@brief カメラ位置取得用ファンクタ
+			*/
+			class CCameraPositionFunc : public CVector4Parameter::IFunctor
+			{
+			public:
+				/// コンストラクタ
+				CCameraPositionFunc()					
+				{
+				}
+
+				/// デストラクタ
+				virtual ~CCameraPositionFunc(){}
+
+				/// 値取得メソッド
+				virtual D3DXVECTOR4 GetValue()
+				{
+					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+					const CGraphicDevice::SCameraInfo cameraInfo = pDevice->GetCameraInfo();
+					return D3DXVECTOR4( cameraInfo.vEyePos.x, cameraInfo.vEyePos.y, cameraInfo.vEyePos.z, 0.0f );
+				}
+			};
 		} // end of namespace vector4param
 
 		// Function Definitions ----------------------------------------------------------------------		
@@ -126,6 +150,10 @@ namespace opk
 			{
 				int nIndex = atoi( strName.c_str() + strlen(c_pszUniformDirLightColor));
 				pFunc = new vector4param::CDirLightColorFunc(nIndex);
+			}
+			else if( strcmp( strName.c_str(), c_pszUniformCameraPosition ) == 0)
+			{
+				pFunc = new vector4param::CCameraPositionFunc();
 			}
 			// その他
 			else

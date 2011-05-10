@@ -9,7 +9,7 @@ namespace metashader.ShaderGraphData
     /// <summary>
     /// シェーダ変数の型
     /// </summary>
-    public enum VariableType
+    public enum VariableType : uint
     {
         INDEFINITE, // 不定(関数の戻り値用)
         DEPENDENT,  // 依存型（ノードに依存する）
@@ -61,6 +61,23 @@ namespace metashader.ShaderGraphData
         {
             return VariableType.FLOAT2 <= e && e <= VariableType.FLOAT4;
         }        
+
+        /// <summary>
+        /// 次元を取得する
+        /// 次元の無いものは返さない（このメソッドの呼び出し自体が不正）
+        /// </summary>
+        /// <returns></returns>
+        public static uint GetDimension(this VariableType e)
+        {
+            switch( e )
+            {
+                case VariableType.FLOAT: return 1;
+                case VariableType.FLOAT2: return 2;
+                case VariableType.FLOAT3: return 3;
+                case VariableType.FLOAT4: return 4;
+                default: throw new ArgumentOutOfRangeException("e");
+            }
+        }
     }
     #endregion
    

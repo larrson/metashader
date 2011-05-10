@@ -118,6 +118,9 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Input_Normal:
                     ret = new Input_NormalNode(name, pos);
                     break;
+                case ShaderNodeType.Input_Position:
+                    ret = new Input_PositionNode(name, pos);
+                    break;
                 case ShaderNodeType.Operator_Add:
                     ret = new Operator_AddNode(name, pos);
                     break;
@@ -142,11 +145,20 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Pow:
                     ret = new Func_Pow(name, pos);
                     break;
+                case ShaderNodeType.Func_Saturate:
+                    ret = new Func_Saturate(name, pos);
+                    break;
                 case ShaderNodeType.Light_DirLightDir:
                     ret = new Light_DirLightDirNode(name, pos);
                     break;
                 case ShaderNodeType.Light_DirLightColor:
                     ret = new Light_DirLightColorNode(name, pos);
+                    break;
+                case ShaderNodeType.Camera_Position:
+                    ret = new Camera_PositionNode(name, pos);
+                    break;
+                case ShaderNodeType.Utility_Append:
+                    ret = new Utility_AppendNode(name, pos);
                     break;
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);

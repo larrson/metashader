@@ -265,6 +265,7 @@
     <Compile Include="ShaderGraphData\ShaderNode\Uniform_NumericalNode.cs" />
     <Compile Include="ShaderGraphData\ShaderNode\Uniform_TextureNode.cs" />
     <Compile Include="Common\UndoRedo.cs" />
+    <Compile Include="ShaderGraphData\ShaderNode\Utility_Node.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

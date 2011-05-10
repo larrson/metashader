@@ -23,7 +23,8 @@ namespace metashader.ShaderGraphData
         Uniform_TextureCube,// Cubeテクスチャ
         
         Input_UV,           // 入力UVベクトル
-        Input_Normal,       // 入力法線ベクトル
+        Input_Normal,       // 入力ワールド法線ベクトル
+        Input_Position,     // 入力ワールド位置
 
         Operator_Add,   // 加算
         Operator_Sub,   // 減算
@@ -34,9 +35,14 @@ namespace metashader.ShaderGraphData
         Func_Dot,       // 内積
         Func_Reflect,   // 反射
         Func_Pow,       // べき乗
+        Func_Saturate,  // [0,1]クランプ
 
         Light_DirLightDir,      // 並行光源の方向
         Light_DirLightColor,    // 並行光源のカラー
+
+        Camera_Position,        // カメラ位置
+
+        Utility_Append,         // ベクトル合成
 
         Output_Color,   // 出力色        
         Max, // 最大数
@@ -65,6 +71,7 @@ namespace metashader.ShaderGraphData
 
                 case ShaderNodeType.Input_UV: return "Input_UV";
                 case ShaderNodeType.Input_Normal: return "Input_Normal";
+                case ShaderNodeType.Input_Position: return "Input_Position";                   
                 
                 case ShaderNodeType.Operator_Add: return "Operator_Add";
                 case ShaderNodeType.Operator_Sub: return "Operator_Sub";
@@ -75,9 +82,14 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Dot: return "Func_Dot";
                 case ShaderNodeType.Func_Reflect: return "Func_Reflect";
                 case ShaderNodeType.Func_Pow: return "Func_Pow";
+                case ShaderNodeType.Func_Saturate: return "Func_Saturate";
 
                 case ShaderNodeType.Light_DirLightDir: return "Light_DirLightDir";
                 case ShaderNodeType.Light_DirLightColor: return "Light_DirLightColor";
+
+                case ShaderNodeType.Camera_Position: return "Camera_Position";
+
+                case ShaderNodeType.Utility_Append: return "Utility_Append";
 
                 case ShaderNodeType.Output_Color: return "Output_Color";                
                 default: throw new ArgumentOutOfRangeException("e");
@@ -103,6 +115,7 @@ namespace metashader.ShaderGraphData
 
                 case ShaderNodeType.Input_UV: return uint.MaxValue;
                 case ShaderNodeType.Input_Normal: return uint.MaxValue;
+                case ShaderNodeType.Input_Position: return uint.MaxValue;
 
                 case ShaderNodeType.Operator_Add: return uint.MaxValue;
                 case ShaderNodeType.Operator_Sub: return uint.MaxValue;
@@ -113,9 +126,14 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Dot: return uint.MaxValue;
                 case ShaderNodeType.Func_Reflect: return uint.MaxValue;
                 case ShaderNodeType.Func_Pow: return uint.MaxValue;
+                case ShaderNodeType.Func_Saturate: return uint.MaxValue;
 
                 case ShaderNodeType.Light_DirLightDir: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
                 case ShaderNodeType.Light_DirLightColor: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
+
+                case ShaderNodeType.Camera_Position: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
+
+                case ShaderNodeType.Utility_Append: return uint.MaxValue;
 
                 case ShaderNodeType.Output_Color: return 1;               
                 default: throw new ArgumentOutOfRangeException("e");
@@ -129,7 +147,7 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public static bool IsInputNode( this ShaderNodeType e )
         {            
-            return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Normal;
+            return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Position;
         }
 
         /// <summary>
