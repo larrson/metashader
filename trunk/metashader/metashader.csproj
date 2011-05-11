@@ -129,6 +129,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PropertyEditor\Parts\IndexComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertyEditor\Parts\SamplerState.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,6 +187,9 @@
     <Compile Include="PropertyEditor\Parts\BlendModeComboBox.xaml.cs">
       <DependentUpon>BlendModeComboBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditor\Parts\IndexComboBox.xaml.cs">
+      <DependentUpon>IndexComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Setting\FileSettings.cs" />
     <Compile Include="GraphEditor\BezierCurve.cs" />
     <Compile Include="GraphEditor\GECamera.cs" />
@@ -205,7 +212,6 @@
       <DependentUpon>ThumnailControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="Previewer\D3DScene.cs" />
     <Compile Include="Previewer\PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>

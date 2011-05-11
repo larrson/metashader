@@ -34,5 +34,53 @@ namespace metashader.Properties {
                 this["AutoExecution"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600,0,800,800")]
+        public global::System.Windows.Rect MainWindowRect {
+            get {
+                return ((global::System.Windows.Rect)(this["MainWindowRect"]));
+            }
+            set {
+                this["MainWindowRect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::System.Windows.WindowState MainWindowState {
+            get {
+                return ((global::System.Windows.WindowState)(this["MainWindowState"]));
+            }
+            set {
+                this["MainWindowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0,0,600,400")]
+        public global::System.Windows.Rect PreviewWindowRect {
+            get {
+                return ((global::System.Windows.Rect)(this["PreviewWindowRect"]));
+            }
+            set {
+                this["PreviewWindowRect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0,400,600,400")]
+        public global::System.Windows.Rect ConsoleWindowRect {
+            get {
+                return ((global::System.Windows.Rect)(this["ConsoleWindowRect"]));
+            }
+            set {
+                this["ConsoleWindowRect"] = value;
+            }
+        }
     }
 }

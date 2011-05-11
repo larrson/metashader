@@ -21,6 +21,11 @@ namespace metashader.Previewer
     {
 #region variables
         TimeSpan m_lastRenderTime;
+
+        /// <summary>
+        /// Win32のフックで使用するウィンドウを閉じるメッセージ
+        /// </summary>
+        const int WM_CLOSE = 0x0010;
 #endregion
         public PreviewWindow()
         {
@@ -29,6 +34,8 @@ namespace metashader.Previewer
             /// イベントハンドラの登録 /// 
             // ウィンドウの描画準備が完了した
             this.Loaded += new RoutedEventHandler(PreviewWindow_Loaded);
+            /// ウィンドウが閉じる前            
+            this.Closing += new System.ComponentModel.CancelEventHandler(PreviewWindow_Closing);            
             // フロントバッファの有効性が変更された
             _d3dimg.IsFrontBufferAvailableChanged += new DependencyPropertyChangedEventHandler(_d3dimg_IsFrontBufferAvailableChanged);
             // サイズが変更された
@@ -39,7 +46,7 @@ namespace metashader.Previewer
             App.CurrentApp.EventManager.GraphErrorEvent += new metashader.Event.GraphErrorEventHandler(EventManager_GraphErrorEvent);
             // グローバル設定が変更された
             App.CurrentApp.EventManager.GlobalSettingPropertyChangedEvent += new metashader.Event.GlobalSettingPropertyChangedEventHandler(EventManager_GlobalSettingPropertyChangedEvent);
-        }        
+        }                
 
 #region event handlers
         /// <summary>
@@ -66,6 +73,19 @@ namespace metashader.Previewer
             // 定期的な描画コールバック
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);          
         }
+
+        /// <summary>
+        /// ウィンドウが閉じる前に呼ばれるイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PreviewWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // 閉じさせない
+            // @@ 本来なら、閉じるボタンを無効化したウィンドウを用意すべきだが、
+            // 標準のままでは作れないので
+            e.Cancel = true;
+        }        
 
         /// <summary>
         /// D3DImageのバッファの有効性変更イベント
@@ -128,11 +148,19 @@ namespace metashader.Previewer
         /// <param name="handled"></param>
         /// <returns></returns>
         private static IntPtr WinProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {            
-            IntPtr ret =  NativeMethods.WndProc(hwnd, msg, wParam, lParam);
+        {  
+            IntPtr ret = IntPtr.Zero;
 
-            // 上記のメソッドで全てのメッセージ処理を行う
-            handled = true;
+            // Closingは別途処理するので、ここでは呼ばれないようにする
+            if( msg != WM_CLOSE )
+            {
+                ret =  NativeMethods.WndProc(hwnd, msg, wParam, lParam);
+                handled = true;
+            }             
+            else
+            {
+                handled = false;
+            }            
 
             return ret;
         }

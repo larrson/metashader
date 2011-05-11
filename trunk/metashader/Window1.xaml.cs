@@ -28,8 +28,8 @@ namespace metashader
             this.DataContext = App.CurrentApp.UICommandManager;
 
             // ショートカットキーの設定
-            InitializeShortCutKeys();
-        }
+            InitializeShortCutKeys();            
+        }        
         
 #region event handlers
         /// <summary>

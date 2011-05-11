@@ -4,8 +4,14 @@
     xmlns:Properties="clr-namespace:metashader.Properties"
     xmlns:ge="clr-namespace:metashader.GraphEditor"
     xmlns:pe="clr-namespace:metashader.PropertyEditor"
-    Title="Window1" Height="800" Width="800"
-        Loaded="Window_Loaded">    
+    Title="Window1"
+    WindowStartupLocation="Manual"
+    WindowState="{Binding Path=MainWindowState, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+    Left="{Binding Path=MainWindowRect.X, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}" 
+    Top="{Binding Path=MainWindowRect.Y, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+    Width="{Binding Path=MainWindowRect.Width, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+    Height="{Binding Path=MainWindowRect.Height, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+    Loaded="Window_Loaded">    
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="_mainMenu" >
             <MenuItem Header="ファイル(_F)">
