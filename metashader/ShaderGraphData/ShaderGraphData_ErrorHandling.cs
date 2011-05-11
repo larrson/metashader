@@ -22,7 +22,7 @@ namespace metashader.ShaderGraphData
 
 #region properties
         /// <summary>
-        /// エラーがないか
+        /// エラーがないか記録されているフラグ
         /// </summary>
         public bool NoError
         {
@@ -30,19 +30,19 @@ namespace metashader.ShaderGraphData
         }
 #endregion
 
-#region private methods
+#region public methods
         /// <summary>
-        /// エラー検出
+        /// グラフ構造に起因するエラーを検出し、通知する
         /// @@ 検出するエラーのマスクにフラグを用いる        
         /// </summary>
-        private void DetectError()
-        {            
+        public void DetectError()
+        {
             // エラーの有無を記録
             // エラーが無ければ、最終return前にtrueに設定
             m_noError = false;
 
             // 出力ノードの存在に関して
-            if( m_outputNodeList.Count == 0 )
+            if (m_outputNodeList.Count == 0)
             {
                 // 出力ノードがない
                 App.CurrentApp.EventManager.RaiseGraphError(this, Event.GraphErrorEventArgs.NoOutput());
@@ -58,7 +58,7 @@ namespace metashader.ShaderGraphData
 
             // 無限ループの検出
             ShaderNodeDataBase loopedNode;
-            if( DetectInfiniteLoop(outputNode, out loopedNode) )
+            if (DetectInfiniteLoop(outputNode, out loopedNode))
             {
                 // 無限ループが見つかった
                 App.CurrentApp.EventManager.RaiseGraphError(this, Event.GraphErrorEventArgs.InfiniteLoop(loopedNode));
@@ -67,13 +67,13 @@ namespace metashader.ShaderGraphData
             }
 
             // 無効なノードの検出
-            foreach( ShaderNodeDataBase node in nodeList )
+            foreach (ShaderNodeDataBase node in nodeList)
             {
                 if (node.IsValid() == false)
                 {
                     App.CurrentApp.EventManager.RaiseGraphError(this, Event.GraphErrorEventArgs.InvalidNode(node));
                     return;
-                }                    
+                }
             }
 
             // エラーが無いことを記録しておく
@@ -82,7 +82,9 @@ namespace metashader.ShaderGraphData
             // エラー無し
             App.CurrentApp.EventManager.RaiseGraphError(this, Event.GraphErrorEventArgs.NoError());
         }
+#endregion
 
+#region private methods        
         /// <summary>
         /// 無限ループの検出
         /// </summary>       

@@ -11,13 +11,9 @@ namespace metashader.ShaderGraphData
     /// 並行光源の方向ノード   
     /// </summary>   
     [Serializable]
-    class Light_DirLightDirNode : ShaderNodeDataBase, IAppliableParameter
+    class Light_DirLightDirNode : Indexed_NodeBase, IAppliableParameter
     {
-        #region variables
-        /// <summary>
-        /// 並行光源のインデックス
-        /// </summary>
-        int m_index = 0;
+        #region variables        
         #endregion
 
         #region constructors
@@ -27,16 +23,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region properties 
-        /// <summary>
-        /// 平行光源のインデックス
-        /// </summary>
-        public int Index
-        {
-            get { return m_index; }
-            set { m_index = value;  }
-        }
-
+        #region properties         
         /// <summary>
         /// 変数名
         /// </summary>
@@ -45,6 +32,15 @@ namespace metashader.ShaderGraphData
             get {
                 return "Local_DirLightDir_" + Index; 
             }
+        }
+
+        /// <summary>
+        /// インデックスの最大値
+        /// @@ Previewer側へ問い合わせるべき
+        /// </summary>
+        public override uint MaximumIndex
+        {
+            get { return 2; }
         }
         #endregion
 
@@ -101,13 +97,9 @@ namespace metashader.ShaderGraphData
     /// 並行光源の色ノード   
     /// </summary>   
     [Serializable]
-    class Light_DirLightColorNode : ShaderNodeDataBase, IAppliableParameter
+    class Light_DirLightColorNode : Indexed_NodeBase, IAppliableParameter
     {
-        #region variables
-        /// <summary>
-        /// 並行光源のインデックス
-        /// </summary>
-        int m_index = 0;
+        #region variables        
         #endregion
 
         #region constructors
@@ -117,16 +109,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region properties
-        /// <summary>
-        /// 平行光源のインデックス
-        /// </summary>
-        public int Index
-        {
-            get { return m_index; }
-            set { m_index = value; }
-        }
-
+        #region properties        
         /// <summary>
         /// 変数名
         /// </summary>
@@ -136,6 +119,15 @@ namespace metashader.ShaderGraphData
             {
                 return "Uniform_DirLightColor_" + Index;
             }
+        }
+
+        /// <summary>
+        /// インデックスの最大値
+        /// @@ Previewer側へ問い合わせるべき
+        /// </summary>
+        public override uint MaximumIndex
+        {
+            get { return 2; }
         }
         #endregion
 

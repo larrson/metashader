@@ -7,49 +7,12 @@ using System.IO;
 using System.Diagnostics;
 
 namespace metashader.ShaderGraphData
-{    
-    /// <summary>
-    /// 入力ノードの基底クラス
-    /// </summary>
-    [Serializable]
-    abstract class Input_NodeBase : ShaderNodeDataBase
-    {
-        #region variables
-        /// <summary>
-        /// セマンティックスに付随するインデックス
-        /// @@@@ インデックスを用意しているが未使用
-        /// </summary>
-        protected uint m_index;
-        #endregion
-
-        #region constructors
-        public Input_NodeBase(ShaderNodeType type, string name, Point pos)
-            : base(type, name, pos)
-        {
-            // 入力ノードであることを確認
-            Debug.Assert(type.IsInputNode());
-
-            m_index = 0;
-        }
-        #endregion
-
-        #region properties
-        /// <summary>
-        /// セマンティックに付随するインデックス
-        /// </summary>
-        public virtual uint Index
-        {
-            get { return m_index; }
-            set { m_index = value; }
-        }
-        #endregion
-    }
-
+{      
     /// <summary>
     /// 入力UV座標のノード
     /// </summary>
     [Serializable]
-    class Input_UVNode : Input_NodeBase
+    class Input_UVNode : Indexed_NodeBase
     {
         #region constructors
         public Input_UVNode(string name, Point pos)
@@ -103,7 +66,7 @@ namespace metashader.ShaderGraphData
     /// 入力法線ベクトルのノード
     /// </summary>
     [Serializable]
-    class Input_NormalNode : Input_NodeBase
+    class Input_NormalNode : Indexed_NodeBase
     {
         #region constructors
         public Input_NormalNode(string name, Point pos)
@@ -164,7 +127,7 @@ namespace metashader.ShaderGraphData
     /// 入力ワールド位置ノード
     /// </summary>
     [Serializable]
-    class Input_PositionNode : Input_NodeBase
+    class Input_PositionNode : Indexed_NodeBase
     {
         #region constructors
         public Input_PositionNode(string name, Point pos)

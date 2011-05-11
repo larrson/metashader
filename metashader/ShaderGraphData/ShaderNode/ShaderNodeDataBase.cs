@@ -482,4 +482,61 @@ namespace metashader.ShaderGraphData
     {
         void ApplyParameter();
     }
+
+    /// <summary>
+    /// インデックス化されたノードの基底クラス
+    /// 共通のインデックスは、シェーダーコード上では同じノードとみなす
+    /// インデックスが変更されたら、再コンパイルを要求する
+    /// </summary>
+    [Serializable]
+    abstract class Indexed_NodeBase : ShaderNodeDataBase
+    {
+        #region variables
+        /// <summary>
+        /// セマンティックスに付随するインデックス
+        /// @@@@ インデックスを用意しているが未使用
+        /// </summary>
+        protected uint m_index;
+        #endregion
+
+        #region constructors
+        public Indexed_NodeBase(ShaderNodeType type, string name, Point pos)
+            : base(type, name, pos)
+        {           
+            m_index = 0;
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// セマンティックに付随するインデックス
+        /// </summary>
+        public virtual uint Index
+        {
+            get { return m_index; }
+            set 
+            {
+                if( m_index != value )
+                {
+                    m_index = value; 
+
+                    // 再コンパイルを要求
+                    // @@ エラー検出メソッドでも可能だが、
+                    // インデックス変更前にトポロジ的なエラーが無ければ、
+                    // そのままコンパイル可能なので、別なイベントを発生させるべき
+                    App.CurrentApp.GraphData.DetectError();
+                }                
+            }
+        }
+
+        /// <summary>
+        /// インデックスの最大値
+        /// この値までが有効なインデックス
+        /// </summary>
+        public virtual uint MaximumIndex
+        {
+            get { return 0; }
+        }
+        #endregion
+    }
 }

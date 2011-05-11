@@ -5,5 +5,17 @@
     <Setting Name="AutoExecution" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="MainWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">600,0,800,800</Value>
+    </Setting>
+    <Setting Name="MainWindowState" Type="System.Windows.WindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="PreviewWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">0,0,600,400</Value>
+    </Setting>
+    <Setting Name="ConsoleWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">0,400,600,400</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

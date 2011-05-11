@@ -202,7 +202,14 @@ namespace metashader.PropertyEditor
             {
                 panel.AddParts("テクスチャファイル", new Parts.Parts<string>(nodeData, "Path", new Parts.FilePath()));
                 panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>(nodeData, "TextureSamplerState", new Parts.SamplerState()));
-            }            
+            }       
+            // ライト用
+            else if(type == ShaderGraphData.ShaderNodeType.Light_DirLightColor 
+                || type == ShaderGraphData.ShaderNodeType.Light_DirLightDir )
+            {
+                ShaderGraphData.Indexed_NodeBase indexedNode = nodeData as ShaderGraphData.Indexed_NodeBase;
+                panel.AddParts("インデックス", new Parts.Parts<uint>(nodeData, "Index", new Parts.IndexComboBox(indexedNode.MaximumIndex)));
+            }
 
             return panel;
         }

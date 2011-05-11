@@ -29,13 +29,25 @@ namespace metashader.Console
         {
             InitializeComponent();           
 
-            // イベント登録
+            // イベント登録            
+            this.Closing += new System.ComponentModel.CancelEventHandler(ConsoleWindow_Closing);
             _ritchTextBox.PreviewKeyDown += new KeyEventHandler(ritchTextBox_KeyDown);            
             _ritchTextBox.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(_ritchTextBox_PreviewMouseLeftButtonDown);
             
             // インタプリタ作成
             m_interpreter = new CommandInterpreter();
         }
+
+        /// <summary>
+        /// ウィンドウを閉じる際に呼ばれるイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ConsoleWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // 強制キャンセル
+            e.Cancel = true;
+        }        
 
         /// <summary>
         /// マウスクリックイベントのハンドラ

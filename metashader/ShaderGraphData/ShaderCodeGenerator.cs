@@ -34,10 +34,10 @@ namespace metashader.ShaderGraphData
         MemoryStream             m_memoryStream = new MemoryStream();
 
         /// <summary>
-        /// 入力ノードのインデックス記録用のマップ
-        /// 入力ノードは
+        /// インデックス化されたノードのインデックス記録用のマップ
+        /// 同じShaderNodeTypeの同じインデックスの異なるインスタンスを同一のものとして扱うために使用
         /// </summary>        
-        MultiMap<ShaderNodeType, uint> m_inputNodeMap = new MultiMap<ShaderNodeType, uint>();
+        MultiMap<ShaderNodeType, uint> m_indexedNodeMap = new MultiMap<ShaderNodeType, uint>();
 #endregion
 
 #region constructors
@@ -221,11 +221,11 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// 指定した入力ノードがすでに記録されたものか判定する
         /// </summary>
-        /// <param name="inputNode"></param>
+        /// <param name="indexedNode"></param>
         /// <returns></returns>
-        private bool IsAlreadyWitten( Input_NodeBase inputNode )
+        private bool IsAlreadyWitten( Indexed_NodeBase indexedNode )
         {
-            return m_inputNodeMap.Contains( new KeyValuePair<ShaderNodeType, uint>(inputNode.Type, inputNode.Index) );
+            return m_indexedNodeMap.Contains( new KeyValuePair<ShaderNodeType, uint>(indexedNode.Type, indexedNode.Index) );
         }
 
         /// <summary>
@@ -238,18 +238,18 @@ namespace metashader.ShaderGraphData
             foreach (ShaderNodeDataBase node in m_validNodeQue)
             {
                 // すでに書き込み済みの入力属性はスキップする
-                Input_NodeBase inputNode = node as Input_NodeBase;
-                if( inputNode != null )                
+                Indexed_NodeBase indexedNode = node as Indexed_NodeBase;
+                if( indexedNode != null )                
                 {             
                     // すでに書きこまれた入力ノードならスキップ
-                    if( IsAlreadyWitten( inputNode) )
+                    if( IsAlreadyWitten( indexedNode) )
                     {
                         continue;
                     }
                     // 未書き込みなら、マップに記録しておく
                     else
                     {
-                        m_inputNodeMap.Add(inputNode.Type, inputNode.Index);
+                        m_indexedNodeMap.Add(indexedNode.Type, indexedNode.Index);
                     }
                 }
 
