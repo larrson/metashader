@@ -11,19 +11,22 @@ namespace opk
 	class CModel
 	{
 	private:
-		std::wstring	m_strFilePath;	///< モデルのファイルパス
+		std::string	m_strFilePath;	///< モデルのファイルパス
 		ID3DXMesh*		m_pMesh;		///< メッシュ
 
-	public:
-		/** 
-			@brief コンストラクタ						
-			@attension i_strFilePathの有効性は呼び出し側が責任をもつこと
-			@param[in] i_strFilePath Xファイルのパス
-		*/
-		CModel( std::wstring i_strFilePath );			
+	public:		 
+		/// コンストラクタ											
+		CModel();			
 
 		/// デストラクタ
 		~CModel();
+
+		/**
+			@brief ファイルパスからモデルをロードする
+			@attension i_strFilePathの有効性は呼び出し側が責任をもつこと
+			@param[in] i_strFilePath Xファイルのパス
+		*/
+		HRESULT LoadFromFile( const std::string& i_strFilePath );
 
 		/// リストア
 		HRESULT Restore();

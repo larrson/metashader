@@ -6,7 +6,8 @@
 // Includes ----------------------------------------------------------------------------------
 #include "stdafx.h"
 #include "GlobalFunctions.h"
-#include "System/App.h"
+#include "System/Logic.h"
+#include "Application/PreviewerLogic.h"
 
 // Function Definitions ----------------------------------------------------------------------
 
@@ -14,7 +15,7 @@
 int PreviewerMain(int i_nScreenWidth, int i_nScreenHeight)
 {	
 	// アプリケーションを作成
-	if( opk::CApp::CreateInstance() == false )
+	if( opk::CApp::CreateInstance(new opk::CPreviewerLogic()) == false )
 		return false;	
 
 	// アプリケーションを初期化		

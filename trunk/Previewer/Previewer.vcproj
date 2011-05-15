@@ -180,6 +180,22 @@
 				RelativePath=".\Source\System\App.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\System\Logic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\System\Logic.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\System\Time.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\System\Time.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Application"
@@ -198,6 +214,22 @@
 			</File>
 			<File
 				RelativePath=".\Source\Application\GlobalFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Application\PreviewerLogic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Application\PreviewerLogic.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Application\PreviewerView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Source\Application\PreviewerView.h"
 				>
 			</File>
 		</Filter>

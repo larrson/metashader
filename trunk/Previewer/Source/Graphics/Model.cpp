@@ -12,9 +12,9 @@ namespace opk
 	// Function Definitions ----------------------------------------------------------------------
 
 	//------------------------------------------------------------------------------------------
-	CModel::CModel( std::wstring i_strFilePath )
+	CModel::CModel()
 		: m_pMesh (NULL)
-		, m_strFilePath( i_strFilePath )
+		, m_strFilePath()
 	{}
 
 	//------------------------------------------------------------------------------------------
@@ -25,17 +25,21 @@ namespace opk
 	}
 
 	//------------------------------------------------------------------------------------------
-	HRESULT CModel::Restore()
+	HRESULT CModel::LoadFromFile( const std::string& i_strFilePath )
 	{
 		HRESULT hr;
+
+		// パスを保持
+		m_strFilePath = i_strFilePath;
 
 		// 作成前に破棄
 		Destroy();
 
-		/// 再作成 ///
+		/// 作成 ///
+
 		IDirect3DDevice9* pd3dDevice = CApp::GetInstance()->GetGraphicDevice()->GetD3DDevice();
 
-		V_RETURN( D3DXLoadMeshFromX( m_strFilePath.c_str(), D3DXMESH_MANAGED, pd3dDevice, NULL, NULL, NULL, NULL, &m_pMesh));
+		V_RETURN( D3DXLoadMeshFromXA( m_strFilePath.c_str(), D3DXMESH_MANAGED, pd3dDevice, NULL, NULL, NULL, NULL, &m_pMesh));
 
 		// 法線が無ければ作成
 		if( !(m_pMesh->GetFVF() & D3DFVF_NORMAL ) )
