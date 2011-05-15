@@ -256,6 +256,14 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public abstract string Label
+        {
+            get;
+        }
+
+        /// <summary>
         /// 説明文
         /// </summary>
         public string Description

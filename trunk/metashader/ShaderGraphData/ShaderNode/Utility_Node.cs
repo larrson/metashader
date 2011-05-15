@@ -128,7 +128,15 @@ namespace metashader.ShaderGraphData
                 , GetInputJoint(0).VariableName
                 , GetInputJoint(1).VariableName
                 );        
-        }      
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Append"; }
+        }
         #endregion
 
         #region protected methods

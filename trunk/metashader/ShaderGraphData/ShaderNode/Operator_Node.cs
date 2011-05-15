@@ -29,7 +29,7 @@ namespace metashader.ShaderGraphData
         protected abstract string Operator
         {
             get;
-        }
+        }        
 #endregion
 
 #region public methods
@@ -154,6 +154,14 @@ namespace metashader.ShaderGraphData
         {
             get { return "+"; }
         }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Add"; }
+        }
 #endregion
       
 #region public methods
@@ -204,6 +212,14 @@ namespace metashader.ShaderGraphData
         protected override string Operator
         {
             get { return "-"; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Subtract"; }
         }
 #endregion
 
@@ -259,7 +275,15 @@ namespace metashader.ShaderGraphData
                 Debug.Fail("積算ノードのOpeartorプロパティは使用禁止");
                 return ""; 
             }
-        }       
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Multiply"; }
+        }
 #endregion
 
 #region public methods
@@ -401,6 +425,14 @@ namespace metashader.ShaderGraphData
         protected override string Operator
         {
             get { return "/"; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Divide"; }
         }
         #endregion
 

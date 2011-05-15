@@ -29,6 +29,14 @@ namespace metashader.ShaderGraphData
         {
             get { return "In.Texcoord0"; }
         }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "UV" + Index; }
+        }
         #endregion
 
         #region public methods
@@ -82,6 +90,14 @@ namespace metashader.ShaderGraphData
         public override string VariableName
         {
             get { return "Normal0"; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Normal" + Index; }
         }
         #endregion
 
@@ -152,6 +168,14 @@ namespace metashader.ShaderGraphData
         public override string VariableName
         {
             get { return "In.Position0"; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Position" + Index; }
         }
         #endregion
 

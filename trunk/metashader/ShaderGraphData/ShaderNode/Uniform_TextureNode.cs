@@ -191,6 +191,7 @@ namespace metashader.ShaderGraphData
         {
             get { return m_variableName; }
         }
+
 #endregion
 
 #region override methods        
@@ -270,6 +271,13 @@ namespace metashader.ShaderGraphData
         #endregion
 
         #region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Texture 2D"; }
+        }
         #endregion
 
         #region public methods
@@ -324,6 +332,13 @@ namespace metashader.ShaderGraphData
 #endregion
 
         #region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Texture Cube"; }
+        }
         #endregion
 
         #region public methods
