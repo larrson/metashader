@@ -277,7 +277,7 @@ namespace metashader.GraphEditor
         public void OnNodePropertyChanged(object sender, Event.NodePropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
-            {
+            {                
                 case "Position":
                     Position = (Point)args.NewValue;
                     break;    
@@ -288,6 +288,9 @@ namespace metashader.GraphEditor
                     // throw new NotImplementedException();                  
                     break;
             }
+
+            // 何らかのプロパティが変わったら、ラベルを変更            
+            _nameTextBlock.Text = args.Node.Label;          
 
             // サムネイル側の処理を呼ぶ
             m_thumnailControl.OnNodePropertyChanged(sender, args);

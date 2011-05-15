@@ -38,6 +38,14 @@ namespace metashader.ShaderGraphData
                 return "Uniform_Camera_Position";
             }
         }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Camera Position"; }
+        }
         #endregion
 
         #region public methods
@@ -67,7 +75,7 @@ namespace metashader.ShaderGraphData
             m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];
             m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);
-        }        
+        }       
         #endregion
     }
 
@@ -88,6 +96,16 @@ namespace metashader.ShaderGraphData
             : base( ShaderNodeType.Output_Color, name, pos)
         {
 
+        }
+#endregion
+
+#region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Output Color"; }
         }
 #endregion
 

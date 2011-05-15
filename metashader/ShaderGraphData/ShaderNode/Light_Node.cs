@@ -42,6 +42,14 @@ namespace metashader.ShaderGraphData
         {
             get { return 2; }
         }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Dir Light Dir "+ Index; }
+        }
         #endregion
 
         #region public methods
@@ -127,6 +135,14 @@ namespace metashader.ShaderGraphData
         public override uint MaximumIndex
         {
             get { return 2; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Dir Light Color " + Index; }
         }
         #endregion
 

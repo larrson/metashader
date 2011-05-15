@@ -24,6 +24,16 @@ namespace metashader.ShaderGraphData
         }
 #endregion
 
+#region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Normalize"; }
+        }
+#endregion
+
 #region public methods
         /// <summary>
         /// 入力ジョイントに対応する変数型を取得
@@ -129,6 +139,16 @@ namespace metashader.ShaderGraphData
             : base(ShaderNodeType.Func_Dot, name, pos)
         {
 
+        }
+#endregion
+
+#region propeties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Dot Product"; }
         }
 #endregion
 
@@ -246,6 +266,16 @@ namespace metashader.ShaderGraphData
 
         }
         #endregion
+
+#region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Reflect"; }
+        }
+#endregion
 
         #region public methods
         /// <summary>
@@ -373,6 +403,16 @@ namespace metashader.ShaderGraphData
             : base(ShaderNodeType.Func_Pow, name, pos)
         {
 
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Pow"; }
         }
         #endregion
 
@@ -505,6 +545,16 @@ namespace metashader.ShaderGraphData
             : base(ShaderNodeType.Func_Saturate, name, pos)
         {
 
+        }
+        #endregion
+
+        #region properties
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Saturate"; }
         }
         #endregion
 

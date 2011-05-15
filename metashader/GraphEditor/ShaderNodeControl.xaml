@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <!-- ノード名 -->
             <Border Grid.Row="0" Grid.Column="1" Name="_nameBorder" BorderThickness="1" BorderBrush="Black">                                
-                <TextBlock Name="_nameTextBlock" HorizontalAlignment="Stretch" Text="{Binding Path=Name}" Foreground="White">
+                <TextBlock Name="_nameTextBlock" HorizontalAlignment="Stretch" Text="{Binding Path=Label}" Foreground="White" TextAlignment="Center">
                     <TextBlock.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="DimGray" Offset="-0.2" />

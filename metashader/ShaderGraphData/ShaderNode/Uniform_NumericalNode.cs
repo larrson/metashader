@@ -37,6 +37,14 @@ namespace metashader.ShaderGraphData
             get { return m_value; }
             set { m_value = value; }
         }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "( " + Value.ToString("F") + " )"; }
+        }
         #endregion
 
         #region public methods
@@ -134,6 +142,14 @@ namespace metashader.ShaderGraphData
             {
                 m_values[1] = value;
             }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "( " + X.ToString("F") + ", " + Y.ToString("F") + " )"; }
         }
         #endregion
 
@@ -246,6 +262,14 @@ namespace metashader.ShaderGraphData
             {
                 m_values[2] = value;
             }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "( " + X.ToString("F") + ", " + Y.ToString("F") + ", " + Z.ToString("F") + " )"; }
         }
         #endregion
 
@@ -375,6 +399,14 @@ namespace metashader.ShaderGraphData
             {
                 m_values[3] = value;
             }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "( " + X.ToString("F") + ", " + Y.ToString("F") + ", " + Z.ToString("F") + ", " + W.ToString("F") + " )"; }
         }
         #endregion
 
