@@ -18,6 +18,7 @@
 #include <cmath>
 #include <string>
 #include <map>
+#include <list>
 
 /// 外部ライブラリ ///
 #include <boost\config.hpp>
@@ -31,8 +32,9 @@ using boost::shared_ptr;
 #include <Utility/Utility.h>
 // グラフィックス
 #include <Graphics/graphics.h>
-#include <Graphics/ShaderMan.h>
 // IO
 #include <IO/Mouse.h>
 // システム
 #include <System/App.h>
+#include <System/View.h>
+#include <System/Time.h>

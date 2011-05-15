@@ -70,8 +70,7 @@ namespace metashader.ShaderGraphData
         /// パラメータのPreviewerへの適用
         /// </summary>
         public void ApplyParameter()
-        {
-            // @@@@ previewer側のライトの有効化
+        {            
         }
         #endregion
 
@@ -146,8 +145,7 @@ namespace metashader.ShaderGraphData
         /// パラメータのPreviewerへの適用
         /// </summary>
         public void ApplyParameter()
-        {
-            // @@@@ previewer側のライトの有効化
+        {            
         }
         #endregion
 

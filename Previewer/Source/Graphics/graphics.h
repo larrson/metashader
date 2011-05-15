@@ -13,5 +13,5 @@
 // シェーダーの有効無効フラグ(1なら有効)
 #define USE_SHADER 1
 
-#include "Graphics/GraphicDevice.h"
-#include "Graphics/Model.h"
+#include <Graphics/GraphicDevice.h>
+#include <Graphics/ShaderMan.h>

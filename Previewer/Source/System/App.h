@@ -12,26 +12,28 @@
 // Data Type Definitions ---------------------------------------------------------------------
 namespace opk
 {
+	class CLogicBase;
+	class CTime;
+
 	/**
 		@class CApp
 		@brief アプリケーションクラス
 	*/
 	class CApp
-	{
+	{		
 	private:
 		static CApp*	s_pInstance; ///< シングルトンの唯一のインスタンス	
 
 		char m_appDirectoryPath[MAX_PATH];	///< アプリケーションのディレクトリのパス
 
-		CGraphicDevice*	m_pGraphicDevice; ///< グラフィックデバイス
+		CGraphicDevice*	m_pGraphicDevice;	///< グラフィックデバイス		
 
-		CModel			m_model; ///< モデル @@@削除
-		CCameraController m_cameraController; ///< カメラ		
+		CTime*				m_pTime;				///< タイマー
 		
-
+		CLogicBase*			m_pLogic;				///< アプリケーションロジック				
 	public:		
 		/// インスタンスの作成
-		static bool CreateInstance();
+		static bool CreateInstance( CLogicBase* i_pLogic );
 
 		/// インスタンスの破棄
 		static void DisposeInstance();
@@ -72,6 +74,7 @@ namespace opk
 
 		/**
 			@brief アプリケーションの実行ファイルの置かれているディレクトリのパスを取得する			
+			@note 取得される文字列の最後には、パス区切り文字「\」が付加されている
 		*/
 		const char*	GetApplicationDirectory(){ return m_appDirectoryPath; };
 
@@ -92,5 +95,27 @@ namespace opk
 			@brief アプリケーションディレクトリの初期化
 		*/
 		void InitializeApplicationDirectoryPath();		
+	};
+
+	/**
+		@class ILogic
+		@brief アプリケーションのロジックを記述する基底クラス
+	*/
+	class ILogic
+	{
+	public:
+		/// デストラクタ
+		virtual ~ILogic(){};
+
+		/**
+			@brief Win32のメッセージハンドラ
+		*/
+		virtual LRESULT MsgProc( HWND i_hWnd, int i_nMsg, WPARAM i_wParam, LPARAM i_lParam ) = 0;
+		/// 更新
+		virtual void Update(float i_fTime, float i_fElapsedTime) = 0;
+		/// レンダリング
+		virtual void Render() = 0;
+		/// 初期化
+		virtual void Initialize() = 0;		
 	};
 } // end of namespace opk
