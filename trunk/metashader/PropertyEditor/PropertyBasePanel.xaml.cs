@@ -164,9 +164,13 @@ namespace metashader.PropertyEditor
 
             // 共通項目
             // 題名
-            panel._captionTextBlock.Text = "ノード設定";
-            // 名前            
-            panel.AddParts("ノード名", new Parts.Parts<string>(nodeData, "Name", new Parts.StringTag()));    
+            panel._captionTextBlock.Text = "ノード設定";    
+        
+#if DEBUG // デバッグ用表示
+            // GUID            
+            panel.AddParts("GUID", new Parts.Parts<string>(nodeData, "Name", new Parts.StringTag()));    
+#endif // DEBUG
+
             // 説明文
             panel.AddParts("説明", new Parts.Parts<string>(nodeData, "Description", new Parts.StringTextbox()));
 
