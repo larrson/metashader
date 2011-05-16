@@ -302,12 +302,12 @@ namespace metashader.ShaderGraphData
             // 入力         
             m_inputJointNum = 1;
             m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT2, JointData.SuffixType.None);
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT2, JointData.SuffixType.None, "UV");
 
             // 出力            
             m_outputJointNum = 5;
             m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT4, JointData.SuffixType.None);
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.XYZ);
             m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
             m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
             m_outputJoints[3] = new JointData(this, 3, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Z);
@@ -363,12 +363,12 @@ namespace metashader.ShaderGraphData
             // 入力         
             m_inputJointNum = 1;
             m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT3, JointData.SuffixType.None);
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.FLOAT3, JointData.SuffixType.None, "UVW");
 
             // 出力            
             m_outputJointNum = 5;
             m_outputJoints = new JointData[m_outputJointNum];
-            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT4, JointData.SuffixType.None);
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.XYZ);
             m_outputJoints[1] = new JointData(this, 1, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.X);
             m_outputJoints[2] = new JointData(this, 2, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Y);
             m_outputJoints[3] = new JointData(this, 3, JointData.Side.Out, VariableType.FLOAT, JointData.SuffixType.Z);

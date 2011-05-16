@@ -68,25 +68,7 @@ namespace metashader.ShaderGraphData
             // デフォルトは、入力ジョイントの型＝出力ジョイントの型とみなす            
 
             return GetInputJointVariableType(0);
-        }
-
-        /// <summary>
-        /// 入力ジョイントのラベルを取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override string GetInputJointLabel(int index)
-        {
-            switch( index )
-            {
-                case 0:
-                    return "L";
-                case 1:
-                    return "R";
-                default:
-                    throw new ArgumentException("index");                   
-            }
-        }
+        }        
 
          /// <summary>
         /// ストリームへシェーダの本文を書きこむ
@@ -122,8 +104,8 @@ namespace metashader.ShaderGraphData
             // 入力         
             m_inputJointNum = 2;
             m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
-            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "L");
+            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "R");
             // 出力            
             m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];

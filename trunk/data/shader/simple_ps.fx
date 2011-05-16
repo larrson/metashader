@@ -2,7 +2,6 @@
 
 // include headers
 
-
 // uniform definitions
 
 
@@ -19,5 +18,5 @@ float4 ps_main
 ) : COLOR0
 {
    // body of pixel shader   
-   return float4(0.0f, 0.0f, 0.0f, 1.0f);
+   return float4(0.0f, 0.0f, 0.0f, 1.0f);   
 }

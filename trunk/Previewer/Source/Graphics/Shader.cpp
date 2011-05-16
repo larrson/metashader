@@ -4,15 +4,83 @@
 */
 // Includes ----------------------------------------------------------------------------------
 #include "stdafx.h"
+#include "shlwapi.h" // パス用
 #include "Graphics/ShaderMan.h"
 #include "Graphics/Shader.h"
 #include "Graphics/ShaderParameter.h"
 
-// Global Variable Definitions ---------------------------------------------------------------	
 namespace opk
 {
 	namespace shader
-	{
+	{	
+		// Data Type Definitions ---------------------------------------------------------------------
+		namespace
+		{
+			/** 
+				@brief インクルードファイルの
+			*/			
+			class FileD3DXInclude : public ID3DXInclude
+			{
+			public:
+				/// インクルードファイルのOpen時のコールバック				
+				virtual COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE Open(
+					D3DXINCLUDE_TYPE IncludeType,	///< ファイルの場所
+					LPCSTR pFileName,				///< ファイルパス
+					LPCVOID pParentData,			///< ファイルを格納しているコンテナへのポインタ
+					LPCVOID * ppData,				///< 取得バッファへのポインタ
+					UINT * pBytes					///< ppDataで返すバッファのサイズ
+					)			
+				{					
+					char path[MAX_PATH];
+					// ファイル名を絶対パスへ変換
+					if( ::PathIsRelativeA( pFileName ) )
+					{
+						sprintf_s( path, MAX_PATH, "%s..\\..\\data\\shader\\%s", CApp::GetInstance()->GetApplicationDirectory(), pFileName);						
+					}	
+					// 絶対パスならそのまま使用
+					else
+					{
+						sprintf_s( path, MAX_PATH, "%s", pFileName );
+					}
+
+
+					// ファイルを開く
+					HANDLE handle = ::CreateFileA( path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL  );
+
+					// サイズ分のバッファを確保
+					DWORD dwFileSize = ::GetFileSize( handle, NULL );
+					LPVOID pBuffer  = new byte[dwFileSize];
+
+					// ファイルロード
+					DWORD dwLoaded;
+					::ReadFile( handle, pBuffer, dwFileSize, &dwLoaded, NULL );
+					MY_ASSERT( dwFileSize == dwLoaded );
+
+					// ファイルを閉じる
+					::CloseHandle( handle );
+
+					// バッファを返す
+					*ppData = pBuffer;
+
+					return S_OK;
+				}
+
+				/// インクルードファイルのClose時のコールバック
+				virtual COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE Close(
+						LPCVOID pData		///< OpenコールバックでppDataに格納したポインタ
+					)
+				{
+					// 格納したバッファを削除
+					SAFE_DELETE( pData );
+
+					return S_OK;
+				}
+			};
+		} // end of nameless namespace 
+
+		// Global Variable Definitions ---------------------------------------------------------------	
+		FileD3DXInclude g_d3dxInclude;
+
 		// Function Definitions ----------------------------------------------------------------------
 
 		//------------------------------------------------------------------------------------------
@@ -85,7 +153,7 @@ namespace opk
 				// コンパイル
 				LPCSTR pProfile = D3DXGetVertexShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
-				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, NULL, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
+				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
@@ -101,7 +169,7 @@ namespace opk
 				LPCSTR pProfile = D3DXGetPixelShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
 
-				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, NULL, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
+				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
@@ -178,7 +246,8 @@ namespace opk
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
-				hr = pD3DDevice->CreateVertexShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pVertex );
+				if( SUCCEEDED(hr) )
+					hr = pD3DDevice->CreateVertexShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pVertex );
 			}
 			// ピクセルシェーダ
 			else if( m_nProfile == Profile_Pixel )
@@ -190,7 +259,8 @@ namespace opk
 				MY_ASSERT( SUCCEEDED(hr) );				
 
 				// 作成
-				hr = pD3DDevice->CreatePixelShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pPixel );
+				if( SUCCEEDED(hr) )
+					hr = pD3DDevice->CreatePixelShader( (const DWORD*)pShaderBuffer->GetBufferPointer(), &m_d3dShader.pPixel );
 			}
 			// 未定義
 			else

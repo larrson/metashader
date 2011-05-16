@@ -311,25 +311,7 @@ namespace metashader.ShaderGraphData
         {
             // 出力型は入力ベクトル型
             return GetInputJointVariableType(0);
-        }
-
-        /// <summary>
-        /// 入力ジョイントのラベルを取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override string GetInputJointLabel(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return "in";
-                case 1:
-                    return "normal";
-                default:
-                    throw new ArgumentException("index");
-            }
-        }
+        }        
 
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
@@ -385,8 +367,8 @@ namespace metashader.ShaderGraphData
             // 入力         
             m_inputJointNum = 2;
             m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
-            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "In");
+            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "Normal");
             // 出力            
             m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];
@@ -450,25 +432,7 @@ namespace metashader.ShaderGraphData
         {
             // 出力型は入力ベクトル型
             return GetInputJointVariableType(0);
-        }
-
-        /// <summary>
-        /// 入力ジョイントのラベルを取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public override string GetInputJointLabel(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return "base";
-                case 1:
-                    return "exp";
-                default:
-                    throw new ArgumentException("index");
-            }
-        }
+        }        
 
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
@@ -524,8 +488,8 @@ namespace metashader.ShaderGraphData
             // 入力         
             m_inputJointNum = 2;
             m_inputJoints = new JointData[m_inputJointNum];
-            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
-            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None);
+            m_inputJoints[0] = new JointData(this, 0, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "Base");
+            m_inputJoints[1] = new JointData(this, 1, JointData.Side.In, VariableType.DEPENDENT, JointData.SuffixType.None, "Exp");
             // 出力            
             m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];
