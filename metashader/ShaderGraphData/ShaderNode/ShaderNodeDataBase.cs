@@ -45,6 +45,7 @@ namespace metashader.ShaderGraphData
         Utility_Append,         // ベクトル合成
 
         Output_Color,   // 出力色        
+        Output_Material, // 汎用出力
         Max, // 最大数
     };
 
@@ -91,7 +92,8 @@ namespace metashader.ShaderGraphData
 
                 case ShaderNodeType.Utility_Append: return "Utility_Append";
 
-                case ShaderNodeType.Output_Color: return "Output_Color";                
+                case ShaderNodeType.Output_Color: return "Output_Color";
+                case ShaderNodeType.Output_Material: return "Output_Material";
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
@@ -135,7 +137,8 @@ namespace metashader.ShaderGraphData
 
                 case ShaderNodeType.Utility_Append: return uint.MaxValue;
 
-                case ShaderNodeType.Output_Color: return 1;               
+                case ShaderNodeType.Output_Color: return 1;
+                case ShaderNodeType.Output_Material: return 1;
                 default: throw new ArgumentOutOfRangeException("e");
             }
         }
@@ -167,7 +170,7 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public static bool IsOutputNode(this ShaderNodeType e)
         {            
-            return ShaderNodeType.Output_Color == e;
+            return ShaderNodeType.Output_Color <= e && e <= ShaderNodeType.Output_Material;
         }
     }
 #endregion       
@@ -346,6 +349,16 @@ namespace metashader.ShaderGraphData
         }        
 
         /// <summary>
+        /// 入力ジョイントのラベルを取得する
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public string GetInputJointLabel( int index )
+        {
+            return GetInputJoint(index).Label;
+        }
+
+        /// <summary>
         /// 入力ジョイントに対応する変数型を取得
         /// </summary>
         /// <param name="index"></param>
@@ -381,17 +394,7 @@ namespace metashader.ShaderGraphData
             }
 
             return m_outputJoints[index].DefaultVariableType;
-        }
-
-        /// <summary>
-        /// 入力ジョイントのラベルを取得する
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public virtual string GetInputJointLabel( int index )
-        {
-            return "";
-        }
+        }        
 
         /// <summary>
         /// 有効なノードか判定する

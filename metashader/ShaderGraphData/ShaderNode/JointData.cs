@@ -146,8 +146,9 @@ namespace metashader.ShaderGraphData
             X,    // ".x"
             Y,    // ".y"
             Z,    // ".z"
-            W     // ".w"
-        }
+            W,     // ".w"
+            XYZ,   // ".xyz"
+        }        
 
         /// <summary>
         /// ジョイントの種類
@@ -188,9 +189,24 @@ namespace metashader.ShaderGraphData
         /// 変数につくサフィックスの種類
         /// </summary>
         SuffixType m_suffixType;
+
+        /// <summary>
+        /// ラベル
+        /// </summary>
+        string m_label;
         #endregion
 
         #region constructors
+        /// <summary>
+        /// コンストラクタ
+        /// ラベル無しバージョン
+        /// </summary>
+        /// <param name="parentNode">ジョイントが付いているノード</param>
+        /// <param name="jointIndex">ノード内のジョイントのインデックス</param>
+        /// <param name="side">入力用ジョイント（左側）or 出力用ジョイント（右側）</param>
+        /// <param name="variableType">変数の型</param>
+        /// <param name="suffixType">シェーダコード生成時のサフィックスの型</param>
+        /// <param name="label">UI表示用のラベル</param>
         public JointData(ShaderNodeDataBase parentNode, int jointIndex, Side side, VariableType variableType, SuffixType suffixType)
         {
             m_parentNode = parentNode;
@@ -198,6 +214,27 @@ namespace metashader.ShaderGraphData
             m_side = side;
             m_defaultVariableType = variableType;
             m_suffixType = suffixType;
+            m_label = "";
+        }
+
+        /// <summary>
+        /// コンストラクタ
+        /// ラベル有りバージョン
+        /// </summary>
+        /// <param name="parentNode">ジョイントが付いているノード</param>
+        /// <param name="jointIndex">ノード内のジョイントのインデックス</param>
+        /// <param name="side">入力用ジョイント（左側）or 出力用ジョイント（右側）</param>
+        /// <param name="variableType">変数の型</param>
+        /// <param name="suffixType">シェーダコード生成時のサフィックスの型</param>
+        /// <param name="label">UI表示用のラベル</param>
+        public JointData(ShaderNodeDataBase parentNode, int jointIndex, Side side, VariableType variableType, SuffixType suffixType, string label)
+        {
+            m_parentNode = parentNode;
+            m_jointIndex = jointIndex;
+            m_side = side;
+            m_defaultVariableType = variableType;
+            m_suffixType = suffixType;
+            m_label = label;
         }
         #endregion
 
@@ -254,16 +291,8 @@ namespace metashader.ShaderGraphData
                 }
                 else if (SideType == Side.Out)
                 {
-                    // 出力に関しては、自身のノード名＋サフィックス
-                    string[] suffixTable =
-                    {
-                        "", // 変数全体はサフィックス必要なし
-                        ".x",
-                        ".y",
-                        ".z",
-                        ".w",
-                    };
-                    return ParentNode.VariableName + suffixTable[(int)m_suffixType];
+                    // 出力に関しては、自身のノード名＋サフィックス                   
+                    return ParentNode.VariableName + m_suffixType.ToStringExt();
                 }
                 else
                 {
@@ -278,6 +307,14 @@ namespace metashader.ShaderGraphData
         public SuffixType Suffix
         {
             get { return m_suffixType; }
+        }
+
+        /// <summary>
+        /// UI表示用のラベル
+        /// </summary>
+        public string Label
+        {
+            get { return m_label; }
         }
         #endregion
 
@@ -342,5 +379,30 @@ namespace metashader.ShaderGraphData
 
         #region private method        
         #endregion
+    }
+
+    /// <summary>
+    /// JointData.SuffixTypeを拡張するクラス
+    /// </summary>
+    public static class SuffixTypeExt
+    {
+        /// <summary>
+        /// 文字列化
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static string ToStringExt(this JointData.SuffixType e)
+        {
+            switch (e)
+            {
+                case JointData.SuffixType.None: return "";
+                case JointData.SuffixType.X: return ".x";
+                case JointData.SuffixType.Y: return ".y";
+                case JointData.SuffixType.Z: return ".z";
+                case JointData.SuffixType.W: return ".w";
+                case JointData.SuffixType.XYZ: return ".xyz";
+                default: throw new ArgumentOutOfRangeException("e");
+            }
+        }
     }
 }

@@ -163,6 +163,9 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Output_Color:
                     ret = new Output_ColorNode(name, pos);
                     break;                                    
+                case ShaderNodeType.Output_Material:
+                    ret = new Output_MaterialNode(name, pos);
+                    break;
                 default:
                     throw new ArgumentException("適合するタイプのコンストラクタが有りません", type.ToStringExt());
             }

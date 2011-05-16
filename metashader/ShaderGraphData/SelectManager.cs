@@ -209,7 +209,11 @@ namespace metashader.ShaderGraphData
                     unselectedNodes.Add(itr);
                 }  
                 // このノードの選択を追加
-                selectedNodes.Add(node);                
+                // ただし、出力ノードは選択不可
+                if( node.Type.IsOutputNode() == false )
+                {
+                    selectedNodes.Add(node);                
+                }                
             }
             // リンクの全選択解除
             foreach( LinkData itr in m_shaderLinks)

@@ -70,11 +70,12 @@ namespace metashader.GraphEditor
             // サフィックスに合わせて色変更
             SolidColorBrush[] brushes =
             {
-                Brushes.Black,
-                Brushes.Red,
-                Brushes.Green,
-                Brushes.Blue,
-                Brushes.White,
+                Brushes.Black,  // None
+                Brushes.Red,    // .x
+                Brushes.Green,  // .y
+                Brushes.Blue,   // .z
+                Brushes.White,  // .w
+                Brushes.Black,  // .xyz
             };
             _thumb.Background = brushes[(int)jointData.Suffix];
 
