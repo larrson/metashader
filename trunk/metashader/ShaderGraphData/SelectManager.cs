@@ -247,8 +247,7 @@ namespace metashader.ShaderGraphData
 
             // 選択追加
             m_shaderLinks.Add(link);
-
-            //@@ 必要ならイベント処理            
+            
             List<ShaderNodeDataBase> unselectedNodes = new List<ShaderNodeDataBase>();
             List<LinkData> selectedLinks = new List<LinkData>();
             List<LinkData> unselectedLinks = new List<LinkData>();

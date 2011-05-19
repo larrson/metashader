@@ -17,5 +17,11 @@
     <Setting Name="ConsoleWindowRect" Type="System.Windows.Rect" Scope="User">
       <Value Profile="(Default)">0,400,600,400</Value>
     </Setting>
+    <Setting Name="Default2DTexturePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\..\..\data\texture\ichimatsu.png</Value>
+    </Setting>
+    <Setting Name="DefaultCubeTexturePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\..\..\data\texture\rgb_cube.dds</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

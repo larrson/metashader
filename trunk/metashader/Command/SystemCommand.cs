@@ -103,7 +103,7 @@ namespace metashader.Command
            // ファイル保存ダイアログ
            SaveFileDialog dlg = new SaveFileDialog();
            // デフォルトファイル名
-           dlg.FileName = "新規メタシェーダ";
+           dlg.FileName = App.CurrentApp.FileSettings.CurrentFileName;
            // フィルター
             dlg.Filter = "Metashader Files (*.msh)|*.msh";
            // 拡張子が省略された際に不可

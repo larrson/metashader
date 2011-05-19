@@ -140,6 +140,7 @@ namespace metashader
                 // ファイル設定の保存
                 {
                     // 作業フォルダを設定する
+                    m_fileSettings.CurrentFilePath = path;
                     m_fileSettings.OldWorkFolderPath = Path.GetDirectoryName(path);
                     formatter.Serialize(fs, m_fileSettings);
                 }

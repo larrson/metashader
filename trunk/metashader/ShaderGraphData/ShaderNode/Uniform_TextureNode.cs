@@ -265,8 +265,8 @@ namespace metashader.ShaderGraphData
         public Uniform_Texture2DNode(string name, Point pos)
             : base( ShaderNodeType.Uniform_Texture2D, name, pos )
         {
-            // デフォルトのテクスチャパスを設定 @@ アプリケーション設定へ
-            Path = Setting.FileSettings.ApplicationFolderPath + @"\..\..\data\texture\ichimatsu.png";
+            // デフォルトのテクスチャパスを設定
+            Path = Setting.FileSettings.ApplicationFolderPath + Properties.Settings.Default.Default2DTexturePath;
         }
         #endregion
 
@@ -326,8 +326,8 @@ namespace metashader.ShaderGraphData
         public Uniform_TextureCubeNode(string name, Point pos)
             : base( ShaderNodeType.Uniform_TextureCube, name, pos )
         {
-            // デフォルトのテクスチャパスを設定 @@ アプリケーション設定へ
-            Path = Setting.FileSettings.ApplicationFolderPath + @"\..\..\data\texture\rgb_cube.dds";
+            // デフォルトのテクスチャパスを設定
+            Path = Setting.FileSettings.ApplicationFolderPath + Properties.Settings.Default.DefaultCubeTexturePath;
         }
 #endregion
 
