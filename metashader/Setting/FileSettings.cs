@@ -14,6 +14,8 @@ namespace metashader.Setting
     public class FileSettings
     {
 #region variables
+        static readonly string c_defaultFileName = "新規メタシェーダ.msh";
+
         /// <summary>
         /// 新しい作業フォルダのパス
         /// </summary>
@@ -46,7 +48,7 @@ namespace metashader.Setting
         public string OldWorkFolderPath
         {
             set { m_oldWorkFolderPath = value; }
-        }
+        }        
 
         /// <summary>
         /// 新しい作業フォルダ
@@ -75,6 +77,22 @@ namespace metashader.Setting
                 NewWorkFolderPath = Path.GetDirectoryName(m_currentFilePath);
             }
         }        
+
+        /// <summary>
+        /// 現在のファイル名（親フォルダまでのパスを含まない）
+        /// </summary>
+        public string CurrentFileName
+        {
+            get 
+            {
+                string fileName = Path.GetFileName(m_currentFilePath);
+                if( fileName == "" )
+                {
+                    fileName = c_defaultFileName;
+                }
+                return fileName;
+            }
+        }
         #endregion
 
         #region public methods 

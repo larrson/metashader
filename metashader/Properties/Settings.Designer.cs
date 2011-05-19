@@ -82,5 +82,23 @@ namespace metashader.Properties {
                 this["ConsoleWindowRect"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\..\\..\\data\\texture\\ichimatsu.png")]
+        public string Default2DTexturePath {
+            get {
+                return ((string)(this["Default2DTexturePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\..\\..\\data\\texture\\rgb_cube.dds")]
+        public string DefaultCubeTexturePath {
+            get {
+                return ((string)(this["DefaultCubeTexturePath"]));
+            }
+        }
     }
 }

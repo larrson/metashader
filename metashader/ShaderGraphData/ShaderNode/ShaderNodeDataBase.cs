@@ -128,10 +128,10 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Func_Pow: return uint.MaxValue;
                 case ShaderNodeType.Func_Saturate: return uint.MaxValue;
 
-                case ShaderNodeType.Light_DirLightDir: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
-                case ShaderNodeType.Light_DirLightColor: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
+                case ShaderNodeType.Light_DirLightDir: return uint.MaxValue;
+                case ShaderNodeType.Light_DirLightColor: return uint.MaxValue;
 
-                case ShaderNodeType.Camera_Position: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
+                case ShaderNodeType.Camera_Position: return uint.MaxValue;
 
                 case ShaderNodeType.Utility_Append: return uint.MaxValue;
                 

@@ -17,7 +17,7 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public abstract class CommonCodeGeneratorBase
     {
-#region variables
+        #region variables
         /// <summary>
         /// マクロの唯一性を保証する連想コンテナ
         /// </summary>
@@ -36,8 +36,8 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// 入力変数の唯一性を保証する連想コンテナ
         /// </summary>
-        protected HashSet<string> m_inputSet = new HashSet<string>();    
-#endregion        
+        protected HashSet<string> m_inputSet = new HashSet<string>();
+        #endregion
 
         #region protected Methods
         /// <summary>
@@ -68,7 +68,7 @@ namespace metashader.ShaderGraphData
         {
             m_uniformSet.Add(uniform + "\r\n");
         }
-        
+
         /// <summary>
         /// 入力属性の追加        
         /// @@ 共通の文字列変換関数を作成すべき。セマンティックの種類とインデックスから生成するように。
@@ -86,12 +86,12 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public abstract class ShaderCodeGeneratorBase : CommonCodeGeneratorBase
     {
-#region variables
+        #region variables
         /// <summary>
         /// 生成対象のグラフ
         /// </summary>
-        protected ShaderGraphData m_graphData;        
-    
+        protected ShaderGraphData m_graphData;
+
         /// <summary>
         /// ジョイントごとのコード生成
         /// </summary>
@@ -101,17 +101,17 @@ namespace metashader.ShaderGraphData
         /// シェーダコードを保持するメモリーストリーム
         /// </summary>
         MemoryStream m_memoryStream = new MemoryStream();
-#endregion
+        #endregion
 
-#region constructors
-        public ShaderCodeGeneratorBase( ShaderGraphData graphData )
+        #region constructors
+        public ShaderCodeGeneratorBase(ShaderGraphData graphData)
         {
             // メンバ変数の初期化
             m_graphData = graphData;
         }
-#endregion
+        #endregion
 
-#region properties
+        #region properties
         /// <summary>
         /// シェーダのテンプレートファイルのパス
         /// </summary>
@@ -119,9 +119,9 @@ namespace metashader.ShaderGraphData
         {
             get;
         }
-#endregion
+        #endregion
 
-#region public methods
+        #region public methods
         /// <summary>
         /// シェーダコードをファイルへ書きだす
         /// </summary>
@@ -145,10 +145,10 @@ namespace metashader.ShaderGraphData
             Generate();
 
             return m_memoryStream.GetBuffer();
-        }        
-#endregion
+        }
+        #endregion
 
-#region private methods        
+        #region private methods
         /// <summary>
         /// メモリーストリームへシェーダコードを作成する
         /// </summary>
@@ -158,15 +158,15 @@ namespace metashader.ShaderGraphData
             ShaderNodeDataBase outputNode = m_graphData.OutputNode;
 
             // 出力ノードの入力ジョイントごとにコードを生成            
-            for(int i = 0; i < outputNode.InputJointNum; ++i)
-            {                
+            for (int i = 0; i < outputNode.InputJointNum; ++i)
+            {
                 CoCodeGenerator cogenerator = new CoCodeGenerator(outputNode.GetInputJoint(i));
                 cogenerator.Generate();
                 m_cogeneratorDict.Add(outputNode.GetInputJointLabel(i), cogenerator);
             }
 
             // ジョイントごとの変数宣言コードをマージ
-            foreach ( CoCodeGenerator cogenerator in  m_cogeneratorDict.Values )
+            foreach (CoCodeGenerator cogenerator in m_cogeneratorDict.Values)
             {
                 // Macro
                 m_macroSet.UnionWith(cogenerator.MacroSet);
@@ -176,8 +176,8 @@ namespace metashader.ShaderGraphData
                 m_uniformSet.UnionWith(cogenerator.UniformSet);
                 // Input
                 m_inputSet.UnionWith(cogenerator.InputSet);
-            }  
-          
+            }
+
             // テンプレートコードの各箇所を置換
             /// テンプレート内の置き換えマーカに合わせて
             /// 生成した文字列で置き換える
@@ -197,48 +197,48 @@ namespace metashader.ShaderGraphData
                     {
                         string line = templateStream.ReadLine();
                         string replace = "";
-                        
+
                         // 置換対象文字か判定
                         Match match = replaceRegex.Match(line);
-                        if( match.Success )
+                        if (match.Success)
                         {
                             string replaceWord = match.Result("$1");
 
                             // 置換
-                            switch( replaceWord )
+                            switch (replaceWord)
                             {
-                            case "HEADER":
-                                replace = GetShaderHeaderString();
-                                break;
-                            case "MACROS":
-                                replace = GetShaderMacroString();
-                                break;
-                            case "INCLUDES":
-                                replace = GetShaderIncludeString();
-                                break;                                    
-                            case "UNIFORMS":
-                                replace = GetShaderUniformString();
-                                break;
-                            case "PS_INPUT":
-                                replace = GetShaderInputString();
-                                break;                            
-                            default:
+                                case "HEADER":
+                                    replace = GetShaderHeaderString();
+                                    break;
+                                case "MACROS":
+                                    replace = GetShaderMacroString();
+                                    break;
+                                case "INCLUDES":
+                                    replace = GetShaderIncludeString();
+                                    break;
+                                case "UNIFORMS":
+                                    replace = GetShaderUniformString();
+                                    break;
+                                case "PS_INPUT":
+                                    replace = GetShaderInputString();
+                                    break;
+                                default:
                                     // 入力ジョイントに基づく置き換え処理
-                                {
-                                    CoCodeGenerator cogenerator = m_cogeneratorDict[replaceWord];
-                                    if( cogenerator.ContainCode )
                                     {
-                                        replace = cogenerator.MainCode;
+                                        CoCodeGenerator cogenerator = m_cogeneratorDict[replaceWord];
+                                        if (cogenerator.ContainCode)
+                                        {
+                                            replace = cogenerator.MainCode;
+                                        }
                                     }
-                                }
-                                break;
+                                    break;
                             }
                         }
                         // 置換対象でなければそのまま出力
                         else
                         {
                             replace = line;
-                        }                        
+                        }
 
                         outputStream.WriteLine(replace);
                     }
@@ -290,7 +290,7 @@ namespace metashader.ShaderGraphData
             }
 
             return stream.ToString();
-        }        
+        }
 
         /// <summary>
         /// シェーダのUniform宣言文字列を取得する
@@ -298,7 +298,7 @@ namespace metashader.ShaderGraphData
         private string GetShaderUniformString()
         {
             StringWriter stream = new StringWriter();
-            foreach( string str in m_uniformSet )
+            foreach (string str in m_uniformSet)
             {
                 stream.Write(str);
             }
@@ -319,15 +319,15 @@ namespace metashader.ShaderGraphData
 
             return stream.ToString();
         }
-#endregion
+        #endregion
     }
-    
+
     /// <summary>
     /// 出力ノードのジョイントに関連するコードを出力するクラス
     /// </summary>
     public class CoCodeGenerator : CommonCodeGeneratorBase
     {
-#region variables
+        #region variables
         /// <summary>
         /// 最終入力ジョイント
         /// </summary>
@@ -337,26 +337,26 @@ namespace metashader.ShaderGraphData
         /// 有効なノードのキュー
         /// ノードが依存性の低い順に並ぶ（入力変数が最も最初となる）
         /// </summary>
-        List<ShaderNodeDataBase> m_validNodeQue = new List<ShaderNodeDataBase>();        
+        List<ShaderNodeDataBase> m_validNodeQue = new List<ShaderNodeDataBase>();
 
         /// <summary>
         /// 変数宣言を除く、メインの手続きコードを記述するライター
         /// </summary>
         StringWriter m_mainCodeWriter = new StringWriter();
-#endregion
+        #endregion
 
-#region constructors
+        #region constructors
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="joint"></param>
-        public CoCodeGenerator( JointData joint )
+        public CoCodeGenerator(JointData joint)
         {
             m_joint = joint;
         }
-#endregion
+        #endregion
 
-#region properties
+        #region properties
         /// <summary>
         /// コードを含んでいるか
         /// </summary>
@@ -405,15 +405,15 @@ namespace metashader.ShaderGraphData
         {
             get { return m_mainCodeWriter.ToString(); }
         }
-#endregion
+        #endregion
 
-#region public methods
+        #region public methods
         /// <summary>
         /// コードを生成
         /// </summary>
         public void Generate()
-        {         
-            if( ContainCode == false )
+        {
+            if (ContainCode == false)
                 return;
 
             // 最終出力ジョイントに接続されている最終ノード
@@ -423,11 +423,11 @@ namespace metashader.ShaderGraphData
             AddMacro("FUNC_" + m_joint.Label);
 
             // ノードをたどって依存関係に合わせて並び替える
-            SortNodes( finalNode );
+            SortNodes(finalNode);
 
             // コードを生成
-            foreach( ShaderNodeDataBase node in m_validNodeQue )
-            {                
+            foreach (ShaderNodeDataBase node in m_validNodeQue)
+            {
                 // Uniform
                 {
                     StringWriter writer = new StringWriter();
@@ -435,16 +435,16 @@ namespace metashader.ShaderGraphData
                     string code = writer.ToString();
 
                     // 長さがある場合のみ書き込み
-                    if( code.Length > 0 )
+                    if (code.Length > 0)
                     {
                         // 書き込み済みならスキップ
                         if (m_uniformSet.Contains(code))
-                            continue;              
-                        
+                            continue;
+
                         // 書き込み
                         m_uniformSet.Add(code);
-                    }                                        
-                }                
+                    }
+                }
 
                 // Input(入力属性）
                 {
@@ -461,7 +461,7 @@ namespace metashader.ShaderGraphData
 
                         // 書き込み
                         m_inputSet.Add(code);
-                    }       
+                    }
                 }
 
                 // Macro
@@ -475,11 +475,11 @@ namespace metashader.ShaderGraphData
                     {
                         // 書き込み済みなら書き込まないが、
                         // スキップはしない
-                        if (m_macroSet.Contains(code) == false )                            
+                        if (m_macroSet.Contains(code) == false)
                         {
                             // 書き込み
                             m_macroSet.Add(code);
-                        }                        
+                        }
                     }
                 }
 
@@ -492,60 +492,60 @@ namespace metashader.ShaderGraphData
             // メインコードの最後のreturn用変数への代入
             m_mainCodeWriter.WriteLine("\tret = {0};\r\n", m_joint.VariableName);
         }
-#endregion
+        #endregion
 
-#region private methods
+        #region private methods
         /// <summary>
         /// ノードを依存関係に合わせて並び替え
         /// </summary>
-        private void SortNodes( ShaderNodeDataBase finalNode )
-        {                        
+        private void SortNodes(ShaderNodeDataBase finalNode)
+        {
             // 最終ノードが依存するノードを抽出
             List<ShaderNodeDataBase> nodeList = ExtractNodes(finalNode);
 
             // ノードを依存する順序に従って並び替え
-            SortByDependency( nodeList );            
+            SortByDependency(nodeList);
         }
 
         /// <summary>
         /// 最終出力ノードに関連するノード
         /// </summary>
-        private List<ShaderNodeDataBase> ExtractNodes( ShaderNodeDataBase finalNode )
+        private List<ShaderNodeDataBase> ExtractNodes(ShaderNodeDataBase finalNode)
         {
             // 上記ノードが依存している全てのノードをさかのぼって列挙する
             Stack<ShaderNodeDataBase> stack = new Stack<ShaderNodeDataBase>();
-            stack.Push( finalNode );
+            stack.Push(finalNode);
             Dictionary<int, ShaderNodeDataBase> nodeMap = new Dictionary<int, ShaderNodeDataBase>(); // すでに格納したか判定するためのもの
-            while( stack.Count > 0 )
+            while (stack.Count > 0)
             {
                 ShaderNodeDataBase node = stack.Pop();
 
                 // すでに格納済みなら次のノードへ
-                if( nodeMap.ContainsKey(node.GetHashCode()) )    
+                if (nodeMap.ContainsKey(node.GetHashCode()))
                 {
                     continue;
                 }
 
                 // 未格納なのでMapへ格納
-                nodeMap.Add( node.GetHashCode(), node );
+                nodeMap.Add(node.GetHashCode(), node);
 
                 // ノードに接続されている入力ノードをスタックへ積む
-                for( int i = 0; i < node.InputJointNum; ++ i )
+                for (int i = 0; i < node.InputJointNum; ++i)
                 {
                     JointData inputJoint = node.GetInputJoint(i);
                     ShaderNodeDataBase outputNode = inputJoint.JointList.First.Value.ParentNode;
-                    stack.Push( outputNode );
-                }               
+                    stack.Push(outputNode);
+                }
             }
 
-            return new List<ShaderNodeDataBase>( nodeMap.Values );
+            return new List<ShaderNodeDataBase>(nodeMap.Values);
         }
 
         /// <summary>
         /// 依存度に応じてソートする
         /// </summary>
         /// <param name="nodeList"></param>
-        private void SortByDependency( List<ShaderNodeDataBase> nodeList )
+        private void SortByDependency(List<ShaderNodeDataBase> nodeList)
         {
             // 依存性カウンタ
             // 各ノード毎の入力リンク数を保存する
@@ -600,7 +600,7 @@ namespace metashader.ShaderGraphData
                 nodeList.Remove(removedNode);
             }
         }
-#endregion
+        #endregion
     };
 
     /// <summary>
@@ -608,13 +608,13 @@ namespace metashader.ShaderGraphData
     /// </summary>
     public class MaterialShaderGenerator : ShaderCodeGeneratorBase
     {
-#region variables
+        #region variables
         Setting.MaterialType m_materialType;
-#endregion
+        #endregion
 
-#region constructors
+        #region constructors
         public MaterialShaderGenerator(Setting.MaterialType materialType, ShaderGraphData graph)
-            : base( graph )
+            : base(graph)
         {
             m_materialType = materialType;
 
@@ -622,23 +622,23 @@ namespace metashader.ShaderGraphData
             InitializeMacros();
 
             // インクルードファイルの初期化
-            InitializeIncludeFiles();            
+            InitializeIncludeFiles();
 
             // Uniformの初期化
             InitializeUniforms();
-            
+
             // 入力属性の初期化
             InitializeInputAttributes();
         }
-#endregion
+        #endregion
 
-#region properties
+        #region properties
         /// <summary>
         /// テンプレートファイルを取得する
         /// </summary>
         protected override string TemplateFilePath
         {
-            get 
+            get
             {
                 string[] filePathTable = 
                 {
@@ -647,10 +647,10 @@ namespace metashader.ShaderGraphData
                 };
                 return filePathTable[(int)m_materialType];
             }
-        }       
-#endregion
+        }
+        #endregion
 
-#region private methods
+        #region private methods
         /// <summary>
         /// マクロの初期化
         /// </summary>
@@ -662,12 +662,12 @@ namespace metashader.ShaderGraphData
                     // フォン用に方向ライト数を指定
                     AddMacro("DIR_LIGHT_NUM 3");
                     break;
-                case Setting.MaterialType.Custom:                    
+                case Setting.MaterialType.Custom:
                     break;
                 default:
                     throw new NotImplementedException();
             }
-        }        
+        }
 
         /// <summary>
         /// インクルードファイルの初期化
@@ -684,7 +684,7 @@ namespace metashader.ShaderGraphData
                     // カスタムは特にマテリアル必須のインクルードはない                   
                     break;
                 default:
-                    throw new NotImplementedException();                    
+                    throw new NotImplementedException();
             }
         }
 
@@ -693,7 +693,7 @@ namespace metashader.ShaderGraphData
         /// </summary>         
         private void InitializeUniforms()
         {
-            switch(m_materialType)
+            switch (m_materialType)
             {
                 case Setting.MaterialType.Phong:
                     // フォン用に方向ライトを追加
@@ -703,7 +703,7 @@ namespace metashader.ShaderGraphData
                 case Setting.MaterialType.Custom:
                     break;
                 default:
-                    throw new NotImplementedException();                    
+                    throw new NotImplementedException();
             }
         }
 
@@ -712,7 +712,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         private void InitializeInputAttributes()
         {
-            switch(m_materialType)
+            switch (m_materialType)
             {
                 case Setting.MaterialType.Phong:
                     // フォン用に位置・法線を追加
@@ -722,238 +722,11 @@ namespace metashader.ShaderGraphData
                     AddInputAttribute("float3 BiNormal0 : TEXCOORD4;");
                     break;
                 case Setting.MaterialType.Custom:
-                    break;                
+                    break;
                 default:
-                    throw new NotImplementedException();                    
+                    throw new NotImplementedException();
             }
         }
-#endregion
-    }
-    
-#if false
-    /// <summary>
-    /// グラフからシェーダコードを生成するジェネレータ
-    /// </summary>
-    public class ShaderCodeGenerator
-    {
-#region variables                
-        /// <summary>
-        /// シェーダコードを保持するメモリーストリーム
-        /// </summary>
-        MemoryStream             m_memoryStream = new MemoryStream();
-
-        /// <summary>
-        /// インデックス化されたノードのインデックス記録用のマップ
-        /// 同じShaderNodeTypeの同じインデックスの異なるインスタンスを同一のものとして扱うために使用
-        /// </summary>        
-        MultiMap<ShaderNodeType, uint> m_indexedNodeMap = new MultiMap<ShaderNodeType, uint>();
-#endregion
-
-#region constructors
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>        
-        public ShaderCodeGenerator( ShaderGraphData graphData )
-        {
-            m_graphData = graphData;
-        }
-#endregion        
-
-#region properties
-        /// <summary>
-        /// シェーダのテンプレートファイルのパス
-        /// </summary>
-        public string TemplateFilePath
-        {
-            get
-            {
-                @"\..\..\data\shader\template\custom_material.msh";        
-            }
-        }
-#endregion
-
-#region public methods        
-#endregion
-
-#region private methods        
-        /// <summary>
-        /// メモリーストリームへシェーダコードを作成する
-        /// </summary>
-        private void Generate()
-        {
-            // 有効なノードを依存関係に合わせて並び替える
-            Sort(m_graphData.ValidNodes);
-
-            /// テンプレート内の置き換えマーカに合わせて
-            /// 生成した文字列で置き換える
-
-            // テンプレートファイル
-            string templatePath = Setting.FileSettings.ApplicationFolderPath + m_shaderTemplatePath;
-            using (StreamReader templateStream = new StreamReader( templatePath 
-                , Encoding.GetEncoding("shift_jis")))
-            {
-                using (StreamWriter outputStream = new StreamWriter(m_memoryStream, Encoding.ASCII) )
-                {
-                    // 終端まで読み込む
-                    while (templateStream.EndOfStream == false)
-                    {
-                        string line = templateStream.ReadLine();
-                        string replace = null;
-
-                        switch (line)
-                        {
-                            case "%HEADER%":
-                                replace = GetShaderHeaderString().ToString();
-                                break;
-                            case "%INCLUDES%": //@@ 要実装
-                                replace = "";
-                                break;                            
-                            case "%UNIFORMS%":
-                                replace = GetShaderUniformString().ToString();
-                                break;
-                            case "%PS_INPUT%":
-                                replace = GetShaderInputString().ToString();
-                                break;
-                            case "%PS_MAIN%":
-                                replace = GetShaderMainString().ToString();
-                                break;
-                            default:
-                                replace = line;
-                                break;
-                        }
-
-                        outputStream.WriteLine(replace);
-                    }
-                }
-            }
-        }             
-
-        /// <summary>
-        /// ノード間の依存関係に合わせてソートする
-        /// </summary>
-        private void Sort(List<ShaderNodeDataBase> nodeList )
-        {
-            // 依存性カウンタ
-            // 各ノード毎の入力リンク数を保存する
-            Dictionary<int,int> dependencyCounter = new Dictionary<int,int>(); 
-            foreach ( ShaderNodeDataBase node in nodeList)
-            {
-                dependencyCounter.Add( node.GetHashCode(), node.InputJointNum);
-            }
-
-            // 全てのノードが取り除かれるまで、
-            // 依存度の低い順にnodeListから取り出していく
-            while( nodeList.Count > 0 )
-            {
-                // 取り除くべき、依存性0のノード
-                ShaderNodeDataBase removedNode = null;
-
-                foreach( ShaderNodeDataBase node in nodeList )
-                {
-                    int dependency = dependencyCounter[node.GetHashCode()];
-                    
-                    // 依存度0ならば取り出す
-                    if (dependency == 0)
-                    {
-                        removedNode = node;
-                        break;
-                    }   
-                }
-                if( removedNode == null )
-                {
-                    throw new ArgumentException("依存度0のノードが見つかりませんでした。nodeListのトポロジが不正です");
-                }
-
-                // removeNodeをこのクラスのキューに積む
-                m_validNodeQue.Add(removedNode);
-
-                // removeNodeからのリンクを入力とするノードの依存度を減らす
-                for(int i = 0; i < removedNode.OutputJointNum; ++i )
-                {
-                    // 各出力ジョイントの接続先の依存度を減らす
-                    foreach( JointData joint in removedNode.GetOutputJoint(i).JointList )
-                    {
-                        ShaderNodeDataBase node = joint.ParentNode;
-
-                        // 含まれるか判定をしているのは、接続先が有効なノードではなく、nodeListに入っていない可能性があるため
-                        // 「有効なノードではない」とは、最終出力ノードへたどれないノード
-                        if( dependencyCounter.ContainsKey(node.GetHashCode()))
-                            dependencyCounter[node.GetHashCode()]--;
-                    }                    
-                }
-
-                // nodeListから該当するnodeを削除する                                
-                nodeList.Remove(removedNode);
-            }
-        }               
-
-        /// <summary>
-        /// シェーダのuniform宣言の文字列を取得する
-        /// </summary>       
-        private StringBuilder GetShaderUniformString()
-        {
-            StringWriter stream = new StringWriter();
-            foreach( ShaderNodeDataBase node in m_validNodeQue)
-            {
-                node.WritingShaderUniformCode(stream);
-            }
-            return stream.GetStringBuilder();
-        }
-
-        /// <summary>
-        /// 指定した入力ノードがすでに記録されたものか判定する
-        /// </summary>
-        /// <param name="indexedNode"></param>
-        /// <returns></returns>
-        private bool IsAlreadyWitten( Indexed_NodeBase indexedNode )
-        {
-            return m_indexedNodeMap.Contains( new KeyValuePair<ShaderNodeType, uint>(indexedNode.Type, indexedNode.Index) );
-        }
-
-        /// <summary>
-        /// シェーダの入力属性の文字列を取得する
-        /// </summary>
-        /// <returns></returns>
-        private StringBuilder GetShaderInputString()
-        {
-            StringWriter stream = new StringWriter();
-            foreach (ShaderNodeDataBase node in m_validNodeQue)
-            {
-                // すでに書き込み済みの入力属性はスキップする
-                Indexed_NodeBase indexedNode = node as Indexed_NodeBase;
-                if( indexedNode != null )                
-                {             
-                    // すでに書きこまれた入力ノードならスキップ
-                    if( IsAlreadyWitten( indexedNode) )
-                    {
-                        continue;
-                    }
-                    // 未書き込みなら、マップに記録しておく
-                    else
-                    {
-                        m_indexedNodeMap.Add(indexedNode.Type, indexedNode.Index);
-                    }
-                }
-
-                node.WritingShaderInputCode(stream);
-            }
-            return stream.GetStringBuilder();
-        }
-
-        /// <summary>
-        /// シェーダの本文の文字列を取得する
-        /// </summary>
-        /// <returns></returns>
-        private StringBuilder GetShaderMainString()
-        {
-            StringWriter stream = new StringWriter();            
-            foreach (ShaderNodeDataBase node in m_validNodeQue)
-            {
-                node.WritingShaderMainCode(stream);
-            }
-            return stream.GetStringBuilder();
-        }
-#endregion
-    }
-#endif // false
+        #endregion
+    };
 }

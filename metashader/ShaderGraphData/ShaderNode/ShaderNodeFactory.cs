@@ -91,7 +91,7 @@ namespace metashader.ShaderGraphData
 
             ShaderNodeDataBase ret = null;
 
-            // @@@ 具象クラスを作成
+            // ノードの種類に応じて具象クラスを作成
             switch(type)
             {                    
                 case ShaderNodeType.Uniform_Float:
