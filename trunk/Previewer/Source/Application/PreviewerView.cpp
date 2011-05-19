@@ -57,17 +57,17 @@ namespace opk
 
 		// ライト設定				
 		// 0 Fill
-		D3DXVECTOR3 vLightDir0(-1, -1, -1); D3DXVec3Normalize( &vLightDir0, &vLightDir0);		
+		D3DXVECTOR3 vLightDir0( 1, -1, -1); D3DXVec3Normalize( &vLightDir0, &vLightDir0);		
 		pDevice->SetDirLightDir( 0, vLightDir0.x, vLightDir0.y, vLightDir0.z );
 		pDevice->SetDirLightColor( 0, 1.0f, 1.0f, 1.0f );		
 		// 1 Back
 		D3DXVECTOR3 vLightDir1( 0, 0, -1); D3DXVec3Normalize( &vLightDir1, &vLightDir1);		
 		pDevice->SetDirLightDir( 1, vLightDir1.x, vLightDir1.y, vLightDir1.z );
-		pDevice->SetDirLightColor( 1, 0.2f, 0.2f, 1.0f );		
+		pDevice->SetDirLightColor( 1, 0.0f, 0.0f, 0.0f );		
 		// 2 Key
 		D3DXVECTOR3 vLightDir2( -1, -1, 0); D3DXVec3Normalize( &vLightDir2, &vLightDir2);		
 		pDevice->SetDirLightDir( 2, vLightDir2.x, vLightDir2.y, vLightDir2.z );
-		pDevice->SetDirLightColor( 2, 1.0f, 1.0f, 1.0f );		
+		pDevice->SetDirLightColor( 2, 0.0f, 0.0f, 0.0f );		
 
 		// モデルをレンダリング		
 		m_pModel->Render();

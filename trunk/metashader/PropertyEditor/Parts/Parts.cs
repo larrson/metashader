@@ -14,9 +14,9 @@ namespace metashader.PropertyEditor.Parts
     public interface IParts
     {       
         /// <summary>
-        /// パーツに関連付けられているユーザーコントロール
+        /// パーツに関連付けられているコントロール
         /// </summary>
-        UserControl UserControl
+        Control Control
         {
             get;
         }       
@@ -43,7 +43,7 @@ namespace metashader.PropertyEditor.Parts
         /// <summary>
         /// コントロール
         /// </summary>
-        UserControl m_userControl;                
+        Control m_control;                
 
 #region constructors
         /// <summary>
@@ -52,7 +52,7 @@ namespace metashader.PropertyEditor.Parts
         /// <param name="nodeData"></param>
         /// <param name="propertyName"></param>
         /// <param name="control"></param>
-        public Parts(ShaderGraphData.ShaderNodeDataBase nodeData, string propertyName, UserControl control )
+        public Parts(ShaderGraphData.ShaderNodeDataBase nodeData, string propertyName, Control control )
         {
             m_valueController = new ValueControllerSub<ShaderGraphData.ShaderNodeDataBase, ParameterType>(nodeData, propertyName);
 
@@ -66,7 +66,7 @@ namespace metashader.PropertyEditor.Parts
         /// <param name="globalSettings"></param>
         /// <param name="propertyName"></param>
         /// <param name="control"></param>
-        public Parts(Setting.GlobalSettings globalSettings, string propertyName, UserControl control)
+        public Parts(Setting.GlobalSettings globalSettings, string propertyName, Control control)
         {
             m_valueController = new ValueControllerSub<Setting.GlobalSettings, ParameterType>(globalSettings, propertyName);
 
@@ -79,9 +79,9 @@ namespace metashader.PropertyEditor.Parts
         /// <summary>
         /// パーツに関連付けられているユーザーコントロール
         /// </summary>
-        public UserControl UserControl
+        public Control Control
         {
-            get { return m_userControl; }
+            get { return m_control; }
         }
 
         /// <summary>
@@ -98,10 +98,10 @@ namespace metashader.PropertyEditor.Parts
         /// 共通初期化処理
         /// </summary>
         /// <param name="control"></param>
-        private void Initialize( UserControl control )
+        private void Initialize( Control control )
         {
-	        m_userControl = control;
-            m_userControl.DataContext = m_valueController;
+	        m_control = control;
+            m_control.DataContext = m_valueController;
         }
 #endregion
     }

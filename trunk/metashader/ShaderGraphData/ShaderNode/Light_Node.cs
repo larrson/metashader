@@ -30,7 +30,7 @@ namespace metashader.ShaderGraphData
         public override string VariableName
         {
             get {
-                return "Local_DirLightDir_" + Index; 
+                return "Uniform_DirLightDir[" + Index + "]";
             }
         }
 
@@ -54,25 +54,25 @@ namespace metashader.ShaderGraphData
 
         #region public methods
         /// <summary>
-        /// ストリームへシェーダのuniform宣言を書きこむ
+        /// ストリームへマクロを書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderMacroCode(StringWriter stream)
         {
-            // uniformを宣言する
-            stream.WriteLine("uniform float3 \tUniform_DirLightDir_{0};", Index); // 方向            
+            // ライト数を宣言する
+            //@ 数を動的に変更
+            stream.WriteLine("#define DIR_LIGHT_NUM 3");
         }
 
         /// <summary>
-        /// ストリームへシェーダの本文を書きこむ
+        /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
-        /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream) 
-        {            
-            // シェーダ本文
-            // 計算の都合上あえて反転させる
-            stream.WriteLine("\tfloat3 \t{0} = -Uniform_DirLightDir_{1};", VariableName, Index);        
-        }
+        /// <param name="stream"></param>
+        public override void WriteShaderUniformCode(StringWriter stream)
+        {
+            // uniformを宣言する
+            stream.WriteLine("uniform float3 \tUniform_DirLightDir[DIR_LIGHT_NUM];"); // 方向            
+        }        
 
         /// <summary>
         /// パラメータのPreviewerへの適用
@@ -124,7 +124,7 @@ namespace metashader.ShaderGraphData
         {
             get
             {
-                return "Uniform_DirLightColor_" + Index;
+                return "Uniform_DirLightCol[" + Index + "]";
             }
         }
 
@@ -148,13 +148,24 @@ namespace metashader.ShaderGraphData
 
         #region public methods
         /// <summary>
+        /// ストリームへマクロを書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public override void WriteShaderMacroCode(StringWriter stream)
+        {
+            // ライト数を宣言する
+            //@ 数を動的に変更
+            stream.WriteLine("#define DIR_LIGHT_NUM 3");
+        }
+
+        /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // uniformを宣言する
-            stream.WriteLine("uniform float3 \t{0};", VariableName); // 方向            
+            stream.WriteLine("uniform float3 \tUniform_DirLightCol[DIR_LIGHT_NUM];"); // 色
         }        
 
         /// <summary>

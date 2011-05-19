@@ -275,9 +275,12 @@ namespace opk
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZENABLE, TRUE ) );
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZWRITEENABLE, TRUE ) );
 		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL ) );
+		// カリングの設定
+		V_RETURN( m_pd3dDevice9->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW ));
 
 		// ブレンドモードの設定
 		V_RETURN( SetBlendMode( m_nBlendMode, true ) );
+
 		
 		return hr;
 	}

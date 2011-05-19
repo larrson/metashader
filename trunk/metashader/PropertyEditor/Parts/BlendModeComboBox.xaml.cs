@@ -55,7 +55,7 @@ namespace metashader.PropertyEditor.Parts
         /// <param name="e"></param>
         void _blendModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // 新たに選択されたBlendModeを設定する
+            // 新たに選択されたBlendModeを設pub定する
             ComboBox comboBox = sender as ComboBox;            
 
             Setting.BlendMode blendMode = (Setting.BlendMode)comboBox.SelectedIndex;

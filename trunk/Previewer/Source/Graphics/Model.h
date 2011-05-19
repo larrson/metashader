@@ -12,7 +12,10 @@ namespace opk
 	{
 	private:
 		std::string	m_strFilePath;	///< モデルのファイルパス
-		ID3DXMesh*		m_pMesh;		///< メッシュ
+		ID3DXMesh*		m_pMesh;		///< メッシュ		
+		IDirect3DVertexDeclaration9* m_pDeclaration;
+		IDirect3DVertexBuffer9* m_pVertexBuffer;
+		IDirect3DIndexBuffer9*	m_pIndexBuffer;		
 
 	public:		 
 		/// コンストラクタ											

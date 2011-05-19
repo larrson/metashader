@@ -159,10 +159,7 @@ namespace metashader.ShaderGraphData
                     break;
                 case ShaderNodeType.Utility_Append:
                     ret = new Utility_AppendNode(name, pos);
-                    break;
-                case ShaderNodeType.Output_Color:
-                    ret = new Output_ColorNode(name, pos);
-                    break;                                    
+                    break;                
                 case ShaderNodeType.Output_Material:
                     ret = new Output_MaterialNode(name, pos);
                     break;

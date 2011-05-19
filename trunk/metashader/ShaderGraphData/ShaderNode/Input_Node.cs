@@ -44,9 +44,9 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderInputCode(StringWriter stream)
+        public override void WriteShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat2 Texcoord0 : TEXCOORD0;");
+            stream.WriteLine("\tfloat2 Texcoord0 : TEXCOORD2;");
         }
         #endregion
 
@@ -106,7 +106,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderInputCode(StringWriter stream)
+        public override void WriteShaderInputCode(StringWriter stream)
         {
             stream.WriteLine("\tfloat3 Normal0 : TEXCOORD1;");
         }
@@ -115,7 +115,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream) 
+        public override void WriteShaderMainCode(StringWriter stream) 
         {
             stream.WriteLine("\tfloat3 {0} = normalize( In.Normal0 );", VariableName);
         }
@@ -184,9 +184,9 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderInputCode(StringWriter stream)
+        public override void WriteShaderInputCode(StringWriter stream)
         {
-            stream.WriteLine("\tfloat4 Position0 : TEXCOORD2;");
+            stream.WriteLine("\tfloat4 Position0 : TEXCOORD0;");
         }
         #endregion
 

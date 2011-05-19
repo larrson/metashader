@@ -13,6 +13,25 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace metashader.Setting
 {
     /// <summary>
+    /// マテリアルの種類
+    /// </summary>
+    public enum MaterialType : int
+    {
+        /// <summary>
+        /// フォンマテリアル
+        /// </summary>
+        Phong,
+        /// <summary>
+        /// カスタム
+        /// </summary>
+        Custom,
+        /// <summary>
+        /// 最大数
+        /// </summary>
+        Max,
+    }
+
+    /// <summary>
     /// アルファブレンディングの種類
     /// </summary>
     public enum BlendMode : int
@@ -47,12 +66,23 @@ namespace metashader.Setting
     {
 #region variables
         /// <summary>
+        /// マテリアルの種類
+        /// </summary>
+        MaterialType m_materialType = MaterialType.Phong;
+
+        /// <summary>
         /// アルファブレンディングの種類
         /// </summary>
-        BlendMode m_blendMode = BlendMode.None;
+        BlendMode m_blendMode = BlendMode.None;        
 #endregion    
     
 #region properties
+        public MaterialType MaterialType
+        {
+            get { return m_materialType; }
+            set { m_materialType = value; }
+        }
+
         /// <summary>
         /// アルファブレンディングの種類
         /// </summary>
@@ -71,7 +101,7 @@ namespace metashader.Setting
         void IDeserializationCallback.OnDeserialization(object sender)
         {
             // リセット対象のプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
-            ChangeProperty<BlendMode>("BlendMode", m_blendMode, null);            
+            NotifyAllProperties();
         }
         #endregion
 
@@ -83,10 +113,11 @@ namespace metashader.Setting
         /// <param name="formatter"></param>
         public void Load(FileStream fileStream, BinaryFormatter formatter)
         {
+            // ロード
             GlobalSettings settings = formatter.Deserialize(fileStream) as GlobalSettings;
 
             // ロードしたプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
-            ChangeProperty<BlendMode>("BlendMode", settings.BlendMode, null);
+            NotifyAllProperties();
         }
 
         /// <summary>
@@ -96,9 +127,9 @@ namespace metashader.Setting
         public void Reset()
         {
             // アプリケーション中の他のサブシステムへ通知するため、イベントを利用して初期化する
-            ChangeProperty<BlendMode>("BlendMode", BlendMode.None, null);
+            NotifyAllProperties();         
         }
-
+        
         /// <summary>
         /// 指定したプロパティへ新しい値を設定する
         /// </summary>
@@ -128,6 +159,17 @@ namespace metashader.Setting
 
             return true;
         }        
+#endregion
+
+#region private methods
+        /// <summary>
+        /// 全プロパティを外部へ通知する
+        /// </summary>
+        private void NotifyAllProperties()
+        {
+            ChangeProperty<MaterialType>("MaterialType", m_materialType, null);
+            ChangeProperty<BlendMode>("BlendMode", BlendMode.None, null);
+        }
 #endregion
     }
 }

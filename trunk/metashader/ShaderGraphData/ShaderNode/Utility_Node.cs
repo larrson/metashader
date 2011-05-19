@@ -118,7 +118,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 2つの数値型を合成して新たなベクトルを作成する
             VariableType outputType = GetOutputJointVariableType(0);

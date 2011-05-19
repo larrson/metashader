@@ -187,6 +187,7 @@
     <Compile Include="PropertyEditor\Parts\BlendModeComboBox.xaml.cs">
       <DependentUpon>BlendModeComboBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditor\Parts\EnumComboBox.cs" />
     <Compile Include="PropertyEditor\Parts\IndexComboBox.xaml.cs">
       <DependentUpon>IndexComboBox.xaml</DependentUpon>
     </Compile>

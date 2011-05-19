@@ -55,7 +55,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // uniformを宣言する
             stream.WriteLine("uniform float3 \t{0};", VariableName); // 方向            

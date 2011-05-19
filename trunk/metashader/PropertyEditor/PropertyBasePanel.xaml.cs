@@ -141,13 +141,15 @@ namespace metashader.PropertyEditor
         /// <returns></returns>
         private PropertyStackPanel CreateGlobalSettingsPanel(Setting.GlobalSettings globalSettings)
         {
-            PropertyStackPanel panel = new PropertyStackPanel();            
+            PropertyStackPanel panel = new PropertyStackPanel();
 
             // 題名
             panel._captionTextBlock.Text = "全体設定";
 
+            // マテリアルの種類
+            panel.AddParts("マテリアル", new Parts.Parts<Setting.MaterialType>(globalSettings, "MaterialType", new Parts.EnumComboBox<Setting.MaterialType>()));
             // ブレンドモード
-            panel.AddParts("アルファブレンディング", new Parts.Parts<Setting.BlendMode>(globalSettings, "BlendMode", new Parts.BlendModeComboBox()));
+            panel.AddParts("アルファブレンディング", new Parts.Parts<Setting.BlendMode>(globalSettings, "BlendMode", new Parts.EnumComboBox<Setting.BlendMode>()));
             return panel;
         }
 

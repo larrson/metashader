@@ -211,7 +211,8 @@ namespace metashader.Previewer
             // プロパティごとに行う処理を変更
             switch( args.PropertyName )
             {
-                case "BlendMode":
+                // アルファブレンディングのモードを変更
+                case "BlendMode":                    
                     NativeMethods.SetBlendMode((int)args.NewValue);
                     break;
                 default:
