@@ -72,7 +72,7 @@ namespace opk
 				V_RETURN( i_pShader->GetD3DConstantTable()->SetFloat( pD3DDevice, i_nHandle, *i_pValue) );
 
 				return S_OK;
-			}
+			}			
 
 			template <>
 			static HRESULT ApplyValue<D3DXVECTOR4>(CShader* i_pShader, D3DXHANDLE i_nHandle, const D3DXVECTOR4* i_pValue)
@@ -149,37 +149,74 @@ namespace opk
 
 		typedef CGeneralParameter<float>		CFloatParameter;
 
+		/**
+			@class CFloatArrayParameter
+			@brief 浮動小数点配列のシェーダパラメータ
+		*/
+		class CFloatArrayParameter : public CParameterBase
+		{
+		private:
+			int m_nElementNum;	///< 配列の要素数
+			float* m_pArray;	///< 配列データ
+
+			typedef void (CFloatArrayParameter::*TApplyFuncPtr)();
+			TApplyFuncPtr m_pGetValueFunc; ///< 値を取得するためのメンバ関数ポインタ
+		public:
+			/**
+				@brief コンストラクタ
+				@param [in] i_nElementNum 配列の要素数
+			*/
+			CFloatArrayParameter(std::string i_strName, D3DXHANDLE i_nHandle, int i_nElementNum );
+
+			/// デストラクタ
+			virtual ~CFloatArrayParameter();
+
+			/**
+				@brief パラメータをシェーダへ適用する
+				@retval エラーコード
+			*/
+			virtual HRESULT Apply(CShader* i_pShader);
+
+		private:
+			/**
+				@brief 値を取得するための関数ポインタを設定する
+			*/
+			void SetupGetValueFunc();
+
+			/// 並行光源の方向を設定する
+			void GetValue_Uniform_DirLightDir();
+
+			/// 並行光源の色を設定する
+			void GetValue_Uniform_DirLightCol();
+		};
 
 		class CVector4Parameter : public CGeneralParameter<D3DXVECTOR4>
 		{
-		public:
-			/// 値取得用ファンクタインターフェースの宣言
-			interface IFunctor
-			{
-			public:
-				/// 値取得メソッド
-				virtual D3DXVECTOR4 GetValue()=0;
-			};			
-						
-			IFunctor*	m_pGetValueFunc; ///< 値取得用ファンクタ
+		public:									
+			typedef void (CVector4Parameter::*TGetValueFuncPtr)();
+			TGetValueFuncPtr m_pGetValueFunc; ///< 値を取得しメンバ変数へ設定するためのメンバ関数ポインタ
 
 		public:
 			/// コンストラクタ
 			CVector4Parameter(std::string i_strName, D3DXHANDLE i_nHandle );
 
 			/// デストラクタ
-			virtual ~CVector4Parameter();
-
-			/**
-				@brief 値を取得するためのファンクタを設定する
-			*/
-			void SetupGetValueFunc();
+			virtual ~CVector4Parameter();			
 
 			/** 
 				@brief 値を取得
 				@note Applyメソッド用
 			*/
-			virtual const D3DXVECTOR4* GetValue();			
+			virtual const D3DXVECTOR4* GetValue();		
+
+		private:
+			/**
+				@brief 値を取得するためのファンクタを設定する
+			*/
+			void SetupGetValueFunc();
+
+			/// カメラ位置を取得する
+			void GetValue_Uniform_Camera_Position();
 		};
 
 		/**
@@ -197,12 +234,7 @@ namespace opk
 			CMatrixParameter(std::string i_strName, D3DXHANDLE i_nHandle );
 
 			/// デストラクタ
-			virtual ~CMatrixParameter();
-
-			/**
-				@brief 値を取得するための関数ポインタを設定する
-			*/
-			void SetupGetValueFunc();
+			virtual ~CMatrixParameter();			
 
 			/** 
 				@brief 値を取得
@@ -214,6 +246,11 @@ namespace opk
 			}
 
 		private:
+			/**
+				@brief 値を取得するための関数ポインタを設定する
+			*/
+			void SetupGetValueFunc();
+
 			/// 自身が保持している値を取得する
 			const D3DXMATRIX* GetThisValue(){ return &m_tValue; };
 			

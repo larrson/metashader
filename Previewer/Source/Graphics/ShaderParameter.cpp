@@ -11,95 +11,10 @@
 namespace opk
 {
 	// Global Variable Definitions ---------------------------------------------------------------	
-	namespace
-	{
-		const char* c_pszUniformDirLightDir = "Uniform_DirLightDir_";
-		const char* c_pszUniformDirLightColor = "Uniform_DirLightColor_";
-		const char* c_pszUniformCameraPosition = "Uniform_Camera_Position";
-	}
 
 	namespace shader
 	{
-		// Data Type Definitions ---------------------------------------------------------------------
-		namespace vector4param
-		{
-			/**
-			@brief 平行光源の方向ベクトル取得用ファンクタ
-			*/
-			class CDirLightDirFunc : public CVector4Parameter::IFunctor
-			{
-			private:
-				int m_nIndex; ///< インデックス			
-
-			public:
-				/// コンストラクタ
-				CDirLightDirFunc(int i_nIndex)
-					: m_nIndex( i_nIndex )
-				{
-				}
-
-				/// デストラクタ
-				virtual ~CDirLightDirFunc(){}
-
-				/// 値取得メソッド
-				virtual D3DXVECTOR4 GetValue()
-				{
-					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
-					D3DXVECTOR3 vDir = pDevice->GetDirLightDir(m_nIndex);
-					return D3DXVECTOR4( vDir.x, vDir.y, vDir.z, 0.0f );
-				}
-			};
-
-			/**
-			@brief 平行光源の色取得用ファンクタ
-			*/
-			class CDirLightColorFunc : public CVector4Parameter::IFunctor
-			{
-			private:
-				int m_nIndex; ///< インデックス
-
-			public:
-				/// コンストラクタ
-				CDirLightColorFunc(int i_nIndex)
-					: m_nIndex( i_nIndex )
-				{
-				}
-
-				/// デストラクタ
-				virtual ~CDirLightColorFunc(){}
-
-				/// 値取得メソッド
-				virtual D3DXVECTOR4 GetValue()
-				{
-					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
-					D3DXVECTOR3 vColor = pDevice->GetDirLightColor(m_nIndex);
-					return D3DXVECTOR4( vColor.x, vColor.y, vColor.z, 0.0f );
-				}
-			};				
-
-			/**
-				@brief カメラ位置取得用ファンクタ
-			*/
-			class CCameraPositionFunc : public CVector4Parameter::IFunctor
-			{
-			public:
-				/// コンストラクタ
-				CCameraPositionFunc()					
-				{
-				}
-
-				/// デストラクタ
-				virtual ~CCameraPositionFunc(){}
-
-				/// 値取得メソッド
-				virtual D3DXVECTOR4 GetValue()
-				{
-					CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
-					const CGraphicDevice::SCameraInfo cameraInfo = pDevice->GetCameraInfo();
-					return D3DXVECTOR4( cameraInfo.vEyePos.x, cameraInfo.vEyePos.y, cameraInfo.vEyePos.z, 0.0f );
-				}
-			};
-		} // end of namespace vector4param
+		// Data Type Definitions ---------------------------------------------------------------------		
 
 		// Function Definitions ----------------------------------------------------------------------		
 
@@ -113,22 +28,116 @@ namespace opk
 		//------------------------------------------------------------------------------------------
 		CParameterBase::~CParameterBase()
 		{
-		}						
+		}		
+
+		//------------------------------------------------------------------------------------------
+		CFloatArrayParameter::CFloatArrayParameter(std::string i_strName, D3DXHANDLE i_nHandle, int i_nElementNum )
+			: CParameterBase( i_strName, i_nHandle )
+			, m_nElementNum( i_nElementNum )
+			, m_pArray( NULL )
+			, m_pGetValueFunc( NULL )
+		{
+			// 配列を確保
+			m_pArray = new float[m_nElementNum];
+			memset( m_pArray, 0, sizeof(float) * m_nElementNum );
+
+			// パラメータの値を設定するメンバ関数ポインタの初期化
+			SetupGetValueFunc();
+		}
+
+		//------------------------------------------------------------------------------------------
+		CFloatArrayParameter::~CFloatArrayParameter()
+		{
+			// パラメータ保持用の配列を解放
+			SAFE_DELETE( m_pArray );
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CFloatArrayParameter::SetupGetValueFunc()
+		{
+			MY_ASSERT( m_pGetValueFunc == NULL );
+
+			const std::string& strName = GetName();
+
+#define ELSE_IF_GET_VALUE_FUNC(name) \
+		} else if( strcmp( strName.c_str(), #name ) == 0 ) { \
+		m_pGetValueFunc = &CFloatArrayParameter::GetValue_##name;
+
+			// ダミー
+			if( false ) 
+			{				
+
+				/// 特殊な名前の場合
+				ELSE_IF_GET_VALUE_FUNC( Uniform_DirLightDir )
+				ELSE_IF_GET_VALUE_FUNC( Uniform_DirLightCol )
+
+			} else {				
+				/// 通常
+				m_pGetValueFunc = NULL;
+			}	
+
+#undef ELSE_IF_GET_VALUE_FUNC
+		}
+
+		//------------------------------------------------------------------------------------------
+		HRESULT CFloatArrayParameter::Apply(CShader* i_pShader)
+		{
+			HRESULT hr;
+
+			CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+			IDirect3DDevice9 *pd3dDevice = pDevice->GetD3DDevice(); MY_ASSERT( pd3dDevice );
+
+			// 有効なメンバ関数ポインタがあればそれで値を設定
+			if( m_pGetValueFunc )
+			{
+				(this->*m_pGetValueFunc)();
+			}
+
+			ID3DXConstantTable* pConstantTable = i_pShader->GetD3DConstantTable();
+			V_RETURN( pConstantTable->SetFloatArray( pd3dDevice, m_nHandle, m_pArray, m_nElementNum ) );
+
+			return S_OK;
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CFloatArrayParameter::GetValue_Uniform_DirLightDir()
+		{
+			CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+			for(int i = 0; i < CGraphicDevice::DirLight_Max; ++i )
+			{
+				// シェーダ側での計算を省くために、反転して送る
+				D3DXVECTOR3 v = pDevice->GetDirLightDir(i);
+				m_pArray[ i * 3 + 0 ] = -v.x;
+				m_pArray[ i * 3 + 1 ] = -v.y;
+				m_pArray[ i * 3 + 2 ] = -v.z;
+			}
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CFloatArrayParameter::GetValue_Uniform_DirLightCol()
+		{
+			CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+			for(int i = 0; i < CGraphicDevice::DirLight_Max; ++i )
+			{
+				D3DXVECTOR3 v = pDevice->GetDirLightColor(i);
+				m_pArray[ i * 3 + 0 ] = v.x;
+				m_pArray[ i * 3 + 1 ] = v.y;
+				m_pArray[ i * 3 + 2 ] = v.z;
+			}
+		}
 
 		//------------------------------------------------------------------------------------------
 		CVector4Parameter::CVector4Parameter(std::string i_strName, D3DXHANDLE i_nHandle )
 			: CGeneralParameter<D3DXVECTOR4>( i_strName, i_nHandle )
 			, m_pGetValueFunc(NULL)
 		{
-			// パラメータの値を設定するファンクタの初期化
+			// パラメータの値を設定するメンバ関数ポインタの初期化
 			SetupGetValueFunc();
 		}
 
 		//------------------------------------------------------------------------------------------
 		CVector4Parameter::~CVector4Parameter()
-		{
-			// ファンクタの解放
-			SAFE_DELETE( m_pGetValueFunc );
+		{						
 		}
 
 		//------------------------------------------------------------------------------------------
@@ -137,40 +146,44 @@ namespace opk
 			MY_ASSERT( m_pGetValueFunc == NULL );
 
 			const std::string& strName = GetName();
-			IFunctor *pFunc = NULL;
+			
+#define ELSE_IF_GET_VALUE_FUNC(name) \
+		} else if( strcmp( strName.c_str(), #name ) == 0 ) { \
+		m_pGetValueFunc = &CVector4Parameter::GetValue_##name;
 
-			// 平行光源の方向
-			if( strncmp( strName.c_str(), c_pszUniformDirLightDir, strlen(c_pszUniformDirLightDir) ) == 0)
-			{
-				int nIndex = atoi( strName.c_str() + strlen(c_pszUniformDirLightDir));
-				pFunc = new vector4param::CDirLightDirFunc(nIndex);
-			}
-			// 平行光源の色
-			else if( strncmp( strName.c_str(), c_pszUniformDirLightColor, strlen(c_pszUniformDirLightColor) ) == 0)
-			{
-				int nIndex = atoi( strName.c_str() + strlen(c_pszUniformDirLightColor));
-				pFunc = new vector4param::CDirLightColorFunc(nIndex);
-			}
-			else if( strcmp( strName.c_str(), c_pszUniformCameraPosition ) == 0)
-			{
-				pFunc = new vector4param::CCameraPositionFunc();
-			}
-			// その他
-			else
-			{
-				// ファンクタを使用しない
-			}
+			// ダミー
+			if( false ) 
+			{				
 
-			m_pGetValueFunc = pFunc;
+			/// 特殊な名前の場合
+			ELSE_IF_GET_VALUE_FUNC( Uniform_Camera_Position )
+
+			} else {				
+				/// 通常
+				m_pGetValueFunc = NULL;
+			}	
+
+#undef ELSE_IF_GET_VALUE_FUNC
+		}
+
+		//------------------------------------------------------------------------------------------
+		void CVector4Parameter::GetValue_Uniform_Camera_Position()
+		{
+			CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
+			const CGraphicDevice::SCameraInfo cameraInfo = pDevice->GetCameraInfo();
+			m_tValue.x = cameraInfo.vEyePos.x;
+			m_tValue.y = cameraInfo.vEyePos.y;
+			m_tValue.z = cameraInfo.vEyePos.z;
+			m_tValue.w = 0.0f;
 		}
 
 		//------------------------------------------------------------------------------------------
 		const D3DXVECTOR4* CVector4Parameter::GetValue()
 		{		
-			// ファンクタが作成されていれば、それを使用
+			// 関数ポインタが設定されていれば、それを使用し、メンバ変数を更新
 			if( m_pGetValueFunc )
 			{
-				m_tValue = m_pGetValueFunc->GetValue();
+				(this->*m_pGetValueFunc)();
 			}			
 			
 			return &m_tValue;
@@ -212,6 +225,8 @@ namespace opk
 			/// 通常
 				m_pGetValueFunc = &CMatrixParameter::GetThisValue;
 			}
+
+#undef ELSE_IF_GET_VALUE_FUNC
 		}
 
 		//------------------------------------------------------------------------------------------

@@ -202,8 +202,11 @@ namespace metashader
             m_uiCommandManager = new Command.CommandManager();
 
             // イベントマネージャ初期化
-            m_eventManager = new Event.EventManager();            
-        }
+            m_eventManager = new Event.EventManager();       
+     
+            // イベントハンドラ初期化
+            m_eventManager.GlobalSettingPropertyChangedEvent += new Event.GlobalSettingPropertyChangedEventHandler(m_eventManager_GlobalSettingPropertyChangedEvent);
+        }        
 
         /// <summary>
         /// アプリケーション終了時に呼ばれるイベントハンドラ
@@ -214,6 +217,25 @@ namespace metashader
         {
             // アプリケーション設定の保存
             metashader.Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// グローバル設定変更イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void m_eventManager_GlobalSettingPropertyChangedEvent(object sender, metashader.Event.GlobalSettingPropertyChangedEventArgs args)
+        {
+            // プロパティごとに行う処理を変更
+            switch( args.PropertyName )
+            {
+                // マテリアルタイプが変更された
+                case "MaterialType":
+                    // グラフデータのエラー検出
+                    // グラフデータ側にイベントハンドラをもたせないのは、データとしての独立性を保つため
+                    App.CurrentApp.GraphData.DetectError();
+                    break;
+            }
         }
 #endregion                
 
@@ -248,7 +270,7 @@ namespace metashader
             {
                 m_graphData.AddLink(itr._outNodeHash, itr._outJointIndex, itr._inNodeHash, itr._inJointIndex, null);
             }
-        }
+        }        
 #endregion
     }
 }

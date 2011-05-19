@@ -62,7 +62,7 @@ namespace metashader.PropertyEditor
             // 右のコントロールの高さを左へバインドする
             Binding binding = new Binding()
             {
-                Source = parts.UserControl,
+                Source = parts.Control,
                 Path = new PropertyPath("ActualHeight"),
                 Mode = BindingMode.OneWay
             };
@@ -70,10 +70,10 @@ namespace metashader.PropertyEditor
             _leftStack.Children.Add(label);
 
             // 右側のコントロール                        
-            parts.UserControl.BorderBrush = Brushes.White;
-            parts.UserControl.BorderThickness = new System.Windows.Thickness(0, 0, 0, 1);            
+            parts.Control.BorderBrush = Brushes.White;
+            parts.Control.BorderThickness = new System.Windows.Thickness(0, 0, 0, 1);            
             
-            _rightStack.Children.Add(parts.UserControl);
+            _rightStack.Children.Add(parts.Control);
 
             // @@ 左側のラベルから右のコントロールへフォーカスの設定
         }
@@ -86,7 +86,7 @@ namespace metashader.PropertyEditor
             foreach (Parts.IParts parts in m_partsList)
             {               
                 // UserControlの表示を更新
-                (parts.UserControl as Parts.IPartsControl).UpdateTarget();
+                (parts.Control as Parts.IPartsControl).UpdateTarget();
             }   
         }
 #endregion

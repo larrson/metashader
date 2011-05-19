@@ -74,7 +74,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);
@@ -193,7 +193,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);
@@ -317,7 +317,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);
@@ -438,7 +438,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);
@@ -562,7 +562,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // 出力型
             VariableType outputType = GetOutputJointVariableType(0);

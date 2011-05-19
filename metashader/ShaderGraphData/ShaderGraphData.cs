@@ -13,6 +13,8 @@ namespace metashader.ShaderGraphData
 {
     /// <summary>
     /// シェーダーグラフのデータ構造
+    /// グラフデータの保持とその変更通知を行うが、
+    /// イベントのハンドリングは行わない（データの独立性を高めるため）。
     /// </summary>    
     [Serializable]
     public partial class ShaderGraphData : IDeserializationCallback
@@ -109,6 +111,14 @@ namespace metashader.ShaderGraphData
                 // 抽出された有効なノードのリストを返す
                 return new List<ShaderNodeDataBase>( validNodes.Values );
             }
+        }
+
+        /// <summary>
+        /// 出力ノード
+        /// </summary>
+        public ShaderNodeDataBase OutputNode
+        {
+            get { return m_outputNodeList[0]; }
         }
 #endregion
 
@@ -526,7 +536,7 @@ namespace metashader.ShaderGraphData
                 return false;
             
             // ジェネレータに処理を移譲
-            ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
+            ShaderCodeGeneratorBase generator = new MaterialShaderGenerator( App.CurrentApp.GlobalSettings.MaterialType, this);
             buffer = generator.ExportToBuffer();
 
             return true;
@@ -544,7 +554,7 @@ namespace metashader.ShaderGraphData
                 return false;
 
             // ジェネレータに処理を移譲
-            ShaderCodeGenerator generator = new ShaderCodeGenerator(this);
+            ShaderCodeGeneratorBase generator = new MaterialShaderGenerator(App.CurrentApp.GlobalSettings.MaterialType, this);
             generator.ExportToFile(path);
 
             return true;

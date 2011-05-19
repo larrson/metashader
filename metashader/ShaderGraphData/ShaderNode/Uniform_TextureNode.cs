@@ -199,7 +199,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // テクスチャサンプラを宣言する
             stream.WriteLine("uniform sampler \t{0};", Name);
@@ -285,7 +285,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // サンプラから色をサンプリングする
             stream.WriteLine("\tfloat4 {0} = tex2D( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
@@ -346,7 +346,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderMainCode(StringWriter stream)
+        public override void WriteShaderMainCode(StringWriter stream)
         {
             // サンプラから色をサンプリングする
             stream.WriteLine("\tfloat4 {0} = texCUBE( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);

@@ -11,6 +11,6 @@
     <Grid>
         <RichTextBox Name="_ritchTextBox" Background="LightGray" >
             
-        </RichTextBox>
+        </RichTextBox>    
     </Grid>
 </Window>

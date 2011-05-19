@@ -43,8 +43,7 @@ namespace metashader.ShaderGraphData
         Camera_Position,        // カメラ位置
 
         Utility_Append,         // ベクトル合成
-
-        Output_Color,   // 出力色        
+        
         Output_Material, // 汎用出力
         Max, // 最大数
     };
@@ -91,8 +90,7 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Camera_Position: return "Camera_Position";
 
                 case ShaderNodeType.Utility_Append: return "Utility_Append";
-
-                case ShaderNodeType.Output_Color: return "Output_Color";
+                
                 case ShaderNodeType.Output_Material: return "Output_Material";
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -136,8 +134,7 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Camera_Position: return 1; // @@ 無制限にした上で、シェーダジェネレータで処理すべき
 
                 case ShaderNodeType.Utility_Append: return uint.MaxValue;
-
-                case ShaderNodeType.Output_Color: return 1;
+                
                 case ShaderNodeType.Output_Material: return 1;
                 default: throw new ArgumentOutOfRangeException("e");
             }
@@ -170,7 +167,7 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public static bool IsOutputNode(this ShaderNodeType e)
         {            
-            return ShaderNodeType.Output_Color <= e && e <= ShaderNodeType.Output_Material;
+            return e == ShaderNodeType.Output_Material;
         }
     }
 #endregion       
@@ -430,22 +427,28 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// ストリームへマクロを書きこむ
+        /// </summary>
+        /// <param name="stream"></param>
+        public virtual void WriteShaderMacroCode(StringWriter stream){}
+
+        /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public virtual void WritingShaderUniformCode(StringWriter stream){}
+        public virtual void WriteShaderUniformCode(StringWriter stream){}
 
         /// <summary>
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public virtual void WritingShaderInputCode(StringWriter stream){}
+        public virtual void WriteShaderInputCode(StringWriter stream){}
 
         /// <summary>
         /// ストリームへシェーダの本文を書きこむ
         /// </summary>
         /// <param name="stream"></param>        
-        public virtual void WritingShaderMainCode(StringWriter stream){}
+        public virtual void WriteShaderMainCode(StringWriter stream){}
 
 #if DEBUG
         /// <summary>

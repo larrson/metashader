@@ -43,7 +43,6 @@ namespace opk
 						sprintf_s( path, MAX_PATH, "%s", pFileName );
 					}
 
-
 					// ファイルを開く
 					HANDLE handle = ::CreateFileA( path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL  );
 
@@ -59,8 +58,11 @@ namespace opk
 					// ファイルを閉じる
 					::CloseHandle( handle );
 
+					// 返す値
 					// バッファを返す
 					*ppData = pBuffer;
+					// サイズを返す
+					*pBytes = dwFileSize;
 
 					return S_OK;
 				}
@@ -153,8 +155,7 @@ namespace opk
 				// コンパイル
 				LPCSTR pProfile = D3DXGetVertexShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
-				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
-				MY_ASSERT( SUCCEEDED(hr) );				
+				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );				
 
 				// 作成
 				if( SUCCEEDED(hr) )
@@ -169,8 +170,7 @@ namespace opk
 				LPCSTR pProfile = D3DXGetPixelShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
 
-				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
-				MY_ASSERT( SUCCEEDED(hr) );				
+				hr = D3DXCompileShader( (LPCSTR)m_pBuffer, m_nSize, NULL, &g_d3dxInclude, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );						
 
 				// 作成
 				if( SUCCEEDED(hr) )
@@ -242,8 +242,7 @@ namespace opk
 				// コンパイル
 				LPCSTR pProfile = D3DXGetVertexShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
-				hr = D3DXCompileShaderFromFileA( m_szFileName, NULL, NULL, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
-				MY_ASSERT( SUCCEEDED(hr) );				
+				hr = D3DXCompileShaderFromFileA( m_szFileName, NULL, NULL, "vs_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );				
 
 				// 作成
 				if( SUCCEEDED(hr) )
@@ -255,8 +254,7 @@ namespace opk
 				// コンパイル
 				LPCSTR pProfile = D3DXGetPixelShaderProfile( pD3DDevice );
 				DWORD dwFlags = 0; // @@ 最適化
-				hr = D3DXCompileShaderFromFileA( m_szFileName, NULL, NULL, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );
-				MY_ASSERT( SUCCEEDED(hr) );				
+				hr = D3DXCompileShaderFromFileA( m_szFileName, NULL, NULL, "ps_main",  pProfile, dwFlags, &pShaderBuffer, &pErrorBuffer, &m_pD3DConstantTable );				
 
 				// 作成
 				if( SUCCEEDED(hr) )
@@ -316,21 +314,31 @@ namespace opk
 				{
 				case D3DXPT_FLOAT: // float値(スカラー・ベクトル・行列)
 					{
-						switch ( desc.Class )
+						// 配列
+						if( desc.Elements > 1 )
 						{
-						case D3DXPC_SCALAR:
-							pParam = new CFloatParameter( strName, handle );
-							break;
-						case D3DXPC_VECTOR:
-							pParam = new CVector4Parameter( strName, handle );
-							break;
-						case D3DXPC_MATRIX_COLUMNS:
-							pParam = new CMatrixParameter( strName, handle );
-							break;
-						default:
-							MY_ASSERT_MESS( false, "Invalid Shader Parameter Class");
-							break;
+							// 配列は一括して１次元配列として扱う
+							pParam = new CFloatArrayParameter( strName, handle, desc.Bytes / sizeof(float));
 						}
+						// 非配列
+						else
+						{
+							switch ( desc.Class )
+							{
+							case D3DXPC_SCALAR:
+								pParam = new CFloatParameter( strName, handle );
+								break;
+							case D3DXPC_VECTOR:							
+								pParam = new CVector4Parameter( strName, handle );
+								break;
+							case D3DXPC_MATRIX_COLUMNS:
+								pParam = new CMatrixParameter( strName, handle );
+								break;
+							default:
+								MY_ASSERT_MESS( false, "Invalid Shader Parameter Class");
+								break;
+							}
+						}						
 					}
 					break;				
 				// サンプラー各種

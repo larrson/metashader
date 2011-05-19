@@ -64,7 +64,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3dx9d.lib d3d9.lib dxerr.lib d3dx11d.lib comctl32.lib Shlwapi.lib"
 				OutputFile="$(OutDir)\$(ProjectName)d.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"

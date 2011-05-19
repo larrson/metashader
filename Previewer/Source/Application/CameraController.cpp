@@ -53,9 +53,9 @@ namespace opk
 
 		// 左クリック中のみカメラ回転
 		if( m_bLButtonDown )
-		{		
-			m_fYaw += (x - m_nPrevX) * fScaleX;			
-			m_fPitch += (y - m_nPrevY) * fScaleY;
+		{					
+			m_fYaw -= (x - m_nPrevX) * fScaleX;			
+			m_fPitch -= (y - m_nPrevY) * fScaleY;
 			m_fPitch = (m_fPitch < 0.0f ? -1.0f : 1.0f ) * min( fabs(m_fPitch), c_fMaxPitch );
 
 			// 位置を保存

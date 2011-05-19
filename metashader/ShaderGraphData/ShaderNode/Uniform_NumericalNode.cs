@@ -52,7 +52,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // このスカラー値のuniformを宣言する
             stream.WriteLine("uniform float \t{0};", Name);
@@ -158,7 +158,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // このスカラー値のuniformを宣言する
             stream.WriteLine("uniform float2 \t{0};", Name);
@@ -278,7 +278,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // このスカラー値のuniformを宣言する
             stream.WriteLine("uniform float3 \t{0};", Name);
@@ -415,7 +415,7 @@ namespace metashader.ShaderGraphData
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>
-        public override void WritingShaderUniformCode(StringWriter stream)
+        public override void WriteShaderUniformCode(StringWriter stream)
         {
             // この4Dベクトルのuniformを宣言する
             stream.WriteLine("uniform float4 \t{0};", Name);
