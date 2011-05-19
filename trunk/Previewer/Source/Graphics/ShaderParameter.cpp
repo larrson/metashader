@@ -156,7 +156,7 @@ namespace opk
 			{				
 
 			/// “ÁŽê‚È–¼‘O‚Ìê‡
-			ELSE_IF_GET_VALUE_FUNC( Uniform_Camera_Position )
+			ELSE_IF_GET_VALUE_FUNC( Uniform_CameraPosition )
 
 			} else {				
 				/// ’Êí
@@ -167,7 +167,7 @@ namespace opk
 		}
 
 		//------------------------------------------------------------------------------------------
-		void CVector4Parameter::GetValue_Uniform_Camera_Position()
+		void CVector4Parameter::GetValue_Uniform_CameraPosition()
 		{
 			CGraphicDevice *pDevice = CApp::GetInstance()->GetGraphicDevice(); MY_ASSERT( pDevice );
 			const CGraphicDevice::SCameraInfo cameraInfo = pDevice->GetCameraInfo();

@@ -37,7 +37,7 @@ namespace metashader.ShaderGraphData
         {
             get
             {
-                return "Uniform_Camera_Position";
+                return "Uniform_CameraPosition";
             }
         }
 
