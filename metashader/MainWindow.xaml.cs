@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace metashader
 {
     /// <summary>
-    /// Window1.xaml の相互作用ロジック
+    /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class Window1 : Window
+    public partial class MainWindow : Window
     {
-        public Window1()
+        public MainWindow()
         {
             InitializeComponent();
 
