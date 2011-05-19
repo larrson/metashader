@@ -52,7 +52,7 @@ float GetSpecularPower( PS_INPUT In )
 	return ret;
 #else
 	// return default value
-	return 20.0f;
+	return 30.0f;
 #endif 
 }
 
@@ -98,7 +98,7 @@ float4 ps_main
 	// calc lighting
 	float3 color = float3(0.0f, 0.0f, 0.0f);
 	color += CalcDiffuse( diffuse, normal );
-	color += CalcSpecular( specular, specularPower, normal );
+	color += CalcSpecular( specular, specularPower, In.Position0, normal );
 	
 	// return
 	return float4( color.xyz, opacity );						

@@ -216,7 +216,7 @@ namespace opk
 			void SetupGetValueFunc();
 
 			/// ƒJƒƒ‰ˆÊ’u‚ğæ“¾‚·‚é
-			void GetValue_Uniform_Camera_Position();
+			void GetValue_Uniform_CameraPosition();
 		};
 
 		/**

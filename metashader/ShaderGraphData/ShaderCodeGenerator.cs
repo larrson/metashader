@@ -699,6 +699,8 @@ namespace metashader.ShaderGraphData
                     // フォン用に方向ライトを追加
                     AddUniform("uniform float3 \tUniform_DirLightDir[DIR_LIGHT_NUM];");
                     AddUniform("uniform float3 \tUniform_DirLightCol[DIR_LIGHT_NUM];");
+                    // フォン用にカメラ位置を追加
+                    AddUniform("uniform float3 \tUniform_CameraPosition;");
                     break;
                 case Setting.MaterialType.Custom:
                     break;
