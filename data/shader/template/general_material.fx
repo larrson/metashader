@@ -90,7 +90,7 @@ float4 ps_main
 	// body of pixel shader	
 	// get parameters for lighting
 	float3	diffuse			= GetDiffuse(In);
-	float3	specular		= GetDiffuse(In);
+	float3	specular		= GetSpecular(In);
 	float	specularPower	= GetSpecularPower(In);
 	float	opacity			= GetOpacity(In);
 	float3	normal			= GetNormal(In);
