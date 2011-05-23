@@ -20,17 +20,13 @@ float3 CalcDiffuse( float3 diffuse, float3 normal)
 /**
 	@brief スペキュラ項を計算する
 */
-float3 CalcSpecular( float3 specular, float power, float3 position, float3 normal )
+float3 CalcSpecular( float3 specular, float power, float3 reflection )
 {
 	float3 ret = float3( 0.0f, 0.0f, 0.0f );
 	for(int i = 0; i < DIR_LIGHT_NUM; ++i )
-	{
-		// 視線方向
-		float3 eyeDir = normalize( Uniform_CameraPosition - position );
-		// ハーフベクトル
-		float3 half = normalize( eyeDir + Uniform_DirLightDir[i] );
+	{		
 		// スペキュラの強さを計算
-		float k = saturate( dot( normal, half ) );
+		float k = saturate( dot( reflection, Uniform_DirLightDir[i] ) );
 		k = pow( k, power );
 		ret += k * specular * Uniform_DirLightCol[i];
 	}

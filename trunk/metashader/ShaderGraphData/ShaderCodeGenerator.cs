@@ -643,7 +643,7 @@ namespace metashader.ShaderGraphData
                 string[] filePathTable = 
                 {
                     @"\..\..\data\shader\template\general_material.fx",
-                    @"\..\..\data\shader\template\custom_material.fx",                    
+                    @"\..\..\data\shader\template\general_material.fx",  
                 };
                 return filePathTable[(int)m_materialType];
             }
@@ -656,9 +656,12 @@ namespace metashader.ShaderGraphData
         /// </summary>
         private void InitializeMacros()
         {
+            // マテリアルタイプを指定
+            AddMacro("MATERIALTYPE_" + m_materialType.ToString());
+
             switch (m_materialType)
             {
-                case Setting.MaterialType.Phong:
+                case Setting.MaterialType.Phong:                    
                     // フォン用に方向ライト数を指定
                     AddMacro("DIR_LIGHT_NUM 3");
                     break;
@@ -700,7 +703,7 @@ namespace metashader.ShaderGraphData
                     AddUniform("uniform float3 \tUniform_DirLightDir[DIR_LIGHT_NUM];");
                     AddUniform("uniform float3 \tUniform_DirLightCol[DIR_LIGHT_NUM];");
                     // フォン用にカメラ位置を追加
-                    AddUniform("uniform float3 \tUniform_CameraPosition;");
+                    AddUniform("uniform float3 \tUniform_CameraPosition;"); AddMacro("UNIFORM_CameraPosition");
                     break;
                 case Setting.MaterialType.Custom:
                     break;
@@ -718,10 +721,10 @@ namespace metashader.ShaderGraphData
             {
                 case Setting.MaterialType.Phong:
                     // フォン用に位置・法線を追加
-                    AddInputAttribute("float3 Position0 : TEXCOORD0;");
-                    AddInputAttribute("float3 Normal0 : TEXCOORD1;");
-                    AddInputAttribute("float3 Tangent0 : TEXCOORD3;");
-                    AddInputAttribute("float3 BiNormal0 : TEXCOORD4;");
+                    AddInputAttribute("float3 Position0 : TEXCOORD0;"); AddMacro("INPUT_Position0");
+                    AddInputAttribute("float3 Normal0 : TEXCOORD1;");   AddMacro("INPUT_Normal0");
+                    AddInputAttribute("float3 Tangent0 : TEXCOORD3;");  AddMacro("INPUT_Tangent0");
+                    AddInputAttribute("float3 BiNormal0 : TEXCOORD4;"); AddMacro("INPUT_BiNormal0");
                     break;
                 case Setting.MaterialType.Custom:
                     break;

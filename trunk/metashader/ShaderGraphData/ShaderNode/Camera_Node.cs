@@ -52,6 +52,14 @@ namespace metashader.ShaderGraphData
 
         #region public methods
         /// <summary>
+        /// ストリームへシェーダのマクロを書きこむ
+        /// </summary>
+        public override void WriteShaderMacroCode(StringWriter stream )
+        {
+            stream.WriteLine("#define UNIFORM_CameraPosition");
+        }
+
+        /// <summary>
         /// ストリームへシェーダのuniform宣言を書きこむ
         /// </summary>
         /// <param name="stream"></param>

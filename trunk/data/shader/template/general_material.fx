@@ -14,12 +14,23 @@ struct PS_INPUT
 %PS_INPUT%
 };
 
+// parameters used by GetXXX functions.
+struct PARAMETERS
+{
+	float3 Position0;
+	float2 Texcoord0;
+	float3 Normal0;
+	float3 Tangent0;
+	float3 BiNormal0; 
+	float3 Reflection0;
+};
+
 // include headers
 #include "utility.h"
 %INCLUDES%
 
 // get diffuse parameter
-float3 GetDiffuse( PS_INPUT In )
+float3 GetDiffuse( PARAMETERS In )
 {
 #ifdef FUNC_Diffuse
 	float3 ret;
@@ -32,7 +43,7 @@ float3 GetDiffuse( PS_INPUT In )
 }
 
 // get specular color
-float3 GetSpecular( PS_INPUT In )
+float3 GetSpecular( PARAMETERS In )
 {
 #ifdef FUNC_Specular
 	float3 ret;
@@ -45,7 +56,7 @@ float3 GetSpecular( PS_INPUT In )
 }
 
 // get specular power
-float GetSpecularPower( PS_INPUT In )
+float GetSpecularPower( PARAMETERS In )
 {
 #ifdef FUNC_SpecularPower
 	float ret;
@@ -58,7 +69,7 @@ float GetSpecularPower( PS_INPUT In )
 }
 
 // get opacity parameter
-float GetOpacity( PS_INPUT In )
+float GetOpacity( PARAMETERS In )
 {
 #ifdef FUNC_Opacity
 	float ret;
@@ -71,16 +82,60 @@ float GetOpacity( PS_INPUT In )
 }
 
 // get normal parameter
-float3 GetNormal( PS_INPUT In )
+float3 GetNormal( PARAMETERS In )
 {
 #ifdef FUNC_Normal
 	float3 ret;
 %Normal%
 	return ToWorldNormal( ret, In.Normal0, In.Tangent0, In.BiNormal0 );
 #else
-	// return default value
-	return In.Normal0;
+	// return default value	
+	return In.Normal0;	
 #endif
+}
+
+// get custom color parameter
+float3 GetCustomColor( PARAMETERS In )
+{
+#ifdef FUNC_CustomColor
+	float3 ret;
+%CustomColor%
+	return ret;
+#else
+	return float3( 0.0f, 0.0f, 0.0f );
+#endif 
+}
+
+// initialize parameters
+PARAMETERS InitializeParams( PS_INPUT In )
+{
+	PARAMETERS Params;
+	
+#ifdef INPUT_Position0
+	Params.Position0 = In.Position0;
+#endif
+#ifdef INPUT_Texcoord0
+	Params.Texcoord0 = In.Texcoord0;
+#endif
+#ifdef INPUT_Normal0
+	Params.Normal0 = In.Normal0;
+#endif 
+#ifdef INPUT_Tangent0
+	Params.Tangent0  = In.Tangent0;
+#endif
+#ifdef INPUT_BiNormal0
+	Params.BiNormal0 = In.BiNormal0;
+#endif
+	
+	// normal vector is calculated by user defined graph. 
+	Params.Normal0 = GetNormal( Params );
+	
+	// calculate refrection vector
+#ifdef UNIFORM_CameraPosition
+	Params.Reflection0 = normalize( reflect( Params.Position0 - Uniform_CameraPosition, Params.Normal0 ) );
+#endif
+
+	return Params;
 }
 
 float4 ps_main
@@ -88,18 +143,31 @@ float4 ps_main
  PS_INPUT In
 ) : COLOR0
 {
-	// body of pixel shader	
+	// initialize parameters
+	PARAMETERS Params = InitializeParams( In );
+	
+#if defined (MATERIALTYPE_Phong)
+
 	// get parameters for lighting
-	float3	diffuse			= GetDiffuse(In);
-	float3	specular		= GetSpecular(In);
-	float	specularPower	= GetSpecularPower(In);
-	float	opacity			= GetOpacity(In);
-	float3	normal			= GetNormal(In);
+	float3	diffuse			= GetDiffuse( Params );
+	float3	specular		= GetSpecular( Params );
+	float	specularPower	= GetSpecularPower( Params );
+	float	opacity			= GetOpacity( Params );	
 	
 	// calc lighting
 	float3 color = float3(0.0f, 0.0f, 0.0f);
-	color += CalcDiffuse( diffuse, normal );
-	color += CalcSpecular( specular, specularPower, In.Position0, normal );
+	color += CalcDiffuse( diffuse, Params.Normal0 );
+	color += CalcSpecular( specular, specularPower, Params.Reflection0 );
+	
+#elif defined (MATERIALTYPE_Custom)
+	
+	// body of pixel shader		
+	float3	color	= GetCustomColor( Params );
+	float	opacity = GetOpacity( Params );
+	
+#else
+	#error undefined material type
+#endif 
 	
 	// return
 	return float4( color.xyz, opacity );						

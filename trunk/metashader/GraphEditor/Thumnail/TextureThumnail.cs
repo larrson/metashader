@@ -70,7 +70,7 @@ namespace metashader.GraphEditor.Thumnail
 
             // ファイル選択ダイアログを開く
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Texture Files (*.DDS;*.BMP;*.JPG;*.PNG)|*.DDS;*.BMP;*.JPG;*.PNG|All files (*.*)|*.*";
+            dlg.Filter = "Texture Files (*.DDS;*.BMP;*.JPG;*.PNG;*.TGA)|*.DDS;*.BMP;*.JPG;*.PNG;*.TGA|All files (*.*)|*.*";
 
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
@@ -99,18 +99,6 @@ namespace metashader.GraphEditor.Thumnail
         /// <param name="path"></param>
         private void SetPath(string path)
         {
-#if false // BitmapImageクラスを使用したデコード
-            BitmapImage bitmapImage = new BitmapImage();
-            // イメージのデコード
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new System.Uri(path, UriKind.Absolute);
-            bitmapImage.DecodePixelWidth = (int)m_image.Width;
-            bitmapImage.DecodePixelHeight = (int)m_image.Height;
-            bitmapImage.EndInit();
-
-            // イメージのセット
-            m_image.Source = bitmapImage;
-#else 
             // プラットフォーム呼び出しによるDirectXAPIを使用したデコード
 
             int bytePerPixel = 4; // 1ピクセル当たりのバイト数(Brga32フォーマットを作成するため4)            
@@ -130,7 +118,6 @@ namespace metashader.GraphEditor.Thumnail
 
             // アンマネージメモリを解放
             Marshal.FreeHGlobal(bufferPtr);
-#endif 
         }
         #endregion
     }
