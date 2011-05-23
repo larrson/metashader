@@ -677,7 +677,7 @@ namespace metashader.ShaderGraphData
             switch (m_materialType)
             {
                 case Setting.MaterialType.Phong:
-                    // フォンマテリアル用インクルードファイルの追加
+                    // フォンマテリアル用インクルードファイルの追加                    
                     AddIncludeFilePath("phong_lighting.h");
                     break;
                 case Setting.MaterialType.Custom:

@@ -15,6 +15,7 @@ struct PS_INPUT
 };
 
 // include headers
+#include "utility.h"
 %INCLUDES%
 
 // get diffuse parameter
@@ -75,7 +76,7 @@ float3 GetNormal( PS_INPUT In )
 #ifdef FUNC_Normal
 	float3 ret;
 %Normal%
-	return ret;
+	return ToWorldNormal( ret, In.Normal0, In.Tangent0, In.BiNormal0 );
 #else
 	// return default value
 	return In.Normal0;
