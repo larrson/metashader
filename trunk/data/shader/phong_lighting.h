@@ -1,3 +1,6 @@
+#ifndef _PHONG_LIGHTING_H_
+#define _PHONG_LIGHTING_H_
+
 /**
 	@file phong_lighting.h
 	@brief Phongモデルに基づくライティング計算を定義したファイル
@@ -32,3 +35,5 @@ float3 CalcSpecular( float3 specular, float power, float3 reflection )
 	}
 	return ret;
 }
+
+#endif // _PHONG_LIGHTING_H_

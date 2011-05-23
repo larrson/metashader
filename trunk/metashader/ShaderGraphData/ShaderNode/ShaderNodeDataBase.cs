@@ -25,6 +25,7 @@ namespace metashader.ShaderGraphData
         Input_UV,           // 入力UVベクトル
         Input_Normal,       // 入力ワールド法線ベクトル
         Input_Position,     // 入力ワールド位置
+        Input_Reflection,   // 入力反射方向
 
         Operator_Add,   // 加算
         Operator_Sub,   // 減算
@@ -71,7 +72,8 @@ namespace metashader.ShaderGraphData
 
                 case ShaderNodeType.Input_UV: return "Input_UV";
                 case ShaderNodeType.Input_Normal: return "Input_Normal";
-                case ShaderNodeType.Input_Position: return "Input_Position";                   
+                case ShaderNodeType.Input_Position: return "Input_Position";
+                case ShaderNodeType.Input_Reflection: return "Input_Reflection";
                 
                 case ShaderNodeType.Operator_Add: return "Operator_Add";
                 case ShaderNodeType.Operator_Sub: return "Operator_Sub";
@@ -116,6 +118,7 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Input_UV: return uint.MaxValue;
                 case ShaderNodeType.Input_Normal: return uint.MaxValue;
                 case ShaderNodeType.Input_Position: return uint.MaxValue;
+                case ShaderNodeType.Input_Reflection: return uint.MaxValue;
 
                 case ShaderNodeType.Operator_Add: return uint.MaxValue;
                 case ShaderNodeType.Operator_Sub: return uint.MaxValue;
@@ -147,7 +150,7 @@ namespace metashader.ShaderGraphData
         /// <returns></returns>
         public static bool IsInputNode( this ShaderNodeType e )
         {            
-            return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Position;
+            return ShaderNodeType.Input_UV <= e && e <= ShaderNodeType.Input_Reflection;
         }
 
         /// <summary>
@@ -219,7 +222,7 @@ namespace metashader.ShaderGraphData
         /// 出力ジョイント
         /// </summary>
         [NonSerialized]
-        protected JointData[] m_outputJoints;       
+        protected JointData[] m_outputJoints;               
 #endregion        
 
 #region constructors

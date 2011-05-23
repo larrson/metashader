@@ -414,7 +414,7 @@ namespace metashader.ShaderGraphData
         public void Generate()
         {
             if (ContainCode == false)
-                return;
+                return;            
 
             // 最終出力ジョイントに接続されている最終ノード
             ShaderNodeDataBase finalNode = m_joint.JointList.First.Value.ParentNode;
@@ -427,60 +427,26 @@ namespace metashader.ShaderGraphData
 
             // コードを生成
             foreach (ShaderNodeDataBase node in m_validNodeQue)
-            {
+            {                
                 // Uniform
                 {
-                    StringWriter writer = new StringWriter();
+                    StringWriter writer = new StringWriter();                    
                     node.WriteShaderUniformCode(writer);
-                    string code = writer.ToString();
-
-                    // 長さがある場合のみ書き込み
-                    if (code.Length > 0)
-                    {
-                        // 書き込み済みならスキップ
-                        if (m_uniformSet.Contains(code))
-                            continue;
-
-                        // 書き込み
-                        m_uniformSet.Add(code);
-                    }
+                    MergeStream(writer, m_uniformSet);
                 }
 
                 // Input(入力属性）
                 {
                     StringWriter writer = new StringWriter();
                     node.WriteShaderInputCode(writer);
-                    string code = writer.ToString();
-
-                    // 長さがある場合のみ書き込み
-                    if (code.Length > 0)
-                    {
-                        // 書き込み済みならスキップ
-                        if (m_inputSet.Contains(code))
-                            continue;
-
-                        // 書き込み
-                        m_inputSet.Add(code);
-                    }
+                    MergeStream(writer, m_inputSet);   
                 }
 
                 // Macro
                 {
                     StringWriter writer = new StringWriter();
                     node.WriteShaderMacroCode(writer);
-                    string code = writer.ToString();
-
-                    // 長さがある場合のみ書き込み
-                    if (code.Length > 0)
-                    {
-                        // 書き込み済みなら書き込まないが、
-                        // スキップはしない
-                        if (m_macroSet.Contains(code) == false)
-                        {
-                            // 書き込み
-                            m_macroSet.Add(code);
-                        }
-                    }
+                    MergeStream(writer, m_macroSet);
                 }
 
                 // メインコード
@@ -600,6 +566,25 @@ namespace metashader.ShaderGraphData
                 nodeList.Remove(removedNode);
             }
         }
+        
+        /// <summary>
+        /// 指定したストリームを指定したセットへマージする
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="hashSet"></param>
+        private void MergeStream( StringWriter stream, HashSet<string> hashSet )
+        {
+            using ( StringReader reader = new StringReader(stream.ToString()) )
+            {
+                string line;
+                while( (line = reader.ReadLine()) != null  )
+                {
+                    // 新しい文字列ならハッシュに追加
+                    if( hashSet.Contains(line) == false )
+                        hashSet.Add(line);
+                }
+            }            
+        }
         #endregion
     };
 
@@ -625,10 +610,7 @@ namespace metashader.ShaderGraphData
             InitializeIncludeFiles();
 
             // Uniformの初期化
-            InitializeUniforms();
-
-            // 入力属性の初期化
-            InitializeInputAttributes();
+            InitializeUniforms();            
         }
         #endregion
 
@@ -710,28 +692,7 @@ namespace metashader.ShaderGraphData
                 default:
                     throw new NotImplementedException();
             }
-        }
-
-        /// <summary>
-        /// 入力属性の初期化
-        /// </summary>
-        private void InitializeInputAttributes()
-        {
-            switch (m_materialType)
-            {
-                case Setting.MaterialType.Phong:
-                    // フォン用に位置・法線を追加
-                    AddInputAttribute("float3 Position0 : TEXCOORD0;"); AddMacro("INPUT_Position0");
-                    AddInputAttribute("float3 Normal0 : TEXCOORD1;");   AddMacro("INPUT_Normal0");
-                    AddInputAttribute("float3 Tangent0 : TEXCOORD3;");  AddMacro("INPUT_Tangent0");
-                    AddInputAttribute("float3 BiNormal0 : TEXCOORD4;"); AddMacro("INPUT_BiNormal0");
-                    break;
-                case Setting.MaterialType.Custom:
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+        }        
         #endregion
     };
 }

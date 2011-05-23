@@ -10,8 +10,12 @@
 // pixel shader inputs
 struct PS_INPUT
 {
-	float4 Position : POSITION0;
-%PS_INPUT%
+	float4 Position : POSITION0;	
+	float3 Position0: TEXCOORD0;      
+	float3 Normal0  : TEXCOORD1;   
+	float2 Texcoord0: TEXCOORD2;   
+	float3 Tangent0 : TEXCOORD3;
+	float3 BiNormal0: TEXCOORD4;
 };
 
 // parameters used by GetXXX functions.
@@ -111,21 +115,11 @@ PARAMETERS InitializeParams( PS_INPUT In )
 {
 	PARAMETERS Params;
 	
-#ifdef INPUT_Position0
 	Params.Position0 = In.Position0;
-#endif
-#ifdef INPUT_Texcoord0
 	Params.Texcoord0 = In.Texcoord0;
-#endif
-#ifdef INPUT_Normal0
-	Params.Normal0 = In.Normal0;
-#endif 
-#ifdef INPUT_Tangent0
+	Params.Normal0   = In.Normal0;
 	Params.Tangent0  = In.Tangent0;
-#endif
-#ifdef INPUT_BiNormal0
 	Params.BiNormal0 = In.BiNormal0;
-#endif
 	
 	// normal vector is calculated by user defined graph. 
 	Params.Normal0 = GetNormal( Params );
