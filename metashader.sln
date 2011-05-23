@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shader", "shader", "{3A3D0B
 		data\shader\phong_lighting.h = data\shader\phong_lighting.h
 		data\shader\simple_ps.fx = data\shader\simple_ps.fx
 		data\shader\simple_vs.fx = data\shader\simple_vs.fx
+		data\shader\utility.h = data\shader\utility.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "template", "template", "{06F50798-2AEF-4FF8-A97D-581D539E2CB3}"

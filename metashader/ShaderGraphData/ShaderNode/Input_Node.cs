@@ -39,23 +39,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region public methods
-        /// <summary>
-        /// ストリームへシェーダのマクロを書きこむ
-        /// </summary>
-        public override void WriteShaderMacroCode(StringWriter stream)
-        {
-            stream.WriteLine("#define INPUT_Texcoord0");
-        }
-
-        /// <summary>
-        /// ストリームへシェーダの入力属性を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void WriteShaderInputCode(StringWriter stream)
-        {
-            stream.WriteLine("\tfloat2 Texcoord0 : TEXCOORD2;");
-        }
+        #region public methods                
         #endregion
 
         #region protected methods
@@ -97,7 +81,7 @@ namespace metashader.ShaderGraphData
         /// </summary>
         public override string VariableName
         {
-            get { return "Normal0"; }
+            get { return "In.Normal0"; }
         }
 
         /// <summary>
@@ -109,32 +93,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region public methods
-        /// <summary>
-        /// ストリームへシェーダのマクロを書きこむ
-        /// </summary>
-        public override void WriteShaderMacroCode(StringWriter stream)
-        {
-            stream.WriteLine("#define INPUT_Normal0");
-        }
-
-        /// <summary>
-        /// ストリームへシェーダの入力属性を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void WriteShaderInputCode(StringWriter stream)
-        {
-            stream.WriteLine("\tfloat3 Normal0 : TEXCOORD1;");
-        }
-
-        /// <summary>
-        /// ストリームへシェーダの本文を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>        
-        public override void WriteShaderMainCode(StringWriter stream) 
-        {
-            stream.WriteLine("\tfloat3 {0} = normalize( In.Normal0 );", VariableName);
-        }
+        #region public methods        
         #endregion
 
         #region protected methods
@@ -195,23 +154,7 @@ namespace metashader.ShaderGraphData
         }
         #endregion
 
-        #region public methods
-        /// <summary>
-        /// ストリームへシェーダのマクロを書きこむ
-        /// </summary>
-        public override void WriteShaderMacroCode(StringWriter stream)
-        {
-            stream.WriteLine("#define INPUT_Position0");
-        }
-
-        /// <summary>
-        /// ストリームへシェーダの入力属性を書きこむ
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void WriteShaderInputCode(StringWriter stream)
-        {
-            stream.WriteLine("\tfloat4 Position0 : TEXCOORD0;");
-        }
+        #region public methods        
         #endregion
 
         #region protected methods
@@ -228,6 +171,76 @@ namespace metashader.ShaderGraphData
             m_outputJointNum = 1;
             m_outputJoints = new JointData[m_outputJointNum];
             m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);            
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 入力反射ベクトルノード
+    /// 反射の計算は、入力法線とカメラ位置からシェーダ内の初期化処理で求めるので明示的な計算用シェーダコードをここでは指定しない
+    /// そのかわり、必要なカメラ位置をUniformとして指定する
+    /// </summary>
+    [Serializable]
+    class Input_ReflectionNode : ShaderNodeDataBase
+    {
+        #region constructors
+        public Input_ReflectionNode(string name, Point pos)
+            : base(ShaderNodeType.Input_Reflection, name, pos)
+        {
+        }
+        #endregion
+
+        #region properties        
+        /// <summary>
+        /// ノードの変数名
+        /// </summary>
+        public override string VariableName
+        {
+            get { return "In.Reflection0"; }
+        }
+
+        /// <summary>
+        /// UI上に表示する表示名
+        /// </summary>
+        public override string Label
+        {
+            get { return "Reflection Vector"; }
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// ストリームへシェーダのマクロを書きこむ
+        /// </summary>
+        public override void WriteShaderMacroCode(StringWriter stream)
+        {
+            stream.WriteLine("#define UNIFORM_CameraPosition");
+        }
+
+        /// <summary>
+        /// ストリームへシェーダのuniform宣言を書きこむ
+        /// </summary>
+        /// <param name="stream"></param>        
+        public override void WriteShaderUniformCode(StringWriter stream)
+        {
+            stream.WriteLine("uniform float3 \tUniform_CameraPosition;");
+        }
+        #endregion
+
+        #region protected methods
+        /// <summary>
+        /// ジョイントの初期化
+        /// </summary>
+        protected override void InitializeJoints()
+        {
+            // 入力
+            m_inputJointNum = 0;
+            m_inputJoints = new JointData[m_inputJointNum];
+
+            // 出力
+            m_outputJointNum = 1;
+            m_outputJoints = new JointData[m_outputJointNum];
+            m_outputJoints[0] = new JointData(this, 0, JointData.Side.Out, VariableType.FLOAT3, JointData.SuffixType.None);
         }
         #endregion
     }    

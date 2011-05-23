@@ -121,6 +121,9 @@ namespace metashader.ShaderGraphData
                 case ShaderNodeType.Input_Position:
                     ret = new Input_PositionNode(name, pos);
                     break;
+                case ShaderNodeType.Input_Reflection:
+                    ret = new Input_ReflectionNode(name, pos);
+                    break;
                 case ShaderNodeType.Operator_Add:
                     ret = new Operator_AddNode(name, pos);
                     break;
