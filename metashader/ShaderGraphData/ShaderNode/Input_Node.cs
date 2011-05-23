@@ -41,6 +41,14 @@ namespace metashader.ShaderGraphData
 
         #region public methods
         /// <summary>
+        /// ストリームへシェーダのマクロを書きこむ
+        /// </summary>
+        public override void WriteShaderMacroCode(StringWriter stream)
+        {
+            stream.WriteLine("#define INPUT_Texcoord0");
+        }
+
+        /// <summary>
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
         /// <param name="stream"></param>
@@ -102,6 +110,14 @@ namespace metashader.ShaderGraphData
         #endregion
 
         #region public methods
+        /// <summary>
+        /// ストリームへシェーダのマクロを書きこむ
+        /// </summary>
+        public override void WriteShaderMacroCode(StringWriter stream)
+        {
+            stream.WriteLine("#define INPUT_Normal0");
+        }
+
         /// <summary>
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
@@ -180,6 +196,14 @@ namespace metashader.ShaderGraphData
         #endregion
 
         #region public methods
+        /// <summary>
+        /// ストリームへシェーダのマクロを書きこむ
+        /// </summary>
+        public override void WriteShaderMacroCode(StringWriter stream)
+        {
+            stream.WriteLine("#define INPUT_Position0");
+        }
+
         /// <summary>
         /// ストリームへシェーダの入力属性を書きこむ
         /// </summary>
