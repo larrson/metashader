@@ -55,10 +55,10 @@ namespace metashader.PropertyEditor
             m_partsList.Add(parts);
 
             // 左側のラベル
-            Label label = new Label();
-            label.Content = labelName;            
-            label.BorderBrush = Brushes.White;
-            label.BorderThickness = new System.Windows.Thickness(0, 0, 0, 1);
+            TextBlock label = new TextBlock();
+            label.Text = labelName;
+            label.TextAlignment = TextAlignment.Left;
+            
             // 右のコントロールの高さを左へバインドする
             Binding binding = new Binding()
             {
@@ -66,16 +66,14 @@ namespace metashader.PropertyEditor
                 Path = new PropertyPath("ActualHeight"),
                 Mode = BindingMode.OneWay
             };
-            label.SetBinding(Label.HeightProperty, binding);
+            label.SetBinding(TextBlock.HeightProperty, binding);
             _leftStack.Children.Add(label);
 
             // 右側のコントロール                        
             parts.Control.BorderBrush = Brushes.White;
             parts.Control.BorderThickness = new System.Windows.Thickness(0, 0, 0, 1);            
             
-            _rightStack.Children.Add(parts.Control);
-
-            // @@ 左側のラベルから右のコントロールへフォーカスの設定
+            _rightStack.Children.Add(parts.Control);            
         }
 
         /// <summary>

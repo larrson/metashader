@@ -9,6 +9,16 @@ using System.Runtime.InteropServices;
 namespace metashader.ShaderGraphData
 {
     /// <summary>
+    /// テクスチャマップの種類
+    /// </summary>
+    public enum MappingType : int
+    {
+        Color,  ///< カラーマップ
+        Normal, ///< 法線マップ
+        Max,    ///< 最大数
+    };
+
+    /// <summary>
     /// ラッピングモード
     /// </summary>
     public enum WrapMode : int
@@ -28,7 +38,7 @@ namespace metashader.ShaderGraphData
         Point = 0,	///< 最近点サンプリング
         Linear,		///< 線形補間
         Ansotropic,	///< 異方性サンプリング			
-    };
+    };    
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable]
@@ -122,6 +132,10 @@ namespace metashader.ShaderGraphData
         /// </summary>
         SamplerState m_samplerState;
         /// <summary>
+        /// マッピングの種類
+        /// </summary>
+        MappingType m_mappingType;
+        /// <summary>
         /// 変数名
         /// </summary>
         string m_variableName;
@@ -185,13 +199,27 @@ namespace metashader.ShaderGraphData
         }
 
         /// <summary>
+        /// マッピングの種類
+        /// </summary>
+        public MappingType MappingType
+        {
+            get { return m_mappingType; }
+            set 
+            {
+                m_mappingType = value;
+
+                // 再コンパイル要求の代わり //@@
+                App.CurrentApp.GraphData.DetectError();
+            }
+        }
+
+        /// <summary>
         /// 出力変数名
         /// </summary>
         public override string VariableName
         {
             get { return m_variableName; }
-        }
-
+        }        
 #endregion
 
 #region override methods        
@@ -288,7 +316,21 @@ namespace metashader.ShaderGraphData
         public override void WriteShaderMainCode(StringWriter stream)
         {
             // サンプラから色をサンプリングする
-            stream.WriteLine("\tfloat4 {0} = tex2D( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+            switch ( this.MappingType )
+            {
+                case MappingType.Color:
+                    // カラーのサンプリング
+                    stream.WriteLine("\tfloat4 {0} = tex2D( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+                    break;
+                case MappingType.Normal:
+                    // 法線のサンプリング
+                    // xyz成分を[0,1]⇒[-1,1]の範囲へ
+                    stream.WriteLine("\tfloat4 {0} = tex2D( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+                    stream.WriteLine("\t{0}.xyz = mul( 2.0f, {0}.xyz - 0.5f );", VariableName);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }                         
         }
         #endregion
 
@@ -347,9 +389,23 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="stream"></param>
         public override void WriteShaderMainCode(StringWriter stream)
-        {
+        {            
             // サンプラから色をサンプリングする
-            stream.WriteLine("\tfloat4 {0} = texCUBE( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+            switch ( this.MappingType )
+            {
+                case MappingType.Color:
+                    // カラーのサンプリング
+                    stream.WriteLine("\tfloat4 {0} = texCUBE( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+                    break;
+                case MappingType.Normal:
+                    // 法線のサンプリング
+                    // xyz成分を[0,1]⇒[-1,1]の範囲へ
+                    stream.WriteLine("\tfloat4 {0} = texCUBE( {1}, {2} );", VariableName, Name, GetInputJoint(0).VariableName);
+                    stream.WriteLine("\t{0}.xyz = mul( 2.0f, {0}.xyz - 0.5f );", VariableName);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }               
         }
         #endregion
 
