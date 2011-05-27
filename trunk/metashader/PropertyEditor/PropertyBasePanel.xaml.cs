@@ -207,6 +207,7 @@ namespace metashader.PropertyEditor
                         || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
             {
                 panel.AddParts("テクスチャファイル", new Parts.Parts<string>(nodeData, "Path", new Parts.FilePath()));
+                panel.AddParts("マッピングの種類", new Parts.Parts<ShaderGraphData.MappingType>(nodeData, "MappingType", new Parts.EnumComboBox<ShaderGraphData.MappingType>()));
                 panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>(nodeData, "TextureSamplerState", new Parts.SamplerState()));
             }       
             // ライト用
