@@ -132,9 +132,11 @@ namespace metashader.GraphEditor
             m_curve.EndPos = outputNode.GetOutputJointPos(m_outputJointIndex);
                         
             // イベント登録
+            m_inputNode.Loaded += new RoutedEventHandler(inputNode_Loaded);
             m_inputNode.PropertyChanged += new PropertyChangedEventHandler(inputNode_PropertyChanged);
+            m_outputNode.Loaded += new RoutedEventHandler(outputNode_Loaded);
             m_outputNode.PropertyChanged += new PropertyChangedEventHandler(outputNode_PropertyChanged);
-        }
+        }        
 #endregion        
 
 #region public methods
@@ -144,12 +146,26 @@ namespace metashader.GraphEditor
         public void OnDeleted()
         {
             // イベントの登録解除
+            m_inputNode.Loaded -= new RoutedEventHandler(inputNode_Loaded);
             m_inputNode.PropertyChanged -= new PropertyChangedEventHandler(inputNode_PropertyChanged);
+            m_outputNode.Loaded -= new RoutedEventHandler(outputNode_Loaded);
             m_outputNode.PropertyChanged -= new PropertyChangedEventHandler(outputNode_PropertyChanged);
-        }
+        }        
 #endregion
 
 #region event handlers
+        /// <summary>
+        /// 入力ノードの描画準備が整った       
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void inputNode_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 入力ノードのコントロールがLoadedされていない状態でLinkが追加された場合、
+            // 曲線の端点の位置を正しく計算できないため、Loadedされた時点で再計算する
+            UpdateStartPos();
+        }
+
         /// <summary>
         /// 入力ノードのプロパティが変更された
         /// </summary>
@@ -160,8 +176,20 @@ namespace metashader.GraphEditor
             // 接続先の入力ノードの位置のプロパティが変更された
             if( e.PropertyName == "Position")
             {
-                m_curve.StartPos = (sender as ShaderNodeControl).GetInputJointPos(m_inputJointIndex);
+                UpdateStartPos();
             }
+        }
+
+        /// <summary>
+        /// 出力ノードの描画準備が整った        
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void outputNode_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 出力ノードのコントロールがLoadedされていない状態でLinkが追加された場合、
+            // 曲線の端点の位置を正しく計算できないため、Loadedされた時点で再計算する
+            UpdateEndPos();
         }
 
         /// <summary>
@@ -174,9 +202,27 @@ namespace metashader.GraphEditor
             // 接続先の出力ノードの位置のプロパティが変更された
             if (e.PropertyName == "Position")
             {
-                m_curve.EndPos = (sender as ShaderNodeControl).GetOutputJointPos(m_outputJointIndex);                
+                UpdateEndPos();
             }
         }   
+#endregion
+
+#region private methods
+        /// <summary>
+        /// 曲線の開始位置の更新
+        /// </summary>
+        void UpdateStartPos()
+        {
+            m_curve.StartPos = m_inputNode.GetInputJointPos(m_inputJointIndex);
+        }
+
+        /// <summary>
+        /// 曲線の終了位置の更新
+        /// </summary>
+        void UpdateEndPos()
+        {
+            m_curve.EndPos = m_outputNode.GetOutputJointPos(m_outputJointIndex);                
+        }
 #endregion
     }
 }

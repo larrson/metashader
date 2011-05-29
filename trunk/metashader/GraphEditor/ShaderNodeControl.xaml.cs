@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Windows.Media.Media3D;
+using System.Threading;
 
 namespace metashader.GraphEditor
 {
@@ -259,7 +260,7 @@ namespace metashader.GraphEditor
             // ActualXXXがNaNである場合、強制的にレイアウトを呼び出し、有効な値を設定させる
             if ( _outputJointGrid.ActualWidth == 0 )
             {
-                UpdateLayout();
+                UpdateLayout();                
             }
 
             // X座標オフセット

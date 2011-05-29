@@ -18,7 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shader", "shader", "{3A3D0B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "template", "template", "{06F50798-2AEF-4FF8-A97D-581D539E2CB3}"
 	ProjectSection(SolutionItems) = preProject
-		data\shader\template\custom_material.fx = data\shader\template\custom_material.fx
 		data\shader\template\general_material.fx = data\shader\template\general_material.fx
 	EndProjectSection
 EndProject
