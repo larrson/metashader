@@ -224,6 +224,9 @@ namespace metashader
         {
             // アプリケーション設定の保存
             metashader.Properties.Settings.Default.Save();
+
+            // DLL側破棄処理
+            NativeMethods.ShutDown();
         }
 
         /// <summary>
