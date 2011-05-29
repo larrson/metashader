@@ -69,8 +69,7 @@ namespace metashader
 #if DEBUG
             // コンソールウィンドウの作成
             Console.ConsoleWindow consoleWindow = new Console.ConsoleWindow();
-            consoleWindow.Owner = this;
-            consoleWindow.Loaded += new RoutedEventHandler(consoleWindow_Loaded);
+            consoleWindow.Owner = this;            
             consoleWindow.Show();
 #endif // DEBUG
 
