@@ -28,9 +28,8 @@ namespace metashader
         {
             None       = 0x00,
             MainWindow = 0x01,
-            PreviewWindow = 0x02,
-            ConsoleWindow = 0x04,
-            AllWindow = MainWindow | PreviewWindow | ConsoleWindow,
+            PreviewWindow = 0x02,            
+            AllWindow = MainWindow | PreviewWindow,
         }
 
         /// <summary>
@@ -59,17 +58,21 @@ namespace metashader
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //@@@ サブウィンドウ作成
+            // サブウィンドウ作成
+
+            // プレビューウィンドウの作成
             Previewer.PreviewWindow previewerWindow = new Previewer.PreviewWindow();
             previewerWindow.Owner = this;
             previewerWindow.Loaded += new RoutedEventHandler(previewerWindow_Loaded);
             previewerWindow.Show();
 
+#if DEBUG
             // コンソールウィンドウの作成
             Console.ConsoleWindow consoleWindow = new Console.ConsoleWindow();
             consoleWindow.Owner = this;
             consoleWindow.Loaded += new RoutedEventHandler(consoleWindow_Loaded);
             consoleWindow.Show();
+#endif // DEBUG
 
             // メインウィンドウのLoadedフラグをON
             SetLoaded(WindowLoadedFrag.MainWindow);
@@ -85,18 +88,7 @@ namespace metashader
         {
             // プレビューウィンドウのLoadedフラグをON
             SetLoaded(WindowLoadedFrag.PreviewWindow);
-        }
-
-        /// <summary>
-        /// ConsoleWindowのLoadedイベント
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void consoleWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            // コンソールウィンドウのLoadedフラグをON
-            SetLoaded(WindowLoadedFrag.ConsoleWindow);
-        }
+        }        
 #endregion      
   
 #region private methods
