@@ -112,7 +112,7 @@ namespace metashader
         /// 新規作成
         /// </summary>
         public void CreateNew()
-        {                  
+        {
             // undoredoの無効化
             UndoRedoManager.Instance.Clear();
 
@@ -120,8 +120,14 @@ namespace metashader
             m_selectManager.Clear();
 
             // グラフデータの初期化
-            m_graphData.Reset();
-            
+            {
+                m_graphData.Reset();
+
+                // 新規作成時は、出力マテリアルを自動で追加する
+                ShaderGraphData.ShaderNodeDataBase nodeData;
+                m_graphData.AddNewNode(ShaderGraphData.ShaderNodeType.Output_Material, new Point(0,0), null, out nodeData);
+            }                        
+
             // ファイル設定の初期化
             m_fileSettings.Reset();
 

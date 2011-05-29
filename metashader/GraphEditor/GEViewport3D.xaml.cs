@@ -231,7 +231,10 @@ namespace metashader.GraphEditor
         void EventManager_GraphErrorEvent(object sender, metashader.Event.GraphErrorEventArgs args)
         {
             // エラー表示を変更
-            m_errorTextAdorner.Text = args.Message;
+            if( m_errorTextAdorner != null )
+            {
+                m_errorTextAdorner.Text = args.Message;
+            }            
         }
 
         /// <summary>
