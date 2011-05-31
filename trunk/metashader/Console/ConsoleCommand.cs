@@ -475,6 +475,40 @@ namespace metashader.Console
     }
 
     /// <summary>
+    /// コンソールベースのマテリアルの種類を変更するコマンド
+    /// </summary>
+    public class ChangeMaterialTypeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 2)
+            {
+                return;
+            }
+
+            // 新しいマテリアルタイプ名
+            string typeName = options[1];
+
+            Setting.MaterialType type = (Setting.MaterialType)Enum.Parse(Type.GetType("metashader.Setting.MaterialType"), typeName);
+
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定            
+            App.CurrentApp.GlobalSettings.ChangeProperty<Setting.MaterialType>("MaterialType", type, undoredo);
+
+            if (undoredo.IsValid)
+            {
+                UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+            }
+        }
+    }
+
+    /// <summary>
     /// コンソールベースのブレンドモード変更コマンド
     /// </summary>
     public class ChangeBlendModeCommand : IConsoleCommand
