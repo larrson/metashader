@@ -59,6 +59,7 @@ namespace metashader.Console
             m_commands.Add("Save", new SaveCommand());
             m_commands.Add("ExportShader", new ExportShaderCommand());
             m_commands.Add("ExecuteShader", new ExecuteShaderCommand());
+            m_commands.Add("ChangeMaterialType", new ChangeMaterialTypeCommand());
             m_commands.Add("ChangeBlendMode", new ChangeBlendModeCommand());
 
             // コンソール自体の操作
