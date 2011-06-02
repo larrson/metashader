@@ -29,6 +29,9 @@ metashader
 　動作確認をされる前に、下記の「動作確認に必要なもの」をご確認いただき、環境に応じてインストールをお願いいたします。
 　ソフトウェアの使用方法に関しては、「metashader\doc\メタシェーダ概要.pptx」をご参照ください。
 
+　■動作環境の要件
+　　Windows PC(XP以降）ShaderModel3.0以上に対応したGPU　　
+
 　■動作確認に必要なもの
 　　本ソフトウェアは、動作に際して以下の別パッケージを必要とします。
 　  「metashader\packages」フォルダ内の各パッケージのインストールをお願いいたします。　
@@ -49,7 +52,7 @@ metashader
   　  Microsoft.NET Framework3.5再配布可能パッケージ
 
 　　　下記のサイトからのダウンロードが可能です。
-　　　http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=333325fd-ae52-4e35-b531-508d977d32a6&displaylang=ja
+　　　http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=333325fd-ae52-4e35-b531-508d977d32a6&displaylang=ja　　
 
 ■ソースコードからのビルド
 　下記、「ソースコードからのビルドに必要なもの」をご参照の上、

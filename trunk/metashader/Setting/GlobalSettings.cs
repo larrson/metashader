@@ -62,7 +62,7 @@ namespace metashader.Setting
     /// グラフ構造やUI設定以外の設定項目
     /// </summary>
     [Serializable]
-    public class GlobalSettings : IDeserializationCallback
+    public class GlobalSettings
     {
 #region variables
         /// <summary>
@@ -93,17 +93,8 @@ namespace metashader.Setting
         }
 #endregion
 
-        #region override methods        
-        /// <summary>
-        /// デシリアライズ時のコールバック
-        /// </summary>
-        /// <param name="sender"></param>
-        void IDeserializationCallback.OnDeserialization(object sender)
-        {
-            // リセット対象のプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
-            NotifyAllProperties();
-        }
-        #endregion
+#region override methods               
+#endregion
 
 #region public methods
         /// <summary>
@@ -115,6 +106,8 @@ namespace metashader.Setting
         {
             // ロード
             GlobalSettings settings = formatter.Deserialize(fileStream) as GlobalSettings;
+            m_materialType = settings.MaterialType;
+            m_blendMode = settings.BlendMode;
 
             // ロードしたプロパティを別のサブシステムへ反映させるため、イベントを利用して初期化する
             NotifyAllProperties();
@@ -126,6 +119,10 @@ namespace metashader.Setting
         /// </summary>
         public void Reset()
         {
+            // メンバ変数の初期化
+            m_materialType = MaterialType.Phong;
+            m_blendMode = BlendMode.None;
+
             // アプリケーション中の他のサブシステムへ通知するため、イベントを利用して初期化する
             NotifyAllProperties();         
         }

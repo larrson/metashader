@@ -163,7 +163,7 @@ namespace metashader.Console
     }
 
     /// <summary>
-    /// コンソールベースの文字列変更コマンド
+    /// コンソールベースの文字列プロパティ変更コマンド
     /// </summary>
     public class ChangeStringCommand : IConsoleCommand
     {
@@ -206,6 +206,7 @@ namespace metashader.Console
         }
     }
 
+
     /// <summary>
     /// コンソールベースの位置変更コマンド
     /// </summary>
@@ -226,7 +227,7 @@ namespace metashader.Console
             string name = options[1];
 
             // 対応するノードを取得
-            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);            
+            ShaderGraphData.ShaderNodeDataBase node = App.CurrentApp.GraphData.GetNode(name);
 
             // 変更後の位置を取得
             double x = double.Parse(options[2]);
@@ -248,6 +249,239 @@ namespace metashader.Console
             }
         }
     }
+
+
+    /// <summary>
+    /// コンソールベースのマッピングタイププロパティ変更コマンド
+    /// </summary>
+    public class ChangeMappingTypeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 3)
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+            
+            // 対応するノードを取得
+            ShaderGraphData.Uniform_TextureNodeBase node = App.CurrentApp.GraphData.GetNode(name) as ShaderGraphData.Uniform_TextureNodeBase;
+            if (node == null)
+            {
+                return;
+            }
+
+            // タイプを取得
+            ShaderGraphData.MappingType type = (ShaderGraphData.MappingType)Enum.Parse(Type.GetType("metashader.ShaderGraphData.MappingType"), options[2]);                        
+
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定
+            {
+                App.CurrentApp.GraphData.ChangeNodeProperty<ShaderGraphData.MappingType>(node, "MappingType", type, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのラッピングモードの変更コマンド
+    /// </summary>
+    public class ChangeWrapModeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 4)
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.Uniform_TextureNodeBase node = App.CurrentApp.GraphData.GetNode(name) as ShaderGraphData.Uniform_TextureNodeBase;            
+            if( node == null )
+            {
+                return;
+            }
+
+            // ラップ方向を取得            
+            string wrapDir = options[2];
+
+            // ラッピングモードを取得
+            ShaderGraphData.WrapMode wrapMode = (ShaderGraphData.WrapMode)Enum.Parse(Type.GetType("metashader.ShaderGraphData.WrapMode"), options[3]);            
+
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定            
+            {
+                // 変更前のサンプラーステートを取得
+                ShaderGraphData.SamplerState samplerState = node.TextureSamplerState;
+
+                // サンプラーステートを変更
+                switch( wrapDir )
+                {
+                    case "U":
+                        samplerState.WrapU = wrapMode;
+                        break;
+                    case "V":
+                        samplerState.WrapV = wrapMode;
+                        break;
+                    case "W":
+                        samplerState.WrapW = wrapMode;
+                        break;
+                    default:
+                        return;
+                }
+   
+                App.CurrentApp.GraphData.ChangeNodeProperty<ShaderGraphData.SamplerState>(node, "TextureSamplerState", samplerState, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースのフィルタ変更コマンド
+    /// </summary>
+    public class ChangeFilterModeCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 4)
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.Uniform_TextureNodeBase node = App.CurrentApp.GraphData.GetNode(name) as ShaderGraphData.Uniform_TextureNodeBase;
+            if (node == null)
+            {
+                return;
+            }
+
+            // フィルタ方向を取得            
+            string dir = options[2];
+
+            // フィルタモードを取得
+            ShaderGraphData.FilterMode mode = (ShaderGraphData.FilterMode)Enum.Parse(Type.GetType("metashader.ShaderGraphData.FilterMode"), options[3]);
+
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定            
+            {
+                // 変更前のサンプラーステートを取得
+                ShaderGraphData.SamplerState samplerState = node.TextureSamplerState;
+
+                // サンプラーステートを変更
+                switch (dir)
+                {
+                    case "Mag":
+                        samplerState.MagFilter = mode;
+                        break;
+                    case "Min":
+                        samplerState.MinFilter = mode;
+                        break;
+                    case "Mip":
+                        samplerState.MipFilter = mode;
+                        break;
+                    default:
+                        return;
+                }
+
+                App.CurrentApp.GraphData.ChangeNodeProperty<ShaderGraphData.SamplerState>(node, "TextureSamplerState", samplerState, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// コンソールベースの境界色変更コマンド
+    /// </summary>
+    public class ChangeBordeColorCommand : IConsoleCommand
+    {
+        /// <summary>
+        /// コンソールベースのコマンドを実行する
+        /// </summary>
+        /// <param name="options">コマンド引数（コマンド名自体を含む）</param>
+        public void Execute(string[] options)
+        {
+            if (options.Length < 6)
+            {
+                return;
+            }
+
+            // ノード名
+            string name = options[1];
+
+            // 対応するノードを取得
+            ShaderGraphData.Uniform_TextureNodeBase node = App.CurrentApp.GraphData.GetNode(name) as ShaderGraphData.Uniform_TextureNodeBase;
+            if (node == null)
+            {
+                return;
+            }
+
+            // RGBAを取得
+            float R = float.Parse(options[2]);
+            float G = float.Parse(options[3]);
+            float B = float.Parse(options[4]);
+            float A = float.Parse(options[5]);
+          
+            // Undo/Redoバッファ
+            UndoRedoBuffer undoredo = new UndoRedoBuffer();
+
+            // 新しいプロパティを設定            
+            {
+                // 変更前のサンプラーステートを取得
+                ShaderGraphData.SamplerState samplerState = node.TextureSamplerState;
+
+                // サンプラーステートを変更
+                samplerState.BorderColorR = R;
+                samplerState.BorderColorG = G;
+                samplerState.BorderColorB = B;
+                samplerState.BorderColorA = A;
+
+                App.CurrentApp.GraphData.ChangeNodeProperty<ShaderGraphData.SamplerState>(node, "TextureSamplerState", samplerState, undoredo);
+
+                if (undoredo.IsValid)
+                {
+                    UndoRedoManager.Instance.RegistUndoRedoBuffer(undoredo);
+                }
+            }
+        }
+    }    
 
     /// <summary>
     /// コンソールベースのリンク追加コマンド
