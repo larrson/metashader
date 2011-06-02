@@ -42,6 +42,10 @@ namespace metashader.Console
             m_commands.Add("ChangeString", new ChangeStringCommand());
             m_commands.Add("ChangeFloat", new ChangeFloatCommand());
             m_commands.Add("ChangePos", new ChangePositionCommand());
+            m_commands.Add("ChangeMappingType", new ChangeMappingTypeCommand());
+            m_commands.Add("ChangeWrapMode", new ChangeWrapModeCommand());
+            m_commands.Add("ChangeFilterMode", new ChangeFilterModeCommand());
+            m_commands.Add("ChangeBorderColor", new ChangeBordeColorCommand());
 
             // リンク操作
             m_commands.Add("AddLink", new AddLinkCommand());

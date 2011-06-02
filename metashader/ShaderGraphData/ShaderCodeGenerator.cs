@@ -581,7 +581,7 @@ namespace metashader.ShaderGraphData
                 {
                     // 新しい文字列ならハッシュに追加
                     if( hashSet.Contains(line) == false )
-                        hashSet.Add(line);
+                        hashSet.Add(line + "\r\n");
                 }
             }            
         }

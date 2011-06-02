@@ -117,9 +117,9 @@ PARAMETERS InitializeParams( PS_INPUT In )
 	
 	Params.Position0 = In.Position0;
 	Params.Texcoord0 = In.Texcoord0;
-	Params.Normal0   = In.Normal0;
-	Params.Tangent0  = In.Tangent0;
-	Params.BiNormal0 = In.BiNormal0;
+	Params.Normal0   = normalize( In.Normal0 );
+	Params.Tangent0  = normalize( In.Tangent0 );
+	Params.BiNormal0 = normalize( In.BiNormal0 );
 	
 	// normal vector is calculated by user defined graph. 
 	Params.Normal0 = GetNormal( Params );
