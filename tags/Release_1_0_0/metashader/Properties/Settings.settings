@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="metashader.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AutoExecution" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MainWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">600,0,800,800</Value>
+    </Setting>
+    <Setting Name="MainWindowState" Type="System.Windows.WindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="PreviewWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">0,0,600,400</Value>
+    </Setting>
+    <Setting Name="ConsoleWindowRect" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">0,400,600,400</Value>
+    </Setting>
+    <Setting Name="Default2DTexturePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\..\..\data\texture\ichimatsu.png</Value>
+    </Setting>
+    <Setting Name="DefaultCubeTexturePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\..\..\data\texture\rgb_cube.dds</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

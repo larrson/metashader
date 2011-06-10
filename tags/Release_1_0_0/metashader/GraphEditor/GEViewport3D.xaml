@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="metashader.GraphEditor.GEViewport3D"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:metashader.GraphEditor"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    AllowDrop="True"
+    >
+    <UserControl.Resources>
+        <MeshGeometry3D x:Key="centeredPlane" 
+                        Positions="-0.5,0.5,0 -0.5,-0.5,0 0.5,-0.5,0 0.5,0.5,0"
+                        TextureCoordinates="0,0 0,1 1,1 1,0" TriangleIndices="0 1 2 0 2 3" />        
+        <MeshGeometry3D x:Key="lefttopPlane" 
+                        Positions="0,0,0 0,-1,0 1,-1,0 1,0,0"
+                        TextureCoordinates="0,0 0,1 1,1 1,0" TriangleIndices="0 1 2 0 2 3" />
+        <DiffuseMaterial x:Key="materialWhite" Viewport2DVisual3D.IsVisualHostMaterial="True" Brush="White" />
+    </UserControl.Resources>
+    <Grid Name="_grid" Background="Gray">
+        <Viewport3D Name="_linkViewport" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  AllowDrop="True">           
+
+            <!-- Lights -->
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="#FFFFFFFF" Direction="0,0,-1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+        </Viewport3D>
+        <Viewport3D Name="_nodeViewport" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  AllowDrop="True">                  
+
+            <!-- Lights -->
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="#FFFFFFFF" Direction="0,0,-1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+        </Viewport3D>
+        <Viewport3D Name="_dragViewport" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  AllowDrop="True">            
+
+            <!-- Lights -->
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="#FFFFFFFF" Direction="0,0,-1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+        </Viewport3D>
+    </Grid>    
+</UserControl>

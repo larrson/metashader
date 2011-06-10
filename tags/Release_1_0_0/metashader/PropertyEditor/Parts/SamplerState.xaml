@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="metashader.PropertyEditor.Parts.SamplerState"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"             
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"           
+    xmlns:local="clr-namespace:metashader.PropertyEditor.Parts"
+    HorizontalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <local:WrapConverter x:Key="wrapConverter"/>
+    </UserControl.Resources>
+
+    <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Wrap Mode U</TextBlock>
+            <ComboBox Grid.Column="1" Name="_wrapUComboBox">
+                <ComboBoxItem>Wrap</ComboBoxItem>
+                <ComboBoxItem>Mirror</ComboBoxItem>
+                <ComboBoxItem>Clamp</ComboBoxItem>
+                <ComboBoxItem>Border</ComboBoxItem>
+                <ComboBoxItem>Mirroronce</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Wrap Mode V</TextBlock>
+            <ComboBox Grid.Column="1" Name="_wrapVComboBox">
+                <ComboBoxItem>Wrap</ComboBoxItem>
+                <ComboBoxItem>Mirror</ComboBoxItem>
+                <ComboBoxItem>Clamp</ComboBoxItem>
+                <ComboBoxItem>Border</ComboBoxItem>
+                <ComboBoxItem>Mirroronce</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Wrap Mode W</TextBlock>
+            <ComboBox Grid.Column="1" Name="_wrapWComboBox">
+                <ComboBoxItem>Wrap</ComboBoxItem>
+                <ComboBoxItem>Mirror</ComboBoxItem>
+                <ComboBoxItem>Clamp</ComboBoxItem>
+                <ComboBoxItem>Border</ComboBoxItem>
+                <ComboBoxItem>Mirroronce</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Mag Filter</TextBlock>
+            <ComboBox Grid.Column="1" Name="_magFilterComboBox">
+                <ComboBoxItem>Point</ComboBoxItem>
+                <ComboBoxItem>Linear</ComboBoxItem>
+                <ComboBoxItem>Ansotropic</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Min Filter</TextBlock>
+            <ComboBox Grid.Column="1" Name="_minFilterComboBox">
+                <ComboBoxItem>Point</ComboBoxItem>
+                <ComboBoxItem>Linear</ComboBoxItem>
+                <ComboBoxItem>Ansotropic</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Mipmap Filter</TextBlock>            
+            <ComboBox Grid.Column="1" Name="_mipFilterComboBox">
+                <ComboBoxItem>Point</ComboBoxItem>
+                <ComboBoxItem>Linear</ComboBoxItem>
+                <ComboBoxItem>Ansotropic</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Max Anisotropy</TextBlock>
+            <local:CommonTextBox Grid.Column="1" x:Name="_maxAnisotoropyTextBox" />
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Bordef Color R</TextBlock>
+            <local:CommonTextBox Grid.Column="1" x:Name="_borderColorRTextBox" />
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Bordef Color G</TextBlock>
+            <local:CommonTextBox Grid.Column="1" x:Name="_borderColorGTextBox" />
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Bordef Color B</TextBlock>
+            <local:CommonTextBox Grid.Column="1" x:Name="_borderColorBTextBox" />
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" >Bordef Color A</TextBlock>
+            <local:CommonTextBox Grid.Column="1" x:Name="_borderColorATextBox" />
+        </Grid>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,6 @@
+﻿<UserControl x:Class="metashader.PropertyEditor.PropertyBasePanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">    
+    <ScrollViewer Name="_scrollViewer"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" />
+</UserControl>
