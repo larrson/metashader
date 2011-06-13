@@ -24,7 +24,7 @@ namespace metashader.ShaderGraphData
         /// <param name="name"></param>
         /// <param name="pos"></param>
         public Utility_AppendNode(string name, Point pos)
-            : base(ShaderNodeType.Utility_Append, name, pos)
+            : base("Utility_Append", name, pos)
         {
 
         }

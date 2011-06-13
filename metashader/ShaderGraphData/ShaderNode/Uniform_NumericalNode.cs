@@ -23,7 +23,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Uniform_FloatNode(string name, Point pos)
-            : base(ShaderNodeType.Uniform_Float, name, pos)
+            : base("Uniform_Float", name, pos)
         {
         }
         #endregion
@@ -97,7 +97,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Uniform_Vector2Node(string name, Point pos)
-            : base(ShaderNodeType.Uniform_Vector2, name, pos)
+            : base("Uniform_Vector2", name, pos)
         {
             m_values[0] = m_values[1] = 0.0f;
         }
@@ -205,7 +205,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Uniform_Vector3Node(string name, Point pos)
-            : base(ShaderNodeType.Uniform_Vector3, name, pos)
+            : base("Uniform_Vector3", name, pos)
         {
             m_values[0] = m_values[1] = m_values[2] = 0.0f;
         }
@@ -327,7 +327,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Uniform_Vector4Node(string name, Point pos)
-            : base(ShaderNodeType.Uniform_Vector4, name, pos)
+            : base("Uniform_Vector4", name, pos)
         {
             m_values[0] = 0.0f;
             m_values[1] = 0.0f;

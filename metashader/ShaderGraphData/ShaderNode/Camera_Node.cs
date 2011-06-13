@@ -23,7 +23,7 @@ namespace metashader.ShaderGraphData
         /// <param name="name"></param>
         /// <param name="pos"></param>
         public Camera_PositionNode(string name, Point pos)
-            : base(ShaderNodeType.Camera_Position, name, pos)
+            : base("Camera_Position", name, pos)
         {
 
         }

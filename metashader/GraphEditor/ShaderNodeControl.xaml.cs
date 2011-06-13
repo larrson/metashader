@@ -395,16 +395,16 @@ namespace metashader.GraphEditor
             }
 
             // 中央のサムネイルを作成
-            ShaderGraphData.ShaderNodeType type = m_node.Type;
+            string type = m_node.Type;
             // Vectot3/Vector4用
-            if (    type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector3
-                ||  type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+            if (    type == "Uniform_Vector3"
+                ||  type == "Uniform_Vector4")
             {
                 m_thumnailControl = new Thumnail.ColorThumnail(m_node);
             }
             // テクスチャ用
-            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
-                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
+            else if (type == "Uniform_Texture2D"
+                        || type == "Uniform_TextureCube")
             {
                 m_thumnailControl = new Thumnail.TextureThumnail(m_node);
             }

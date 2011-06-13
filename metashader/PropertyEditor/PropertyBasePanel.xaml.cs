@@ -162,7 +162,7 @@ namespace metashader.PropertyEditor
             PropertyStackPanel panel = new PropertyStackPanel();            
 
             // ノードの種類ごとにスタックへUIを積む
-            ShaderGraphData.ShaderNodeType type = nodeData.Type;
+            string type = nodeData.Type;
 
             // 共通項目
             // 題名
@@ -177,25 +177,25 @@ namespace metashader.PropertyEditor
             panel.AddParts("説明", new Parts.Parts<string>(nodeData, "Description", new Parts.StringTextbox()));
 
             // Float値用
-            if( type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Float )
+            if( type == "Uniform_Float" )
             {
                 panel.AddParts("値", new Parts.Parts<float>(nodeData, "Value", new Parts.FloatTextBox()));
             }
             // Vector2用
-            else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector2)
+            else if (type == "Uniform_Vector2")
             {
                 panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
                 panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));                
             }            
             // Vector3用
-            else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+            else if (type == "Uniform_Vector3")
             {
                 panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
                 panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));
                 panel.AddParts("Z", new Parts.Parts<float>(nodeData, "Z", new Parts.FloatTextBox()));                
             }            
             // Vector4用
-            else if (type == metashader.ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+            else if (type == "Uniform_Vector4")
             {
                 panel.AddParts("X", new Parts.Parts<float>(nodeData, "X", new Parts.FloatTextBox()));
                 panel.AddParts("Y", new Parts.Parts<float>(nodeData, "Y", new Parts.FloatTextBox()));
@@ -203,16 +203,16 @@ namespace metashader.PropertyEditor
                 panel.AddParts("W", new Parts.Parts<float>(nodeData, "W", new Parts.FloatTextBox()));
             }            
             // テクスチャ用
-            else if (type == ShaderGraphData.ShaderNodeType.Uniform_Texture2D
-                        || type == ShaderGraphData.ShaderNodeType.Uniform_TextureCube)
+            else if (type == "Uniform_Texture2D"
+                        || type == "Uniform_TextureCube")
             {
                 panel.AddParts("テクスチャファイル", new Parts.Parts<string>(nodeData, "Path", new Parts.FilePath()));
                 panel.AddParts("マッピングの種類", new Parts.Parts<ShaderGraphData.MappingType>(nodeData, "MappingType", new Parts.EnumComboBox<ShaderGraphData.MappingType>()));
                 panel.AddParts("サンプラーステート", new Parts.Parts<ShaderGraphData.SamplerState>(nodeData, "TextureSamplerState", new Parts.SamplerState()));
             }       
             // ライト用
-            else if(type == ShaderGraphData.ShaderNodeType.Light_DirLightColor 
-                || type == ShaderGraphData.ShaderNodeType.Light_DirLightDir )
+            else if(type == "Light_DirLightColor" 
+                || type == "Light_DirLightDir" )
             {
                 ShaderGraphData.Indexed_NodeBase indexedNode = nodeData as ShaderGraphData.Indexed_NodeBase;
                 panel.AddParts("インデックス", new Parts.Parts<uint>(nodeData, "Index", new Parts.IndexComboBox(indexedNode.MaximumIndex)));

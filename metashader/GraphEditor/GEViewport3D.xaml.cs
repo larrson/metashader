@@ -36,15 +36,12 @@ namespace metashader.GraphEditor
                 // 「ノードの追加」メニュー 
                 MenuItem menuItemAddNode = new MenuItem();
                 menuItemAddNode.Header = "ノードの追加";
-                for (int i = 0; i < (int)ShaderGraphData.ShaderNodeType.Max; ++i)
-                {
-                    // インデックに対応するシェーダーノードの種類
-                    ShaderGraphData.ShaderNodeType type = (ShaderGraphData.ShaderNodeType)i;
-
+                foreach( string type in App.CurrentApp.GraphData.ValidNodeTypeList )
+                {                    
                     // 追加するメニュー
                     MenuItem menuItem = new MenuItem();
                     // 表記
-                    menuItem.Header = type.ToStringExt();
+                    menuItem.Header = type;
                     // ハンドラ
                     menuItem.Click += (s, e) =>
                     {

@@ -18,7 +18,7 @@ namespace metashader.ShaderGraphData
     {
 #region constructors
         public Func_Normalize(string name, Point pos)
-            : base(ShaderNodeType.Func_Normalize, name, pos)
+            : base("Func_Normalize", name, pos)
         {
 
         }
@@ -136,7 +136,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Func_Dot(string name, Point pos)
-            : base(ShaderNodeType.Func_Dot, name, pos)
+            : base("Func_Dot", name, pos)
         {
 
         }
@@ -261,7 +261,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Func_Reflect(string name, Point pos)
-            : base(ShaderNodeType.Func_Reflect, name, pos)
+            : base("Func_Reflect", name, pos)
         {
 
         }
@@ -382,7 +382,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Func_Pow(string name, Point pos)
-            : base(ShaderNodeType.Func_Pow, name, pos)
+            : base("Func_Pow", name, pos)
         {
 
         }
@@ -506,7 +506,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Func_Saturate(string name, Point pos)
-            : base(ShaderNodeType.Func_Saturate, name, pos)
+            : base("Func_Saturate", name, pos)
         {
 
         }

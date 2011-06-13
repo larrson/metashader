@@ -148,7 +148,7 @@ namespace metashader.ShaderGraphData
         /// <param name="type">種類。テクスチャ3種類のうちいずれか</param>
         /// <param name="name">シェーダノード名</param>
         /// <param name="pos">UI上の表示位置</param>        
-        public Uniform_TextureNodeBase(ShaderNodeType type, string name, Point pos)
+        public Uniform_TextureNodeBase(string type, string name, Point pos)
             : base(type, name, pos)
         {
             /// メンバ変数の初期化                        
@@ -291,7 +291,7 @@ namespace metashader.ShaderGraphData
         /// <param name="name">ノード名</param>
         /// <param name="pos">表示位置</param>
         public Uniform_Texture2DNode(string name, Point pos)
-            : base( ShaderNodeType.Uniform_Texture2D, name, pos )
+            : base( "Uniform_Texture2D", name, pos )
         {
             // デフォルトのテクスチャパスを設定
             Path = Setting.FileSettings.ApplicationFolderPath + Properties.Settings.Default.Default2DTexturePath;
@@ -366,7 +366,7 @@ namespace metashader.ShaderGraphData
     {
 #region constructors
         public Uniform_TextureCubeNode(string name, Point pos)
-            : base( ShaderNodeType.Uniform_TextureCube, name, pos )
+            : base( "Uniform_TextureCube", name, pos )
         {
             // デフォルトのテクスチャパスを設定
             Path = Setting.FileSettings.ApplicationFolderPath + Properties.Settings.Default.DefaultCubeTexturePath;

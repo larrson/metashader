@@ -35,7 +35,7 @@ namespace metashader.GraphEditor.Thumnail
             // 背景色変更            
             float r,g,b,a;
             r = g = b = a = 0.0f;
-            if( NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3 )
+            if( NodeData.Type == "Uniform_Vector3" )
             {
                 ShaderGraphData.Uniform_Vector3Node vector3Node = NodeData as ShaderGraphData.Uniform_Vector3Node;
                 r = vector3Node.Values[0];
@@ -43,7 +43,7 @@ namespace metashader.GraphEditor.Thumnail
                 b = vector3Node.Values[2];
                 a = 1.0f;
             }
-            else if ( NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4 )
+            else if ( NodeData.Type == "Uniform_Vector4" )
             {
                 ShaderGraphData.Uniform_Vector4Node vector4Node = NodeData as ShaderGraphData.Uniform_Vector4Node;
                 r = vector4Node.Values[0];
@@ -74,7 +74,7 @@ namespace metashader.GraphEditor.Thumnail
 
                 // ベクトルの4成分を取得
                 float[] values = null;
-                if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+                if (NodeData.Type == "Uniform_Vector4")
                 {
                     values = new float[4];
                     values[0] = dialog.Color.R / 255f;
@@ -82,7 +82,7 @@ namespace metashader.GraphEditor.Thumnail
                     values[2] = dialog.Color.B / 255f;
                     values[3] = dialog.Color.A / 255f;
                 }
-                else if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+                else if (NodeData.Type == "Uniform_Vector3")
                 {
                     values = new float[3];
                     values[0] = dialog.Color.R / 255f;
@@ -120,7 +120,7 @@ namespace metashader.GraphEditor.Thumnail
                 // 背景色を変更 
                 float r, g, b, a; r = g = b = a = 0.0f;
 
-                if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector3)
+                if (NodeData.Type == "Uniform_Vector3")
                 {
                     ShaderGraphData.Uniform_Vector3Node vector3Node = args.Node as ShaderGraphData.Uniform_Vector3Node;
                     r = vector3Node.Values[0];
@@ -128,7 +128,7 @@ namespace metashader.GraphEditor.Thumnail
                     b = vector3Node.Values[2];
                     a = 1.0f;
                 }
-                else if (NodeData.Type == ShaderGraphData.ShaderNodeType.Uniform_Vector4)
+                else if (NodeData.Type == "Uniform_Vector4")
                 {
                     ShaderGraphData.Uniform_Vector4Node vector4Node = args.Node as ShaderGraphData.Uniform_Vector4Node;
                     r = vector4Node.Values[0];

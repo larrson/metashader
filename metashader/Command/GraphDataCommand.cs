@@ -27,14 +27,14 @@ namespace metashader.Command
            /// <summary>
            /// 種類
            /// </summary>
-           public ShaderGraphData.ShaderNodeType Type { get; set; }
+           public string Type { get; set; }
 
            /// <summary>
            /// エディター上の表示位置
            /// </summary>
            public Point Pos{ get; set; }           
 
-           public Paramter( ShaderGraphData.ShaderNodeType type, Point pos )
+           public Paramter( string type, Point pos )
            {
                Type = type;
                Pos = pos;               

@@ -17,7 +17,7 @@ namespace metashader.ShaderGraphData
     /// イベントのハンドリングは行わない（データの独立性を高めるため）。
     /// </summary>    
     [Serializable]
-    public partial class ShaderGraphData : IDeserializationCallback
+    public partial class ShaderGraphData
     {
 #region variables        
         /// <summary>
@@ -36,6 +36,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// シェーダノード用ファクトリ
         /// </summary>        
+        [NonSerialized]
         ShaderNodeFactory m_shaderNodeFactory = new ShaderNodeFactory();       
 #endregion
 
@@ -119,6 +120,14 @@ namespace metashader.ShaderGraphData
         public ShaderNodeDataBase OutputNode
         {
             get { return m_outputNodeList[0]; }
+        }        
+
+        /// <summary>
+        /// 有効なノードのタイプのリスト
+        /// </summary>
+        public ReadOnlyCollection<string> ValidNodeTypeList
+        {
+            get { return m_shaderNodeFactory.ValidNodeTypeList; }
         }
 #endregion
 
@@ -151,7 +160,7 @@ namespace metashader.ShaderGraphData
         /// 新規のシェーダノードの追加
         /// </summary>
         /// <returns></returns>
-        public bool AddNewNode(ShaderNodeType type, Point pos, UndoRedoBuffer undoredo, out ShaderNodeDataBase newNode )
+        public bool AddNewNode(string type, Point pos, UndoRedoBuffer undoredo, out ShaderNodeDataBase newNode )
         {
             // 新しくノードを作成
             ShaderNodeDataBase node = CreateNewNode(type, pos);
@@ -214,7 +223,7 @@ namespace metashader.ShaderGraphData
             m_nodeList.Add(nodeData.GetHashCode(), nodeData);
 
             // 出力ノードならリストに追加
-            if (nodeData.Type.IsOutputNode())
+            if (nodeData.Type == "Output_Material")
                 m_outputNodeList.Add(nodeData);
 
             // Undo/Redoバッファがあれば処理を積む
@@ -293,7 +302,7 @@ namespace metashader.ShaderGraphData
                 }
 
                 // 出力ノードならリストから削除
-                if( node.Type.IsOutputNode())
+                if( node.Type == "Output_Material" )
                     m_outputNodeList.Remove(node);
             }
 
@@ -602,7 +611,7 @@ namespace metashader.ShaderGraphData
         /// <param name="type">種類</param>
         /// <param name="pos">表示位置</param>                
         /// <returns></returns>       
-        private ShaderNodeDataBase CreateNewNode( ShaderNodeType type, Point pos)
+        private ShaderNodeDataBase CreateNewNode( string type, Point pos)
         {                        
             return m_shaderNodeFactory.Create( type, pos );
         }
@@ -610,7 +619,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// ファクトリのカウンタのインクリメント
         /// </summary>
-        private void IncreamentShaderNodeCounter( ShaderNodeType type )
+        private void IncreamentShaderNodeCounter( string type )
         {
             m_shaderNodeFactory.IncrementID( type );
         }
@@ -618,10 +627,10 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// ファクトリのカウンタのデクリメント
         /// </summary>
-        private void DecrementShaderNodeCounter( ShaderNodeType type )
+        private void DecrementShaderNodeCounter( string type )
         {
             m_shaderNodeFactory.DecrementID( type );
-        }
+        }        
 #endregion
 
 #if DEBUG
