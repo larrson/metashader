@@ -45,8 +45,9 @@ namespace metashader.GraphEditor
                     // ハンドラ
                     menuItem.Click += (s, e) =>
                     {
+                        MenuItem menuitem = s as MenuItem;
                         Command.AddNewNodeCommand addNodeCommand = App.CurrentApp.UICommandManager.GetCommand(Command.CommandType.AddShaderNode) as Command.AddNewNodeCommand;
-                        addNodeCommand.Execute(new Command.AddNewNodeCommand.Paramter(type, OpendPos));
+                        addNodeCommand.Execute(new Command.AddNewNodeCommand.Paramter(menuitem.Header as string, OpendPos));
                     };
 
                     menuItemAddNode.Items.Add(menuItem);
