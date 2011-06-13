@@ -16,7 +16,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Input_UVNode(string name, Point pos)
-            : base(ShaderNodeType.Input_UV, name, pos)
+            : base("Input_UV", name, pos)
         {
         }
         #endregion
@@ -70,7 +70,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Input_NormalNode(string name, Point pos)
-            : base(ShaderNodeType.Input_Normal, name, pos)
+            : base("Input_Normal", name, pos)
         {
         }
         #endregion
@@ -122,7 +122,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Input_PositionNode(string name, Point pos)
-            : base(ShaderNodeType.Input_Position, name, pos)
+            : base("Input_Position", name, pos)
         {
         }
         #endregion
@@ -185,7 +185,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Input_ReflectionNode(string name, Point pos)
-            : base(ShaderNodeType.Input_Reflection, name, pos)
+            : base("Input_Reflection", name, pos)
         {
         }
         #endregion

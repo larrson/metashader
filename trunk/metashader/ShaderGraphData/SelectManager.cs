@@ -210,7 +210,7 @@ namespace metashader.ShaderGraphData
                 }  
                 // このノードの選択を追加
                 // ただし、出力ノードは選択不可
-                if( node.Type.IsOutputNode() == false )
+                if( node.Type != "Output_Material" )
                 {
                     selectedNodes.Add(node);                
                 }                

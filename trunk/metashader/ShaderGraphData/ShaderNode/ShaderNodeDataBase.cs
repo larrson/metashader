@@ -185,7 +185,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// シェーダノードの種類
         /// </summary>        
-        protected ShaderNodeType m_type;
+        protected string m_type;
 
         /// <summary>
         /// ノード名
@@ -230,7 +230,7 @@ namespace metashader.ShaderGraphData
         /// コンストラクタ
         /// </summary>
         /// <param name="name"></param>
-        public ShaderNodeDataBase( ShaderNodeType type, string name, Point pos)
+        public ShaderNodeDataBase( string type, string name, Point pos)
         {
             m_type = type;
             m_name = name;
@@ -245,7 +245,7 @@ namespace metashader.ShaderGraphData
         /// <summary>
         /// 種類
         /// </summary>
-        public ShaderNodeType Type
+        public string Type
         {
             get { return m_type; }
         }
@@ -517,7 +517,7 @@ namespace metashader.ShaderGraphData
         #endregion
 
         #region constructors
-        public Indexed_NodeBase(ShaderNodeType type, string name, Point pos)
+        public Indexed_NodeBase(string type, string name, Point pos)
             : base(type, name, pos)
         {           
             m_index = 0;

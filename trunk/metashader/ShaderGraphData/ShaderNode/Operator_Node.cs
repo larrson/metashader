@@ -15,10 +15,9 @@ namespace metashader.ShaderGraphData
     abstract class Operator_NodeBase : ShaderNodeDataBase
     {
 #region constructors
-        public Operator_NodeBase(ShaderNodeType type, string name, Point pos)
+        public Operator_NodeBase(string type, string name, Point pos)
             : base(type, name, pos)
-        {
-            Debug.Assert(type.IsOperatorNode());
+        {            
         }
 #endregion
 
@@ -122,7 +121,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Operator_AddNode(string name, Point pos)
-            : base(ShaderNodeType.Operator_Add, name, pos)
+            : base("Operator_Add", name, pos)
         {
 
         }
@@ -181,7 +180,7 @@ namespace metashader.ShaderGraphData
     {
 #region constructors
         public Operator_SubNode(string name, Point pos)
-            : base(ShaderNodeType.Operator_Sub, name, pos)
+            : base("Operator_Sub", name, pos)
         {
 
         }
@@ -240,7 +239,7 @@ namespace metashader.ShaderGraphData
     {
         #region constructors
         public Operator_MulNode(string name, Point pos)
-            : base(ShaderNodeType.Operator_Mul, name, pos)
+            : base("Operator_Mul", name, pos)
         {
 
         }
@@ -394,7 +393,7 @@ namespace metashader.ShaderGraphData
     {
 #region constructors
         public Operator_DivNode(string name, Point pos)
-            : base(ShaderNodeType.Operator_Div, name, pos)
+            : base("Operator_Div", name, pos)
         {
 
         }

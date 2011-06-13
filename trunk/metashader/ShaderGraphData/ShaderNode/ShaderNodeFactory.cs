@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace metashader.ShaderGraphData
 {
@@ -12,55 +17,90 @@ namespace metashader.ShaderGraphData
     [Serializable]
     class ShaderNodeFactory
     {
+#region memeber classes
+        /// <summary>
+        /// シリアライズ用データ構造
+        /// </summary>
+        [Serializable]
+        class SaveData
+        {
+            public List<KeyValuePair<string, uint>> m_IDCounterList = new List<KeyValuePair<string, uint>>();
+            public List<KeyValuePair<string, uint>> m_instanceCounterList = new List<KeyValuePair<string, uint>>();            
+        };
+#endregion
+
 #region variables
         /// <summary>
         /// ノードに一意の名前を割り当てるための種類ごとのID
         /// この値を生成したノード名のサフィックスとして利用する
         /// </summary>        
-        uint[] m_IDCounter = new uint[(int)ShaderNodeType.Max];
+        [NonSerialized]
+        Dictionary<string, uint> m_IDCounter = new Dictionary<string, uint>();
 
         /// <summary>
         /// 各ノードの種類ごとのインスタンス数を保持するカウンタ
         /// グラフにノードが追加されると増え、消されると減る
         /// </summary>
-        uint[] m_instanceCounter = new uint[(int)ShaderNodeType.Max];
+        [NonSerialized]
+        Dictionary<string, uint> m_instanceCounter = new Dictionary<string, uint>();
+
+        /// <summary>
+        /// シェーダノードの有効なタイプのリスト
+        /// </summary>
+        [NonSerialized]
+        List<string> m_shaderNodeTypeList;
 #endregion                
+
+#region constructors
+        public ShaderNodeFactory()
+        {
+            // 有効なノードのタイプを初期化
+            InitializeValidTypes();
+        }
+#endregion
+
+#region prpoerties
+        public ReadOnlyCollection<string> ValidNodeTypeList
+        {
+            get { return m_shaderNodeTypeList.AsReadOnly(); } 
+        }
+#endregion
 
 #region public methods
         /// <summary>
         /// シェーダノードの種類ごとのIDをカウント
         /// </summary>
         /// <param name="type"></param>
-        public void IncrementID( ShaderNodeType type )
-        {
-            ++m_IDCounter[(int)type];
+        public void IncrementID( string type )
+        {                                    
+            ++m_IDCounter[type];                      
         }
 
         /// <summary>
         /// シェーダノードの種類ごとのIDをカウント
         /// </summary>
         /// <param name="type"></param>
-        public void DecrementID( ShaderNodeType type )
+        public void DecrementID( string type )
         {
-            --m_IDCounter[(int)type];
+            --m_IDCounter[type];
         }
 
         /// <summary>
         /// 種類毎のインスタンス数をインクリメント
         /// </summary>
         /// <param name="?"></param>
-        public void IncrementInstance( ShaderNodeType type )
+        public void IncrementInstance( string type )
         {
-            ++m_instanceCounter[(int)type];
+            ++m_instanceCounter[type];
         }
 
         /// <summary>
         /// 種類毎のインスタンス数をデクリメント
         /// </summary>
         /// <param name="?"></param>
-        public void DecrementInstance(ShaderNodeType type)
+        public void DecrementInstance(string type)
         {
-            --m_instanceCounter[(int)type];
+            --m_instanceCounter[type];
         }
 
         /// <summary>
@@ -68,10 +108,18 @@ namespace metashader.ShaderGraphData
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool CanCreate( ShaderNodeType type )
+        public bool CanCreate( string type )
         {
-            // 生成できる最大数以下ならば、作成可能
-            return (m_instanceCounter[(int)type] + 1) <= type.GetMaxNodeNum();
+            // 有効な名前か判定
+            if( m_shaderNodeTypeList.Contains(type) == false )
+            {
+                return false;
+            }
+
+            // 生成できる最大数以下ならば、作成可能            
+            // @@ タイプをstringにしたため、別途処理する必要がある
+            bool ret = !(type == "Output_Material" && m_instanceCounter[type] >= 1);
+            return ret;
         }
 
         /// <summary>
@@ -80,95 +128,99 @@ namespace metashader.ShaderGraphData
         /// <param name="type"></param>
         /// <param name="pos"></param>
         /// <returns>作成された具象クラス。作成不可能な場合は、nullを返す</returns>
-        public ShaderNodeDataBase Create( ShaderNodeType type, Point pos )
+        public ShaderNodeDataBase Create( string type, Point pos )
         {
             // 作成不可能な場合は、nullを返す
             if (CanCreate(type) == false)
                 return null;
 
             // ノード名を決定する
-            string name = type.ToStringExt() + "_" + m_IDCounter[(int)type];
+            string name = type + "_" + m_IDCounter[type];
 
             ShaderNodeDataBase ret = null;
 
             // ノードの種類に応じて具象クラスを作成
             switch(type)
             {                    
-                case ShaderNodeType.Uniform_Float:
+                case "Uniform_Float":
                     ret = new Uniform_FloatNode(name, pos);
                     break;
-                case ShaderNodeType.Uniform_Vector2:
+                case "Uniform_Vector2":
                     ret = new Uniform_Vector2Node(name, pos);
                     break;
-                case ShaderNodeType.Uniform_Vector3:
+                case "Uniform_Vector3":
                     ret = new Uniform_Vector3Node(name, pos);
                     break;
-                case ShaderNodeType.Uniform_Vector4:
+                case "Uniform_Vector4":
                     ret = new Uniform_Vector4Node(name, pos);
                     break;
-                case ShaderNodeType.Uniform_Texture2D:
+                case "Uniform_Texture2D":
                     ret = new Uniform_Texture2DNode(name, pos);
                     break;
-                case ShaderNodeType.Uniform_TextureCube:
+                case "Uniform_TextureCube":
                     ret = new Uniform_TextureCubeNode(name, pos);
                     break;
-                case ShaderNodeType.Input_UV:
+                case "Input_UV":
                     ret = new Input_UVNode(name, pos);
                     break;
-                case ShaderNodeType.Input_Normal:
+                case "Input_Normal":
                     ret = new Input_NormalNode(name, pos);
                     break;
-                case ShaderNodeType.Input_Position:
+                case "Input_Position":
                     ret = new Input_PositionNode(name, pos);
                     break;
-                case ShaderNodeType.Input_Reflection:
+                case "Input_Reflection":
                     ret = new Input_ReflectionNode(name, pos);
                     break;
-                case ShaderNodeType.Operator_Add:
+                case "Operator_Add":
                     ret = new Operator_AddNode(name, pos);
                     break;
-                case ShaderNodeType.Operator_Sub:
+                case "Operator_Sub":
                     ret = new Operator_SubNode(name, pos);
                     break;
-                case ShaderNodeType.Operator_Mul:
+                case "Operator_Mul":
                     ret = new Operator_MulNode(name, pos);
                     break;
-                case ShaderNodeType.Operator_Div:
+                case "Operator_Div":
                     ret = new Operator_DivNode(name, pos);
                     break;
-                case ShaderNodeType.Func_Normalize:
+                case "Func_Normalize":
                     ret = new Func_Normalize(name, pos);
                     break;
-                case ShaderNodeType.Func_Dot:
+                case "Func_Dot":
                     ret = new Func_Dot(name, pos);
                     break;
-                case ShaderNodeType.Func_Reflect:
+                case "Func_Reflect":
                     ret = new Func_Reflect(name, pos);
                     break;
-                case ShaderNodeType.Func_Pow:
+                case "Func_Pow":
                     ret = new Func_Pow(name, pos);
                     break;
-                case ShaderNodeType.Func_Saturate:
+                case "Func_Saturate":
                     ret = new Func_Saturate(name, pos);
                     break;
-                case ShaderNodeType.Light_DirLightDir:
+                case "Light_DirLightDir":
                     ret = new Light_DirLightDirNode(name, pos);
                     break;
-                case ShaderNodeType.Light_DirLightColor:
+                case "Light_DirLightColor":
                     ret = new Light_DirLightColorNode(name, pos);
                     break;
-                case ShaderNodeType.Camera_Position:
+                case "Camera_Position":
                     ret = new Camera_PositionNode(name, pos);
                     break;
-                case ShaderNodeType.Utility_Append:
+                case "Utility_Append":
                     ret = new Utility_AppendNode(name, pos);
                     break;                
-                case ShaderNodeType.Output_Material:
+                case "Output_Material":
                     ret = new Output_MaterialNode(name, pos);
                     break;
                 default:
-                    throw new ArgumentException("適合するタイプのコンストラクタが有りません", type.ToStringExt());
+                    throw new ArgumentException("適合するタイプのコンストラクタが有りません", type);
             }
+
+            // 指定したタイプと、生成されたノードのタイプは等しい
+            Debug.Assert( type == ret.Type );
+
             return ret;
         }
 
@@ -178,8 +230,132 @@ namespace metashader.ShaderGraphData
         public void Reset()
         {
             // メンバ変数の初期化
-            m_IDCounter = new uint[(int)ShaderNodeType.Max];            
-            m_instanceCounter = new uint[(int)ShaderNodeType.Max];
+            foreach (string type in m_shaderNodeTypeList)
+            {
+                m_IDCounter[type] = 0;
+            }
+            foreach (string type in m_shaderNodeTypeList)
+            {
+                m_instanceCounter[type] = 0;
+            }                    
+        }
+
+        /// <summary>
+        /// ファイルへの保存
+        /// </summary>
+        /// <param name="fileStream"></param>
+        /// <param name="formatter"></param>
+        /// <returns></returns>
+        public bool Save(FileStream fileStream, BinaryFormatter formatter)
+        {
+            // 保存用データ作成
+            SaveData data = new SaveData();
+            
+            // IDのカウンタを保存
+            foreach( KeyValuePair<string, uint> pair in m_IDCounter )
+            {
+                data.m_IDCounterList.Add(pair);
+            }
+
+            // インスタンスのカウンタを保存
+            foreach ( KeyValuePair<string, uint> pair in m_instanceCounter )
+            {
+                data.m_instanceCounterList.Add(pair);
+            }            
+
+            // 保存用データをシリアライズ
+            formatter.Serialize(fileStream, data);
+
+            return true;
+        }
+
+        /// <summary>
+        /// ファイルからロード
+        /// </summary>
+        /// <param name="fileStream"></param>
+        /// <param name="formatter"></param>
+        /// <returns></returns>
+        public bool Load(FileStream fileStream, BinaryFormatter formatter)
+        {
+            // ロード前にリセット
+            Reset();
+
+            // セーブデータ読み込み
+            SaveData data = formatter.Deserialize(fileStream) as SaveData;
+
+            /// クラス内のデータを復元 ///
+
+            // IDのカウンタを復元
+            foreach (KeyValuePair<string, uint> pair in data.m_IDCounterList)
+            {
+                m_IDCounter[pair.Key] = pair.Value;
+            }
+
+            // インスタンスのカウンタを復元
+            foreach (KeyValuePair<string, uint> pair in data.m_instanceCounterList)
+            {
+                m_instanceCounter[pair.Key] = pair.Value;
+            }
+
+            return true;
+        }
+#endregion
+
+#region private methods
+        /// <summary>
+        /// タイプの初期化処理
+        /// </summary>
+        public void InitializeValidTypes()
+        {
+            //             
+            m_shaderNodeTypeList = new List<string>();
+            AddValidType( "Uniform_Float");                   
+            AddValidType( "Uniform_Vector2");                    
+            AddValidType( "Uniform_Vector3");                    
+            AddValidType( "Uniform_Vector4");                    
+            AddValidType( "Uniform_Texture2D");                    
+            AddValidType( "Uniform_TextureCube");                    
+            AddValidType( "Input_UV");                    
+            AddValidType( "Input_Normal");                    
+            AddValidType( "Input_Position");                    
+            AddValidType( "Input_Reflection");                    
+            AddValidType( "Operator_Add");                    
+            AddValidType( "Operator_Sub");                    
+            AddValidType( "Operator_Mul");                    
+            AddValidType( "Operator_Div");                    
+            AddValidType( "Func_Normalize");                    
+            AddValidType( "Func_Dot");                    
+            AddValidType( "Func_Reflect");                    
+            AddValidType( "Func_Pow");                    
+            AddValidType( "Func_Saturate");                    
+            AddValidType( "Light_DirLightDir");                    
+            AddValidType( "Light_DirLightColor");                    
+            AddValidType( "Camera_Position");                    
+            AddValidType( "Utility_Append");                    
+            AddValidType( "Output_Material");                    
+        }
+
+        /// <summary>
+        /// 有効なノードタイプを追加する
+        /// タイプの初期化時にのみ呼ぶメソッド
+        /// </summary>
+        /// <param name="type"></param>
+        public void AddValidType( string type )
+        {
+            // タイプのリストに追加
+            m_shaderNodeTypeList.Add(type);
+
+            // IDカウンターに含まれていなければ追加
+            if( m_IDCounter.ContainsKey(type) == false )
+            {
+                m_IDCounter.Add(type, 0);
+            }
+
+            // インスタンスカウンターに含まれていなければ追加
+            if (m_instanceCounter.ContainsKey(type) == false)
+            {
+                m_instanceCounter.Add(type, 0);
+            }
         }
 #endregion
     }

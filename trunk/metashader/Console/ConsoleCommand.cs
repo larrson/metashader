@@ -23,9 +23,7 @@ namespace metashader.Console
             // 種類
             string typeName = options[1];
             try
-            {
-                ShaderGraphData.ShaderNodeType type = (ShaderGraphData.ShaderNodeType)Enum.Parse(Type.GetType("metashader.ShaderGraphData.ShaderNodeType"), typeName);                
-
+            {                 
                 // 表示位置
                 double x, y;
                 x = y = 0;
@@ -38,7 +36,7 @@ namespace metashader.Console
                 // データを操作するコマンドを呼び出し
                 Command.AddNewNodeCommand command = App.CurrentApp.UICommandManager.GetCommand(Command.CommandType.AddShaderNode) as Command.AddNewNodeCommand;
                 command.Execute(
-                     new Command.AddNewNodeCommand.Paramter(type, new Point(x, y))
+                     new Command.AddNewNodeCommand.Paramter(typeName, new Point(x, y))
                     );
             }
             catch (System.ArgumentException e)

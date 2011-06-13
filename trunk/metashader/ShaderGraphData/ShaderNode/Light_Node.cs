@@ -18,7 +18,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Light_DirLightDirNode(string name, Point pos)
-            : base(ShaderNodeType.Light_DirLightDir, name, pos)
+            : base("Light_DirLightDir", name, pos)
         {
         }
         #endregion
@@ -111,7 +111,7 @@ namespace metashader.ShaderGraphData
 
         #region constructors
         public Light_DirLightColorNode(string name, Point pos)
-            : base(ShaderNodeType.Light_DirLightColor, name, pos)
+            : base("Light_DirLightColor", name, pos)
         {
         }
         #endregion

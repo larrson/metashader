@@ -27,7 +27,7 @@ namespace metashader.ShaderGraphData
         /// <param name="name"></param>
         /// <param name="pos"></param>
         public Output_MaterialNode(string name, Point pos)
-            : base( ShaderNodeType.Output_Material, name, pos)
+            : base("Output_Material", name, pos)
         {
 
         }

@@ -19,7 +19,7 @@ namespace metashader.ShaderGraphData
         class UndoRedo_AddNewNode : IUndoRedo
         {
             ShaderGraphData _graph;
-            ShaderNodeType _type;
+            string _type;
             Point _pos;
 
             /// <summary>
@@ -27,7 +27,7 @@ namespace metashader.ShaderGraphData
             /// </summary>
             int _hashCode;
 
-            public UndoRedo_AddNewNode(ShaderGraphData graph, ShaderNodeType type, Point pos, int hashCode)
+            public UndoRedo_AddNewNode(ShaderGraphData graph, string type, Point pos, int hashCode)
             {
                 _graph = graph;
                 _type = type;
