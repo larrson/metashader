@@ -27,6 +27,7 @@ struct PARAMETERS
 	float3 Tangent0;
 	float3 BiNormal0; 
 	float3 Reflection0;
+	float3 CameraDir0;
 };
 
 // include headers
@@ -123,10 +124,13 @@ PARAMETERS InitializeParams( PS_INPUT In )
 	
 	// normal vector is calculated by user defined graph. 
 	Params.Normal0 = GetNormal( Params );
-	
-	// calculate refrection vector
+		
 #ifdef UNIFORM_CameraPosition
+	// calculate refrection vector
 	Params.Reflection0 = normalize( reflect( Params.Position0 - Uniform_CameraPosition, Params.Normal0 ) );
+	
+	// calculate camera direction vector
+	Params.CameraDir0 = normalize( Uniform_CameraPosition - Params.Position0 );
 #endif
 
 	return Params;

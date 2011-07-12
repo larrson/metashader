@@ -8,6 +8,8 @@ using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.CodeDom.Compiler;
+using System.Reflection;
 
 namespace metashader.ShaderGraphData
 {
@@ -26,7 +28,7 @@ namespace metashader.ShaderGraphData
         {
             public List<KeyValuePair<string, uint>> m_IDCounterList = new List<KeyValuePair<string, uint>>();
             public List<KeyValuePair<string, uint>> m_instanceCounterList = new List<KeyValuePair<string, uint>>();            
-        };
+        };                
 #endregion
 
 #region variables
@@ -46,9 +48,9 @@ namespace metashader.ShaderGraphData
 
         /// <summary>
         /// シェーダノードの有効なタイプのリスト
-        /// </summary>
+        /// </summary>        
         [NonSerialized]
-        List<string> m_shaderNodeTypeList;
+        Dictionary<string, Type> m_shaderNodeTypeList;
 #endregion                
 
 #region constructors
@@ -62,7 +64,10 @@ namespace metashader.ShaderGraphData
 #region prpoerties
         public ReadOnlyCollection<string> ValidNodeTypeList
         {
-            get { return m_shaderNodeTypeList.AsReadOnly(); } 
+            get {
+                List<string> nodeNameList = new List<string>( m_shaderNodeTypeList.Keys );
+                return nodeNameList.AsReadOnly();
+            } 
         }
 #endregion
 
@@ -111,7 +116,7 @@ namespace metashader.ShaderGraphData
         public bool CanCreate( string type )
         {
             // 有効な名前か判定
-            if( m_shaderNodeTypeList.Contains(type) == false )
+            if( m_shaderNodeTypeList.ContainsKey(type) == false )
             {
                 return false;
             }
@@ -140,86 +145,13 @@ namespace metashader.ShaderGraphData
             ShaderNodeDataBase ret = null;
 
             // ノードの種類に応じて具象クラスを作成
-            switch(type)
-            {                    
-                case "Uniform_Float":
-                    ret = new Uniform_FloatNode(name, pos);
-                    break;
-                case "Uniform_Vector2":
-                    ret = new Uniform_Vector2Node(name, pos);
-                    break;
-                case "Uniform_Vector3":
-                    ret = new Uniform_Vector3Node(name, pos);
-                    break;
-                case "Uniform_Vector4":
-                    ret = new Uniform_Vector4Node(name, pos);
-                    break;
-                case "Uniform_Texture2D":
-                    ret = new Uniform_Texture2DNode(name, pos);
-                    break;
-                case "Uniform_TextureCube":
-                    ret = new Uniform_TextureCubeNode(name, pos);
-                    break;
-                case "Input_UV":
-                    ret = new Input_UVNode(name, pos);
-                    break;
-                case "Input_Normal":
-                    ret = new Input_NormalNode(name, pos);
-                    break;
-                case "Input_Position":
-                    ret = new Input_PositionNode(name, pos);
-                    break;
-                case "Input_Reflection":
-                    ret = new Input_ReflectionNode(name, pos);
-                    break;
-                case "Operator_Add":
-                    ret = new Operator_AddNode(name, pos);
-                    break;
-                case "Operator_Sub":
-                    ret = new Operator_SubNode(name, pos);
-                    break;
-                case "Operator_Mul":
-                    ret = new Operator_MulNode(name, pos);
-                    break;
-                case "Operator_Div":
-                    ret = new Operator_DivNode(name, pos);
-                    break;
-                case "Func_Normalize":
-                    ret = new Func_Normalize(name, pos);
-                    break;
-                case "Func_Dot":
-                    ret = new Func_Dot(name, pos);
-                    break;
-                case "Func_Reflect":
-                    ret = new Func_Reflect(name, pos);
-                    break;
-                case "Func_Pow":
-                    ret = new Func_Pow(name, pos);
-                    break;
-                case "Func_Saturate":
-                    ret = new Func_Saturate(name, pos);
-                    break;
-                case "Light_DirLightDir":
-                    ret = new Light_DirLightDirNode(name, pos);
-                    break;
-                case "Light_DirLightColor":
-                    ret = new Light_DirLightColorNode(name, pos);
-                    break;
-                case "Camera_Position":
-                    ret = new Camera_PositionNode(name, pos);
-                    break;
-                case "Utility_Append":
-                    ret = new Utility_AppendNode(name, pos);
-                    break;                
-                case "Output_Material":
-                    ret = new Output_MaterialNode(name, pos);
-                    break;
-                default:
-                    throw new ArgumentException("適合するタイプのコンストラクタが有りません", type);
-            }
-
+            Type t = m_shaderNodeTypeList[type];
+            Object[] args = { name, pos };  
+            ret = Activator.CreateInstance(t, args) as ShaderNodeDataBase;
+            
+            Debug.Assert(ret != null);
             // 指定したタイプと、生成されたノードのタイプは等しい
-            Debug.Assert( type == ret.Type );
+            Debug.Assert(type == ret.Type);
 
             return ret;
         }
@@ -230,11 +162,11 @@ namespace metashader.ShaderGraphData
         public void Reset()
         {
             // メンバ変数の初期化
-            foreach (string type in m_shaderNodeTypeList)
+            foreach (string type in m_shaderNodeTypeList.Keys)
             {
                 m_IDCounter[type] = 0;
             }
-            foreach (string type in m_shaderNodeTypeList)
+            foreach (string type in m_shaderNodeTypeList.Keys)
             {
                 m_instanceCounter[type] = 0;
             }                    
@@ -306,55 +238,107 @@ namespace metashader.ShaderGraphData
         /// タイプの初期化処理
         /// </summary>
         public void InitializeValidTypes()
-        {
-            //             
-            m_shaderNodeTypeList = new List<string>();
-            AddValidType( "Uniform_Float");                   
-            AddValidType( "Uniform_Vector2");                    
-            AddValidType( "Uniform_Vector3");                    
-            AddValidType( "Uniform_Vector4");                    
-            AddValidType( "Uniform_Texture2D");                    
-            AddValidType( "Uniform_TextureCube");                    
-            AddValidType( "Input_UV");                    
-            AddValidType( "Input_Normal");                    
-            AddValidType( "Input_Position");                    
-            AddValidType( "Input_Reflection");                    
-            AddValidType( "Operator_Add");                    
-            AddValidType( "Operator_Sub");                    
-            AddValidType( "Operator_Mul");                    
-            AddValidType( "Operator_Div");                    
-            AddValidType( "Func_Normalize");                    
-            AddValidType( "Func_Dot");                    
-            AddValidType( "Func_Reflect");                    
-            AddValidType( "Func_Pow");                    
-            AddValidType( "Func_Saturate");                    
-            AddValidType( "Light_DirLightDir");                    
-            AddValidType( "Light_DirLightColor");                    
-            AddValidType( "Camera_Position");                    
-            AddValidType( "Utility_Append");                    
-            AddValidType( "Output_Material");                    
+        {                        
+            m_shaderNodeTypeList = new Dictionary<string, Type>();
+
+            // サポート済みのノード            
+            AddValidType("Uniform_Float", Type.GetType("metashader.ShaderGraphData.Uniform_FloatNode"));                   
+            AddValidType("Uniform_Vector2", Type.GetType("metashader.ShaderGraphData.Uniform_Vector2Node"));                    
+            AddValidType("Uniform_Vector3", Type.GetType("metashader.ShaderGraphData.Uniform_Vector3Node"));                    
+            AddValidType("Uniform_Vector4", Type.GetType("metashader.ShaderGraphData.Uniform_Vector4Node"));                    
+            AddValidType("Uniform_Texture2D", Type.GetType("metashader.ShaderGraphData.Uniform_Texture2DNode"));                    
+            AddValidType("Uniform_TextureCube", Type.GetType("metashader.ShaderGraphData.Uniform_TextureCubeNode"));                    
+            AddValidType("Input_UV", Type.GetType("metashader.ShaderGraphData.Input_UVNode"));                    
+            AddValidType("Input_Normal", Type.GetType("metashader.ShaderGraphData.Input_NormalNode"));                    
+            AddValidType("Input_Position", Type.GetType("metashader.ShaderGraphData.Input_PositionNode"));                    
+            AddValidType("Input_Reflection", Type.GetType("metashader.ShaderGraphData.Input_ReflectionNode"));                    
+            AddValidType("Operator_Add", Type.GetType("metashader.ShaderGraphData.Operator_AddNode"));                    
+            AddValidType("Operator_Sub", Type.GetType("metashader.ShaderGraphData.Operator_SubNode"));                    
+            AddValidType("Operator_Mul", Type.GetType("metashader.ShaderGraphData.Operator_MulNode"));                    
+            AddValidType("Operator_Div", Type.GetType("metashader.ShaderGraphData.Operator_DivNode"));                    
+            AddValidType("Func_Normalize", Type.GetType("metashader.ShaderGraphData.Func_Normalize"));                    
+            AddValidType("Func_Dot", Type.GetType("metashader.ShaderGraphData.Func_Dot"));                    
+            AddValidType("Func_Reflect", Type.GetType("metashader.ShaderGraphData.Func_Reflect"));                    
+            AddValidType("Func_Pow", Type.GetType("metashader.ShaderGraphData.Func_Pow"));                    
+            AddValidType("Func_Saturate", Type.GetType("metashader.ShaderGraphData.Func_Saturate"));                    
+            AddValidType("Light_DirLightDir", Type.GetType("metashader.ShaderGraphData.Light_DirLightDirNode"));                    
+            AddValidType("Light_DirLightColor", Type.GetType("metashader.ShaderGraphData.Light_DirLightColorNode"));                    
+            AddValidType("Camera_Position", Type.GetType("metashader.ShaderGraphData.Camera_PositionNode"));                    
+            AddValidType("Utility_Append", Type.GetType("metashader.ShaderGraphData.Utility_AppendNode"));                    
+            AddValidType("Output_Material", Type.GetType("metashader.ShaderGraphData.Output_MaterialNode"));
+
+
+            // 外部ファイルに定義されている型を取得
+            //コンパイルするための準備
+            CodeDomProvider cp = new Microsoft.CSharp.CSharpCodeProvider(
+                    new Dictionary<string, string>
+                    {
+                        { "CompilerVersion", "v3.5" }
+                    }
+                );
+            CompilerParameters cps = new CompilerParameters();
+            CompilerResults cres;
+            //メモリ内で出力を生成する
+            cps.GenerateInMemory = true;
+            // 参照の追加
+            // using
+            cps.ReferencedAssemblies.Add("System.dll");
+            cps.ReferencedAssemblies.Add("System.Core.dll");
+            cps.ReferencedAssemblies.Add("WindowsBase.dll");
+
+            // 自分自身 
+            cps.ReferencedAssemblies.Add(Path.Combine(Setting.FileSettings.ApplicationFolderPath, "metashader.exe"));
+            //コンパイルする
+            cres = cp.CompileAssemblyFromFile(cps
+                , Setting.FileSettings.ApplicationFolderPath + @"\..\..\data\script\shadernode\userdefined.cs");
+
+            if (cres.Errors.Count > 0)
+            {
+                StringBuilder stringbuilder = new StringBuilder();
+                foreach (CompilerError error in cres.Errors)
+                {
+                    stringbuilder.AppendLine(error.FileName + "(" + error.Line + ")" + " : " + error.ErrorText);
+                }
+                MessageBox.Show(stringbuilder.ToString());
+                throw new Exception("Compile error in userdefined Shader Node.");
+            }
+
+            //コンパイルしたアセンブリを取得
+            Assembly asm = cres.CompiledAssembly;
+            // タイプを取得            
+            foreach (Type type in asm.GetTypes())
+            {
+                // 種類の名前を取得
+                object[] attributes = type.GetCustomAttributes(typeof(ShaderNodeTypeNameAttribute), false);
+                Debug.Assert(attributes.Length == 1);
+                string typeName = (attributes[0] as ShaderNodeTypeNameAttribute).TypeName;
+
+                // ノードのリストに追加
+                AddValidType(typeName, type);
+            }
         }
 
         /// <summary>
         /// 有効なノードタイプを追加する
         /// タイプの初期化時にのみ呼ぶメソッド
         /// </summary>
+        /// <param name="typeName"></param>
         /// <param name="type"></param>
-        public void AddValidType( string type )
-        {
+        public void AddValidType( string typeName, Type type )
+        {            
             // タイプのリストに追加
-            m_shaderNodeTypeList.Add(type);
+            m_shaderNodeTypeList.Add(typeName, type);
 
             // IDカウンターに含まれていなければ追加
-            if( m_IDCounter.ContainsKey(type) == false )
+            if( m_IDCounter.ContainsKey(typeName) == false )
             {
-                m_IDCounter.Add(type, 0);
+                m_IDCounter.Add(typeName, 0);
             }
 
             // インスタンスカウンターに含まれていなければ追加
-            if (m_instanceCounter.ContainsKey(type) == false)
+            if (m_instanceCounter.ContainsKey(typeName) == false)
             {
-                m_instanceCounter.Add(type, 0);
+                m_instanceCounter.Add(typeName, 0);
             }
         }
 #endregion
