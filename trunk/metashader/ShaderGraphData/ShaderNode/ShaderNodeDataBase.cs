@@ -556,4 +556,18 @@ namespace metashader.ShaderGraphData
         }
         #endregion
     }
+
+    /// <summary>
+    /// シェーダノードの種類を表す文字列を指定するための属性
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
+    public class ShaderNodeTypeNameAttribute : System.Attribute
+    {
+        public string TypeName { get; set; }
+
+        public ShaderNodeTypeNameAttribute( string typeName )
+        {
+            this.TypeName = typeName;
+        }
+    }
 }

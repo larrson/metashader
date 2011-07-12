@@ -15,7 +15,7 @@ namespace metashader.ShaderGraphData
     /// float型のスカラーノード
     /// </summary>
     [Serializable]
-    class Uniform_FloatNode : ShaderNodeDataBase, IAppliableParameter
+    public class Uniform_FloatNode : ShaderNodeDataBase, IAppliableParameter
     {
         #region variables
         float m_value = 0.0f;
